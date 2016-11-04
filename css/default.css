@@ -1,0 +1,617 @@
+@font-face {
+    font-family: 'Oxygen';
+    src: url("font/Oxygen.otf");
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Oxygen';
+    src: url("font/Oxygen-Bold.otf");
+    font-style: normal;
+    font-weight: bold;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    font-size: 16px;
+    font-family: "Roboto";
+    font-weight: 500;
+    color: #666;
+    cursor: default;
+}
+
+body {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0px;
+    width: 100%;
+    height: 100%;
+    padding: 0px;
+    background-image: url(../img/backgrounds/daylight.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+app-fade {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    display: block;
+    background-color: #FFF;
+    height: 100%;
+    width: 100%;
+    z-index: 1000000;
+    animation: fade-out 2s;
+    animation-fill-mode: forwards;
+    pointer-events: none;
+}
+
+@-webkit-keyframes fade-out {
+    0% { opacity: 1 } 20% { opacity: 1 } 100% { opacity: 0 }
+}
+
+@-moz-keyframes fade-out {
+    0% { opacity: 1 } 20% { opacity: 1 } 100% { opacity: 0 }
+}
+
+input {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    height: 2.5em;
+    color: #555;
+    background-color: rgba(255,255,255,0.5);
+    border: none;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.3);
+    border-radius: .5em;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    padding: 1px 0px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(0,0,0,.15);
+    border-left: 1px solid rgba(0,0,0,.25);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,.25);
+    border-left: 1px solid rgba(0,0,0,1);
+}
+::-webkit-scrollbar-thumb:horizontal:hover, ::-webkit-scrollbar-thumb:vertical:hover {
+    background: rgba(255,255,255,.25);
+    cursor: pointer;
+}
+::-webkit-scrollbar-thumb:horizontal:active, ::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(255,255,255,.5);
+}
+
+list {
+    display: block;
+    padding: .5em 0;
+    color: rgba(255,255,255,.8);
+}
+
+avatar {
+    display: block;
+    width: 2.2em;
+    height: 2.2em;
+    text-align: center;
+    line-height: 2.2em;
+    font-size: 1.25em;
+    font-weight: 100;
+    color: rgba(255,255,255,.5);
+    background-color: rgba(255,255,255,.2);
+    background-size: cover;
+    border-radius: .3em;
+}
+
+card {
+    display: block;
+    height: 3.5em;
+    padding: .375em .75em;
+    transition: 300ms;
+}
+
+card:hover {
+    background-color: rgba(255,255,255,.1);
+    transition: 100ms;
+}
+
+card > avatar {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    float: left;
+}
+
+card.is-selected > avatar {
+    background-color: rgba(255,255,255,.4);
+    color: #FFF;
+}
+
+card status {
+    display: block;
+    width: 1em;
+    height: 1em;
+    border: 1px solid #2E3947;
+    border-radius: 50%;
+}
+
+card:hover status {
+    border: 1px solid #3C4B5D;
+}
+
+card.is-selected status {
+    border: 1px solid #51647B;
+}
+
+card > avatar > status {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: .6em;
+    height: .6em;
+
+}
+
+card > content {
+    display: -ms-flexbox;
+    -ms-flex-direction: column;
+    -ms-flex-wrap: nowrap;
+    -ms-flex-pack: center;
+    -ms-flex-align: start;
+    
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    -webkit-justify-content: center;
+    -webkit-align-items: flex-start;
+
+    display: flex;    
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+
+    padding-left: .75em;
+    width: calc(100% - 3em);
+    height: 2.75em;
+}
+
+card > content > name {
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+status.is-available {
+    background-color: #00ea3f;
+}
+
+status.is-busy {
+    background-color: #F80;
+}
+
+status.is-offline,
+status.is-unknown {
+    display: none;
+}
+
+/* ====== APP MODULE */
+
+app-module {
+    display: -ms-flexbox;
+    -ms-flex-direction: column;
+    -ms-flex-wrap: nowrap;
+    -ms-flex-pack: center;
+    -ms-flex-align: start;
+    
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    -webkit-flex-wrap: nowrap;
+    -webkit-justify-content: center;
+    -webkit-align-items: flex-start;
+
+    display: flex;    
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+
+    width: 100%;
+    height: 100%;
+}
+
+app-module > app-top {
+    flex: 0 0 3em;
+    display: block;
+    width: 100%;
+    height: 3em;
+    background-color: rgba(39, 45, 49, 0.95);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+app-module > app-middle {
+    display: -ms-flexbox;
+    -ms-flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    -ms-flex-pack: start;
+    -ms-flex-align: start;
+    
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -webkit-justify-content: flex-start;
+    -webkit-align-items: flex-start;
+
+    display: flex;    
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    flex: 2 1 auto;
+    width: 100%;
+    height: 100%;
+}
+
+app-module > app-bottom {
+}
+
+app-module nav {
+    flex: 0 0 20em;
+    position: relative;
+    left: -20em;
+    margin-right: -20em;
+    display: block;
+    height: 100%;
+    box-shadow: 1px 0px 3px rgba(0,0,0,.3);
+    transition: left .3s, margin-right .3s;
+}
+
+app-module nav.is-active {
+    left: 0em;
+    margin-right: 0em;
+    transition: left .4s, margin-right .4s;
+}
+
+app-module main {
+    flex: 2 1 auto;
+    display: block;
+    height: 100%;
+    background-color: rgba(255, 255, 255, .6);
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+app-module main.is-active {
+    opacity: 1;
+    transition: opacity 1s;
+}
+
+/* ====== LOGIN MODULE */
+
+login-module {
+    position: relative;
+    width: 37.5em;
+    overflow: hidden;
+    border-radius: .25em;
+    box-shadow: 1px 1px 3px rgba(0,0,0,.3);
+    opacity: 0;
+    transition: opacity .3s;
+}
+
+login-module.is-active {
+    opacity: 1;
+    transition: opacity .8s;
+}
+
+login-module login-menu {
+    display: flex;
+    position: relative;
+    z-index: 1;
+}
+
+login-module header {
+    display: block;
+    text-align: center;
+    padding-bottom: 1em;
+}
+
+background-blur {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url(../img/backgrounds/daylight.jpg);
+    -webkit-filter: blur(10px);
+    -o-filter: blur(10px);
+    -ms-filter: blur(10px);
+    -moz-animation: 1ms blur-this;
+    -moz-animation-delay: 1ms;
+    -moz-animation-fill-mode: forwards;
+}
+
+@keyframes blur-this {
+    to { filter: blur(10px); }
+}
+
+background-blur:before {
+    display: block;
+    content: "";
+    z-index: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: inherit;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+login-module app-logo {
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 12.5em;
+    background-color: rgba(20, 30, 40, .8);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+/*    background: linear-gradient(to top, rgb(7, 43, 53), rgba(16, 28, 41, 0.9));*/
+    border-bottom-left-radius: .25em;
+    border-top-left-radius: .25em;
+}
+
+login-module app-info > image {
+    display: block;
+    width: 12em;
+    height: 18em;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+login-module form {
+    flex: 1 0 auto;
+    width: 25em;
+    padding: 1em;
+    background: linear-gradient(to top right, rgba(255,255,255,.9), rgba(255,255,255,.75));
+    border-bottom-right-radius: .25em;
+    border-top-right-radius: .25em;
+}
+
+login-module form > * {
+    margin: 1em;
+}
+
+login-module form-input {
+    display: block;
+}
+
+login-module input {
+    display: block;
+    font-size: 16px;
+    width: 18em;
+    padding: 0 .75em;
+    outline: none;
+    margin: 0px auto;
+}
+
+login-module label{
+    display: block;
+    margin: 0px auto;
+    width: 18em;
+}
+
+login-module label text{
+    width: 18em;
+}
+
+login-module input {
+    background-color: rgba(255,255,255,0.9);
+    border: none;
+    box-shadow: 0 0 0 1px rgba(255,120,100,1);
+    transition: box-shadow .2s;
+}
+
+login-module input:focus {
+    box-shadow: 0 0 0 3px rgba(255,120,100,1);
+}
+
+login-module form-input.is-active input {
+    box-shadow: 0 0 0 1px rgba(26,170,0,1);
+}
+
+login-module form-input.is-active input:focus {
+    box-shadow: 0 0 0 3px rgba(26,170,0,1);
+}
+
+login-module form-input input[type=text]:read-only {
+    background: rgba(255,255,255,.1);
+    color: #BBB;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+    cursor: default;
+}
+
+login-module input[type=text]:-moz-read-only {
+    background: rgba(255,255,255,.1);
+    color: #BBB;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+    cursor: default;    
+}
+
+login-module input[type=checkbox] {
+    box-shadow: initial;
+    display: inline;
+    margin: 0 8px 0 2px;
+    padding: 0;
+    height: auto;
+    width: auto;
+}
+
+login-module input[type=submit] {
+    font-weight: 500;
+    color: #FFF;
+    border: 1px solid rgba(0,0,0,.3);
+    background: linear-gradient(rgba(26,170,0,.5), rgba(26,170,0,.8));
+    box-shadow: none;
+}
+
+login-module input[type=submit]:hover {
+    position: relative;
+    background: linear-gradient(rgba(26,170,0,.7), rgba(26,170,0,1));
+}
+
+login-module input[type=submit]:active {
+    background: linear-gradient(rgba(26,170,0,1), rgba(26,170,0,.7));
+}
+
+login-module form-input.is-disabled input[type=submit] {
+    background: rgba(0,0,0,.1);
+    color: rgba(255,255,255,.5);
+    border: 1px solid rgba(0,0,0,.1);
+    pointer-events: none;
+}
+
+/* ====== FAVORITES MODULE */
+
+favorites-module {
+    font-family: "Roboto-Light";
+    overflow: hidden;
+    font-weight: 400;
+    position: relative;
+    top: 0px;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+favorites-module header {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 6em;
+    font-family: "Roboto";
+    font-weight: 500;
+    text-align: center;
+    color: rgba(255,255,255,.75);
+    border-bottom: 1px solid rgba(0,0,0,.6);
+}
+
+favorites-module header icon {
+    padding: 1em;
+}
+
+favorites-module header image {
+    display: block;
+    margin: 0 auto;
+    line-height: 3.375em;
+    height: 3.25em;
+    width: 3.25em;
+    background-size: 2em;
+    background-repeat: no-repeat;
+    background-position: center;
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.3);
+    border-radius: 50%;
+}
+
+favorites-module header text {
+    font-size: .8125em;
+    font-weight: 100;
+}
+
+favorites-module favorites {
+    display: block;
+    z-index: 1;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(39, 45, 49, 0.95);
+    border-top: 1px solid rgba(255,255,255,.05);
+    border-right: 1px solid rgba(255,255,255,.05);
+    border-bottom: 1px solid rgba(0,0,0,.5);
+    transition: background-color .5s;
+}
+
+favorites-lists {
+    display: block;
+    position: absolute;
+    left: 0em;
+    height: 100%;
+    width: 500%;
+    border-top: 1px solid rgba(255,255,255,.05);
+    transition: left .5s;
+}
+
+favorites-lists list {
+/*    opacity: 0;*/
+    display: inline-block;
+    vertical-align: top;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 20em;
+    height: calc(100% - 5.5em);
+}
+
+favorites-module.contacts-selected favorites-lists {
+    left: 0em;
+}
+
+favorites-module icon.contacts:hover image {
+    background-color: rgba(26, 170, 0, 0.5);
+}
+
+favorites-module.contacts-selected icon.contacts image {
+    background-color: #1AAA00;
+}
+
+favorites-module.rooms-selected favorites-lists {
+    left: -20em;
+}
+
+favorites-module icon.rooms:hover image {
+    background-color: rgba(0, 115, 185, 0.5);
+}
+
+favorites-module.rooms-selected icon.rooms image {
+    background-color: #0073B9;
+}
+
+favorites-module.meetings-selected favorites-lists {
+    left: -40em;
+}
+
+favorites-module icon.meetings:hover image {
+    background-color: rgba(255, 149, 0, 0.5);
+}
+
+favorites-module.meetings-selected icon.meetings image {
+    background-color: #FF9500;
+}
+
+favorites-module.contacts-selected list.contacts card.is-selected,
+favorites-module.rooms-selected list.rooms card.is-selected,
+favorites-module.meetings-selected list.meetings card.is-selected {
+    background-color: rgba(255,255,255,.2);
+    transition: .5s;
+}
