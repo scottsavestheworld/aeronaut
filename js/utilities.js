@@ -4,8 +4,6 @@ var $$ = {};
 //                   SUBTYPE CONSTRUCTORS
 // ========================================================
 
-$$.Session = function () { return new Session(); }
-
 //--------------------------------------------------------- Models
 
 $$.Contact = function (dataObject, updateModel) {
@@ -148,7 +146,7 @@ $$.extendClass = function (newClass, baseClass) {
 $$.getModel = function (dataObject, updateModel, modelType) {
     var data = $$.object(dataObject, {});
     if (data.ID) {
-        var modelObject = session.models[modelType.toLowerCase()][data.ID];
+        var modelObject = app.models[modelType.toLowerCase()][data.ID];
         if (modelObject) {
             if (updateModel) {
                 modelObject.updateProperties(data);
@@ -206,10 +204,14 @@ $$.getElement = function (stringOrElement) {
                 element      = document.getElementsByClassName(elementClass)[0];
                 break;
             case "@":
-                element = session.modules[string.substr(1)].element;
+                element = app.modules[string.substr(1)].element;
                 break;
             default:
-                element = document.getElementsByTagName(string)[0];
+                if (string === "<body>") {
+                    element = document.body;
+                } else {
+                    element = document.getElementsByTagName(string)[0];
+                }
                 break;
         }
         if (!element) {

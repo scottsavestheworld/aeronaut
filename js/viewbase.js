@@ -4,6 +4,7 @@ View.Base = function () {
     this.isView          = true;
     this.parent          = null;
     this.model           = null;
+    this.element.object  = this;
     this.components      = {};
     this.properties      = {};
     this.addedComponents = [];

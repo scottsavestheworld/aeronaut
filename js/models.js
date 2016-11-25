@@ -7,17 +7,17 @@ var Model = {};
 Model.Base = function () {
     this.archetype  = "model";
     this.isModel    = true;
-    this.session    = session;
+    this.app        = app;
     this.components = [];
     this.modules    = [];
 
-    session.models[this.subtype][this.ID] = this;
+    app.models[this.subtype][this.ID] = this;
 };
 
 Model.Base.prototype.destroy = function () {
     this.resetAllRelationships().removeAllComponents();
-    if (session.models[this.subtype].hasOwnProperty(this.ID)) {
-        delete session.models[this.subtype][this.ID];
+    if (app.models[this.subtype].hasOwnProperty(this.ID)) {
+        delete app.models[this.subtype][this.ID];
     }
     this.ID = this.subtype = this.properties = this.relationships = this.components = null;
     Log.write("destroy", this, "OK");

@@ -8,40 +8,94 @@ Module.Base = function () {
     Module.Base.superclass.constructor.call(this);
     this.archetype      = "module";
     this.isModule       = true;
-    this.element.module = this;
 };
 
 $$.extendClass(Module.Base, View.Base);
 
 
 // ========================================================
-//                        APP MODULE
+//                       APP MODULE
 // ========================================================
 
 Module.App = function (moduleData) {
-    var data          = $$.object(moduleData, {});
-    this.ID           = data.ID || "app-module";
+    var data        = $$.object(moduleData, {});
+    this.ID         = $$.string(data.ID, Date.now());
+    this.user;   // = new Neo.User();
     this.subtype      = "app";
-    this.element      = $$.getElement(data.element || "<app-module>");
+    this.element      = $$.getElement(data.element || "<body>");
     
     Module.App.superclass.constructor.call(this);
-
-    this.components = {};
-
-    this.top     = this.components.top     = $$.Basic({ element: "<app-top>" });
-    this.middle  = this.components.middle  = $$.Basic({ element: "<app-middle>" });
-    this.bottom  = this.components.bottom  = $$.Basic({ element: "<app-bottom>" });
-    this.nav     = this.components.nav     = $$.Basic({ element: "<nav>" });
-    this.main    = this.components.main    = $$.Basic({ element: "<main>" });
     
-    this.assemble();
+    this.models = {
+        contact      : {},
+        room         : {},
+        conversation : {},
+        topic        : {},
+        meeting      : {},
+        message      : {},
+        camera       : {local :{}, remote: {}},
+        microphone   : {local :{}, remote: {}},
+        share        : {local :{}, remote: {}}
+    };
+
+    this.modules = {
+        login       : $$.Login(),
+        favorites   : $$.Favorites(),
+        search      : $$.Search(),
+    };
+
+    this.components = {
+        top     : $$.Basic({ element: "<top>" }),
+        middle  : $$.Basic({ element: "<middle>" }),
+        bottom  : $$.Basic({ element: "<bottom>" }),
+        nav     : $$.Basic({ element: "<nav>" }),
+        main    : $$.Basic({ element: "<main>" }),
+        fade    : $$.Basic({ element: "<app-fade>" })
+    };
+
+    this.properties = {
+        isXMPP      : $$.boolean(data.isXMPP, false),
+        isGuestMode : $$.boolean(data.isGuestMode, false),
+        activeRoom  : null
+    };
 };
 
 $$.extendClass(Module.App, Module.Base);
 
 Module.App.prototype.assemble = function () {
     var c = this.components;
-    this.add(c.top).add(c.middle.add(c.nav).add(c.main)).add(c.bottom);
+
+    this.add(c.top)
+        .add(c.middle)
+        .add(c.bottom);
+};
+
+Module.App.prototype.registerCallback = function (callbackName) {
+};
+
+Module.App.prototype.start = function () {
+    var loginModule = this.modules.login;
+
+    this.assemble();
+    this.add(this.components.fade);
+    this.modules.login.addTo(this.components.middle).toggle("active", true, 1000);
+    this.remove($$.getElement("#initialize-app"));
+
+    API.onAppStart();
+}
+
+Module.App.prototype.loginSuccessful = function () {
+    var c = this.components;
+    var m = this.modules;
+
+    m.login.remove();
+    c.fade.remove();
+
+    m.favorites.addTo(c.middle).toggle("active", true, 600);
+//    c.main.toggle("active", true, 100);
+    m.favorites.updateRoster(dummydata);
+
+    API.onLoginSuccessful();
 };
 
 
@@ -165,7 +219,7 @@ Module.Login.prototype.setFocus = function () {
 Module.Login.prototype.loginSuccessful = function () {
     var thisModule = this;
     function removeModule(e) {
-        if (e.propertyName === "opacity") { session.loginSuccessful(); }
+        if (e.propertyName === "opacity") { app.loginSuccessful(); }
     }
     this.singleEvent("transitionend", removeModule).toggle("active", false);
 };
@@ -189,17 +243,14 @@ Module.Favorites = function (moduleData) {
     Module.Favorites.superclass.constructor.call(this);
     
     this.components = {
-        header         : $$.Basic({ element: "<header>" }),
-        contactsIcon   : $$.Icon({ image: "img/contacts.svg", text: "Contacts", styleClass: "contacts" }),
-        roomsIcon      : $$.Icon({ image: "img/rooms.svg", text: "Rooms", styleClass: "rooms" }),
-        meetingsIcon   : $$.Icon({ image: "img/meetings.svg", text: "Meetings", styleClass: "meetings" }),
-        iconDate       : $$.Time({ format: "[D]", interval: "every day" }),
-        contactsList   : $$.List({ styleClass: "contacts" }),
-        roomsList      : $$.List({ styleClass: "rooms" }),
-        meetingsList   : $$.List({ styleClass: "meetings" }),
-        favorites      : $$.Basic({ element: "<favorites>" }),
-        lists          : $$.Basic({ element: "<favorites-lists>" }),
-        backgroundBlur : $$.Basic({ element: "<background-blur>" }),
+        nav          : $$.Basic({ element: "<nav>" }),
+        contactsIcon : $$.Image({ image: "img/contacts.svg", styleClass: "contacts" }),
+        roomsIcon    : $$.Image({ image: "img/rooms.svg", styleClass: "rooms" }),
+        meetingsIcon : $$.Image({ image: "img/meetings.svg", styleClass: "meetings" }),
+        meetingDate  : $$.Time({ format: "[D]", interval: "every day" }),
+        contactsList : $$.List({ styleClass: "contacts" }),
+        roomsList    : $$.List({ styleClass: "rooms" }),
+        meetingsList : $$.List({ styleClass: "meetings" })
     };
     
     this.properties = {
@@ -213,17 +264,13 @@ $$.extendClass(Module.Favorites, Module.Base);
 
 Module.Favorites.prototype.assemble = function () {
     var c = this.components;
-    this.add(c.favorites
-            .add(c.header
-                .add(c.contactsIcon)
-                .add(c.roomsIcon)
-                .add(c.meetingsIcon))
-            .add(c.lists
-                .add(c.contactsList)
-                .add(c.roomsList)
-                .add(c.meetingsList)));
-//        .add(c.backgroundBlur);
-    c.meetingsIcon.components.image.add(c.iconDate);
+    this.add(c.nav
+            .add(c.contactsIcon)
+            .add(c.roomsIcon)
+            .add(c.meetingsIcon.add(c.meetingDate)))
+        .add(c.contactsList)
+        .add(c.roomsList)
+        .add(c.meetingsList);
 
     return this;
 };
@@ -273,19 +320,25 @@ Module.Favorites.prototype.addEvents = function () {
     var lists = {contacts: c.contactsList, rooms: c.roomsList, meetings: c.meetingsList};
     for (var icon in icons) {
         icons[icon].addEvent("click", function (e) {
-            thisModule.altClass = this.component.styleClass + "-selected";
+            thisModule.altClass = this.object.styleClass + "-selected";
             thisModule.updateStyleClass();
         });
     }
     this.addSignal("CLICKED", function (event, origin) {
         var cards = thisModule.properties.selectedCards;
+        var wasSelected = false;
         var i = 0, total = cards.length;
         for (i; i < total; i++) {
+            if (cards[i] === origin) {
+                wasSelected = true;
+            }
             cards[i].toggle("selected", false);
         }
         thisModule.properties.selectedCards = [];
-        origin.toggle("selected", true);
-        thisModule.properties.selectedCards.push(origin);
+        if (!wasSelected) {
+            origin.toggle("selected", true);
+            thisModule.properties.selectedCards.push(origin);
+        }
     });
 
     return this;

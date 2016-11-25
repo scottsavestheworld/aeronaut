@@ -8,7 +8,6 @@ Component.Base = function () {
     Component.Base.superclass.constructor.call(this);
     this.archetype         = "component";
     this.isComponent       = true;
-    this.element.component = this;
 };
 
 $$.extendClass(Component.Base, View.Base);
@@ -621,10 +620,8 @@ Component.Card.prototype.contactComponents = function (info) {
     }
 
     this.updateNameAttribute();
-    this.add(this.components.avatar);
-    this.components.avatar.add(this.components.status);
-    this.add(this.components.content);
-    this.components.content.add(this.components.name);
+    this.add(this.components.avatar.add(this.components.status))
+        .add(this.components.content.add(this.components.name));
 };
 
 Component.Card.prototype.roomComponents = function (info) {

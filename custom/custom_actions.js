@@ -2,6 +2,7 @@
 // Using these hooks, they can load custom modules, call their own scripts, etc. based on actions within in the app.
 
 var API = {
+    onAppStart: function () {},
 
     onAppLoaded: function () {},
 
