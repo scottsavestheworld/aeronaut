@@ -1,15 +1,3 @@
-@font-face {
-    font-family: 'Oxygen';
-    src: url("font/Oxygen.otf");
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Oxygen';
-    src: url("font/Oxygen-Bold.otf");
-    font-style: normal;
-    font-weight: bold;
-}
-
 *, *:before, *:after {
     box-sizing: border-box;
 }
@@ -17,8 +5,8 @@
 html {
     height: 100%;
     font-size: 16px;
-    font-family: "Roboto";
-    font-weight: 500;
+    font-family: Roboto;
+    font-weight: 300;
     color: #666;
     cursor: default;
 }
@@ -279,6 +267,11 @@ login-module login-menu {
     display: flex;
     position: relative;
     z-index: 1;
+}
+
+login-module login-menu header {
+    text-align: center;
+    font-weight: 700;
 }
 
 background-blur {
