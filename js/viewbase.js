@@ -11,17 +11,21 @@ View.Base = function () {
     this.signals         = {};
 
     this.toggles = {
-        active   : false,
-        disabled : false,
-        hidden   : false,
-        selected : false
+        active     : false,
+        disabled   : false,
+        hidden     : false,
+        selected   : false,
+        muted      : false,
+        restricted : false
     };
 
     this.toggleClasses = {
-        active   : "is-active",
-        disabled : "is-disabled",
-        hidden   : "is-hidden",
-        selected : "is-selected"
+        active     : "is-active",
+        disabled   : "is-disabled",
+        hidden     : "is-hidden",
+        selected   : "is-selected",
+        muted      : "is-muted",
+        restricted : "is-restricted"
     }
 
     this.updateStyleClass();

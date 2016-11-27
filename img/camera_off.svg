@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 40 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
+    <g id="Camera-Icon" transform="matrix(0.73371,1.57417e-32,7.87087e-33,0.662223,-447.142,-2.5156)">
+        <path d="M640.8,25.635C641.88,25.635 642.78,26.475 642.78,27.595L642.78,40.405C642.78,41.455 641.88,42.365 640.8,42.365L627.96,42.365C626.88,42.365 625.98,41.525 625.98,40.405L625.98,27.595C625.98,26.545 626.88,25.635 627.96,25.635L640.8,25.635ZM650.526,27.255L650.526,40.095L648.949,40.095L644.149,36.075L644.149,31.275L648.949,27.255L650.526,27.255Z" style="fill:rgb(255,100,75);"/>
+    </g>
+    <path d="M0,0L40,40" style="fill:none;stroke:rgb(255,100,75);stroke-width:1px;"/>
+</svg>

@@ -8,62 +8,65 @@ var $$ = {};
 
 $$.Contact = function (dataObject, updateModel) {
     return $$.getModel(dataObject, updateModel, "Contact");
-}
+};
 $$.Room = function (dataObject, updateModel) {
     return $$.getModel(dataObject, updateModel, "Room");
-}
+};
 $$.Message = function (dataObject, updateModel) {
     return $$.getModel(dataObject, updateModel, "Message");
-}
+};
 
 //--------------------------------------------------------- Modules
 
 $$.App = function (moduleData) {
     return new Module.App(moduleData);
-}
+};
+$$.Devices = function (moduleData) {
+    return new Module.Devices(moduleData);
+};
 $$.Login = function (moduleData) {
     return new Module.Login(moduleData);
-}
+};
 $$.Favorites = function (moduleData) {
     return new Module.Favorites(moduleData);
-}
+};
 $$.Search = function (moduleData) {
     return new Module.Search(moduleData);
-}
+};
 
 //--------------------------------------------------------- Components
 
-$$.Basic = function (dataObject) { 
+$$.Basic = function (dataObject) {
     return new Component.Basic(dataObject);
 };
-$$.List = function (dataObject) { 
+$$.List = function (dataObject) {
     return new Component.List(dataObject);
 };
 $$.Image = function (dataObject) {
-     return new Component.Image(dataObject);   
+     return new Component.Image(dataObject);
 };
 $$.Text = function (dataObject) {
-     return new Component.Text(dataObject);   
+     return new Component.Text(dataObject);
 };
 $$.Icon = function (dataObject) {
     return new Component.Icon(dataObject);
 };
-$$.Input = function (dataObject) { 
+$$.Input = function (dataObject) {
     return new Component.Input(dataObject);
 };
-$$.Time = function (dataObject) { 
+$$.Time = function (dataObject) {
     return new Component.Time(dataObject);
 };
-$$.Name = function (modelObject, dataObject) { 
+$$.Name = function (modelObject, dataObject) {
     return new Component.Name(modelObject, dataObject);
 };
-$$.Avatar = function (modelObject, dataObject) { 
+$$.Avatar = function (modelObject, dataObject) {
     return new Component.Avatar(modelObject, dataObject);
 };
-$$.Status = function (modelObject, dataObject) { 
+$$.Status = function (modelObject, dataObject) {
     return new Component.Status(modelObject, dataObject);
 };
-$$.Card = function (modelObject, dataObject) { 
+$$.Card = function (modelObject, dataObject) {
     return new Component.Card(modelObject, dataObject);
 };
 
@@ -155,7 +158,7 @@ $$.getModel = function (dataObject, updateModel, modelType) {
         } else {
             return new Model[modelType](data);
         }
-    } 
+    }
 };
 
 //--------------------------------------------------------- Get Archetype
@@ -283,26 +286,26 @@ $$.formatTime = function (format, timestamp) {
 
     var n       = new Date(Date.now());
     var t       = new Date(timestamp);
-    var f		= {};
-        f.D		= t.getDate();
-        f.DD	= pad0(f.D);
-        f.DDDD	= Dictionary.timeStrings.days[t.getDay()];
-        f.DDD	= f.DDDD.substring(0, 3);
-        f.M		= t.getMonth() + 1;
-        f.MM	= pad0(f.M);
-        f.MMMM	= Dictionary.timeStrings.months[t.getMonth()];
+    var f        = {};
+        f.D        = t.getDate();
+        f.DD    = pad0(f.D);
+        f.DDDD    = Dictionary.timeStrings.days[t.getDay()];
+        f.DDD    = f.DDDD.substring(0, 3);
+        f.M        = t.getMonth() + 1;
+        f.MM    = pad0(f.M);
+        f.MMMM    = Dictionary.timeStrings.months[t.getMonth()];
         f.MMM   = f.MMMM.substring(0, 3);
-        f.YYYY	= t.getFullYear();
-        f.YY	= f.YYYY.toString().substr(2);
-        f.H		= t.getHours();
+        f.YYYY    = t.getFullYear();
+        f.YY    = f.YYYY.toString().substr(2);
+        f.H        = t.getHours();
         f.HH    = pad0(f.H);
-        f.h		= f.H > 12 ? f.H - 12 : f.H == 0 ? 12 : f.H;
+        f.h        = f.H > 12 ? f.H - 12 : f.H == 0 ? 12 : f.H;
         f.hh    = pad0(f.h);
         f.m     = t.getMinutes();
-        f.mm	= pad0(f.m);
+        f.mm    = pad0(f.m);
         f.s     = t.getSeconds();
-        f.ss	= pad0(f.s);
-        f.pm	= f.H < 12 ? Dictionary.timeStrings.am : Dictionary.timeStrings.pm;
+        f.ss    = pad0(f.s);
+        f.pm    = f.H < 12 ? Dictionary.timeStrings.am : Dictionary.timeStrings.pm;
 
     var today = parseInt(n.getFullYear() + "" + pad0(n.getMonth() + 1) + "" + pad0(n.getDate()));
     timestamp = parseInt(f.YYYY + "" + f.MM + "" + f.DD);

@@ -1,5 +1,9 @@
 *, *:before, *:after {
     box-sizing: border-box;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
 }
 
 html {
@@ -17,19 +21,19 @@ body {
     -ms-flex-wrap: nowrap;
     -ms-flex-pack: center;
     -ms-flex-align: start;
-    
+
     display: -webkit-flex;
     -webkit-flex-direction: column;
     -webkit-flex-wrap: nowrap;
     -webkit-justify-content: center;
     -webkit-align-items: flex-start;
 
-    display: flex;    
+    display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: center;
     align-items: flex-start;
-    
+
     position: relative;
     margin: 0px;
     width: 100%;
@@ -53,7 +57,7 @@ app-fade {
     height: 100%;
     width: 100%;
     z-index: 1000000;
-    animation: fade-out 2s;
+    animation: fade-out 1s;
     animation-fill-mode: forwards;
     pointer-events: none;
 }
@@ -67,7 +71,7 @@ app-fade {
 }
 
 input {
-    font-family: "Roboto", sans-serif;
+    font-family: Roboto, sans-serif;
     font-size: 16px;
     height: 2.5em;
     color: #555;
@@ -78,28 +82,19 @@ input {
 }
 
 ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-}
-:hover::-webkit-scrollbar {
+    visibility: hidden;
     width: 8px;
     height: 8px;
 }
 ::-webkit-scrollbar-track {
-    background-color: rgba(0,0,0,.15);
-    border-left: 1px solid rgba(0,0,0,.5);
-    border-top: 1px solid rgba(0,0,0,.5);
+    background-color: rgba(0,0,0,.35);
 }
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(255,255,255,.35);
-    border-left: 1px solid rgba(0,0,0,1);
+    background-color: rgba(255,255,255,.5);
 }
 ::-webkit-scrollbar-thumb:horizontal:hover, ::-webkit-scrollbar-thumb:vertical:hover {
-    background-color: rgba(255,255,255,.5);
-    cursor: pointer;
-}
-::-webkit-scrollbar-thumb:horizontal:active, ::-webkit-scrollbar-thumb:vertical:active {
     background-color: rgba(255,255,255,.75);
+    cursor: pointer;
 }
 
 list {
@@ -126,6 +121,7 @@ card {
     display: block;
     height: 3.25em;
     padding: .375em .75em;
+    cursor: pointer;
 }
 
 card > avatar {
@@ -159,10 +155,6 @@ card > avatar > status {
     border: 1px solid #F8F8F8;
 }
 
-card.is-selected > avatar > status {
-    border: 1px solid #1AAA00;
-}
-
 card > content {
     display: inline-block;
     vertical-align: middle;
@@ -181,7 +173,7 @@ card > content > name {
 }
 
 status.is-available {
-    background-color: #00ea3f;
+    background-color: #00EA3F;
 }
 
 status.is-busy {
@@ -196,11 +188,16 @@ status.is-unknown {
 /* ====== APP MODULE */
 
 top {
+    position: relative;
+    z-index: 2;
+    overflow: visible;
+    flex 0 0 4em;
     display: block;
     width: 100%;
-    height: 3em;
-    background-color: rgba(39, 45, 49, 0.95);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+    height: 4em;
+    text-align: center;
+    background: linear-gradient(#101215, #2D333D);
+    box-shadow: 1px 1px 3px rgba(0,0,0,.5);
 }
 
 middle {
@@ -209,14 +206,14 @@ middle {
     -ms-flex-wrap: nowrap;
     -ms-flex-pack: start;
     -ms-flex-align: start;
-    
+
     display: -webkit-flex;
     -webkit-flex-direction: row;
     -webkit-flex-wrap: nowrap;
     -webkit-justify-content: flex-start;
     -webkit-align-items: flex-start;
 
-    display: flex;    
+    display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -228,14 +225,21 @@ middle {
 }
 
 bottom {
+    display: none;
+    position: relative;
+    z-index: 2;
+    flex 0 0 4em;
+    width: 100%;
+    height: 3em;
+    background: linear-gradient(#2D333D, #101215);
 }
 
 main {
     flex: 2 1 auto;
     display: block;
+    opacity: 0;
     height: 100%;
     background-color: rgba(255, 255, 255, .6);
-    opacity: 0;
     transition: opacity .5s;
 }
 
@@ -244,17 +248,91 @@ main.is-active {
     transition: opacity 1s;
 }
 
+/* ====== DEVICE MODULE */
+
+devices-module {
+    position: relative;
+    display: inline-block;
+    overflow: visible;
+    margin: 0px auto;
+    width: 17.75em;
+    height: 100%;
+}
+
+device-toggle {
+    position: absolute;
+    z-index: 2;
+    display: inline-block;
+    margin: .75em 1em;
+    height: 2.5em;
+    width: 2.5em;
+    background-size: 2.5em;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 50%;
+    background-color: #000;
+    border-color: rgba(255,255,255,.5);
+    border-width: 1px;
+    border-style: solid;
+    cursor: pointer;
+    transition: opacity .3s;
+}
+
+device-toggle.microphone {
+    left: 0px;
+}
+
+device-toggle.camera {
+    right: 0px;
+}
+
+self-view {
+    position: relative;
+    display: inline-block;
+    width: 7.125em;
+    height: 100%;
+    background-color: black;
+    background-image: url(http://www.tvchoicemagazine.co.uk/sites/default/files/imagecache/interview_image/intex/michael_emerson.png);
+    background-size: cover;
+    background-position: center;
+    border-radius: .25em;
+    box-shadow: 0px 0px 0px rgba(0,0,0,.5);
+    cursor: zoom-in;
+    transition: height .5s, width .5s, box-shadow .5s;
+}
+
+devices-module.is-selected self-view {
+    width: 100%;
+    height: 10em;
+    box-shadow: 1px 1px 4px rgba(0,0,0,.5);
+    cursor: zoom-out;
+}
+
+devices-module.is-selected device-toggle {
+    opacity: .1;
+}
+
+devices-module.is-selected:hover device-toggle {
+    opacity: 1;
+}
+
+device-toggle.is-muted,
+devices-module.is-selected device-toggle.is-muted {
+    border-color: #FF644B;
+    opacity: 1;
+}
+
 /* ====== LOGIN MODULE */
 
 login-module {
     position: relative;
     align-self: center;
+    opacity: 0;
     margin: 0px auto;
     width: 37.5em;
     overflow: hidden;
     border-radius: .25em;
     box-shadow: 1px 1px 3px rgba(0,0,0,.3);
-    opacity: 0;
     transition: opacity .3s;
 }
 
@@ -400,7 +478,7 @@ login-module input[type=text]:-moz-read-only {
     background: rgba(255,255,255,.1);
     color: #BBB;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
-    cursor: default;    
+    cursor: default;
 }
 
 login-module input[type=checkbox] {
@@ -423,6 +501,7 @@ login-module input[type=submit] {
 login-module input[type=submit]:hover {
     position: relative;
     background: linear-gradient(rgba(26,170,0,.7), rgba(26,170,0,1));
+    cursor: pointer;
 }
 
 login-module input[type=submit]:active {
@@ -440,25 +519,35 @@ login-module form-input.is-disabled input[type=submit] {
 
 favorites-module {
     display: block;
-    font-family: "Roboto-Light";
-    overflow: hidden;
-    font-weight: 400;
+    font-weight: 200;
     position: relative;
-    top: 0px;
-    width: 20em;
+    top: 0em;
+    left: -3em;
+    width: 3em;
     height: 100%;
-    background-color: #F8F8F8;
-    box-shadow: 1px 1px 6px rgba(0,0,0,.5)
+    overflow: hidden;
+    box-shadow: 1px 1px 6px rgba(0,0,0,.5);
+    transition: left .3s, width .5s;
+}
+
+favorites-module.is-active {
+    left: 0em;
+}
+
+favorites-module.is-selected {
+    width: 20em;
 }
 
 favorites-module nav {
     display: block;
     position: absolute;
+    z-index: 2;
     top: 0px;
     left: 0px;
     width: 3em;
     height: 100%;
-    background-color: rgba(39, 45, 49, 0.95);
+    background-color: #2D333D;
+    box-shadow: 1px 0px 3px rgba(0,0,0,.5)
 }
 
 favorites-module nav image {
@@ -470,7 +559,8 @@ favorites-module nav image {
     background-repeat: no-repeat;
     background-position: center;
     border-radius: .25em;
-    transition: background-color .5s;
+    cursor: pointer;
+    transition: background-color .3s;
 }
 
 favorites-module nav image time {
@@ -482,59 +572,74 @@ favorites-module nav image time {
     color: #FFF;
 }
 
-favorites-module list {
-    opacity: 0;
+favorites-module menu {
     position: absolute;
-    left: 3em;
+    left: -14em;
     vertical-align: top;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
+    margin: 0px;
     width: 17em;
     height: 100%;
+    padding: 0px;
+    background-color: #F8F8F8;
     pointer-events: none;
-    transition: opacity .5s;
+    transition: left .5s;
+}
+
+favorites-module.is-selected menu {
+    left: 3em;
+}
+
+favorites-module list {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    overflow: auto;
+    transition: opacity .3s;
+}
+
+favorites-module list.is-selected {
+    opacity: 1;
+    pointer-events: all;
+    transition: opacity .3s;
+}
+
+favorites-module list.contacts.is-selected card.is-selected > avatar > status {
+    border: 1px solid #1AAA00;
 }
 
 favorites-module list.contacts avatar {
     border-radius: 50%;
 }
 
-favorites-module.contacts-selected list.contacts,
-favorites-module.rooms-selected list.rooms,
-favorites-module.meetings-selected list.meetings {
-    opacity: 1;
-    pointer-events: all;
-}
-
-favorites-module image.contacts:hover {
+favorites-module nav image.contacts:hover {
     background-color: rgba(26, 170, 0, 0.5);
 }
 
-favorites-module.contacts-selected image.contacts,
-favorites-module.contacts-selected list.contacts card.is-selected {
+favorites-module nav image.contacts.is-selected,
+favorites-module list.contacts.is-selected card.is-selected {
     background-color: #1AAA00;
 }
 
-favorites-module image.rooms:hover {
+favorites-module nav image.rooms:hover {
     background-color: rgba(0, 115, 185, 0.5);
 }
 
-favorites-module.rooms-selected image.rooms,
-favorites-module.rooms-selected list.rooms card.is-selected {
+favorites-module nav image.rooms.is-selected,
+favorites-module list.rooms.is-selected card.is-selected {
     background-color: #0073B9;
 }
 
-favorites-module image.meetings:hover {
+favorites-module nav image.meetings:hover {
     background-color: rgba(255, 149, 0, 0.5);
 }
 
-favorites-module.meetings-selected image.meetings,
-favorites-module.meetings-selected list.meetings card.is-selected {
+favorites-module nav image.meetings.is-selected,
+favorites-module list.meetings.is-selected card.is-selected {
     background-color: #FF9500;
 }
 
-favorites-module.contacts-selected list.contacts card.is-selected,
-favorites-module.rooms-selected list.rooms card.is-selected,
-favorites-module.meetings-selected list.meetings card.is-selected {
+card.is-selected {
     color: #FFF;
 }
