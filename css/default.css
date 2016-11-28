@@ -269,7 +269,6 @@ devices-module device-toggle {
     margin: .75em 1em;
     height: 2.5em;
     width: 2.5em;
-    background-size: 2.5em;
     background-repeat: no-repeat;
     background-position: center;
     border-radius: 50%;
