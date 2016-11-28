@@ -473,7 +473,7 @@ Component.Avatar = function (modelObject, dataObject) {
         firstName    : $$.string(info.firstName, $$.string(info.name,  "")),
         lastName     : $$.string(info.lastName, ""),
         image        : $$.string(info.image, ""),
-        defaultImage : $$.string(info.defaultImage, "img/defaultAvatar.svg"),
+        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
         showInitials : $$.boolean(info.showInitials, false)
     };
 
@@ -615,7 +615,7 @@ Component.Card.prototype.contactComponents = function (info) {
         lastName     : $$.string(info.lastName, ""),
         image        : $$.string(info.image, ""),
         status       : $$.string(info.status, ""),
-        defaultImage : $$.string(info.defaultImage, "img/defaultContact.svg"),
+        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
         showInitials : $$.boolean(info.showInitials, false)
     }
 

@@ -42,7 +42,8 @@ Module.App = function (moduleData) {
         devices   : $$.Devices(),
         login     : $$.Login(),
         favorites : $$.Favorites(),
-        search    : $$.Search(),
+        details   : $$.Details(),
+        search    : $$.Search()
     };
 
     this.components = {
@@ -55,13 +56,40 @@ Module.App = function (moduleData) {
     };
 
     this.properties = {
+        background  : $$.images.background,
         isXMPP      : $$.boolean(data.isXMPP, false),
         isGuestMode : $$.boolean(data.isGuestMode, false),
         activeRoom  : null
     };
+
+    this.attributes = {
+        background  : "string",
+        isXMPP      : "boolean",
+        isGuestMode : "boolean",
+        activeRoom  : "object"
+    }
+
+    this.updateProperty("background", $$.images.background);
 };
 
 $$.extendClass(Module.App, Module.Base);
+
+Module.App.prototype.updateProperty = function (propertyName, propertyValue) {
+    if (this.properties.hasOwnProperty(propertyName)) {
+        var type  = this.attributes[propertyName];
+        var value = $$[type](propertyValue);
+        if (value) {
+            this.properties[propertyName] = value;
+            for (var module in this.modules) {
+                this.modules[module].updateProperty(propertyName, propertyValue);
+            }
+        }
+        if (propertyName === "background") {
+            this.element.style.backgroundImage = "url(" + propertyValue + ")";
+        }
+    }
+    return this;
+};
 
 Module.App.prototype.assemble = function () {
     var c = this.components;
@@ -79,8 +107,8 @@ Module.App.prototype.start = function () {
 
     this.assemble();
     this.add(this.components.fade);
-    this.modules.devices.addTo(this.components.top).toggle("active", true, 500);
-    this.modules.login.addTo(this.components.middle).toggle("active", true, 500);
+    this.modules.devices.addTo(this.components.top).toggle("active", true, 100);
+    this.modules.login.addTo(this.components.middle).toggle("active", true, 100);
     this.remove($$.getElement("#initialize-app"));
 
     API.onAppStart();
@@ -94,7 +122,9 @@ Module.App.prototype.loginSuccessful = function () {
     c.fade.remove();
 
     m.favorites.addTo(c.middle).toggle("active", true).selectTab("contacts");
-//    c.main.toggle("active", true, 100);
+    m.details.addTo(c.middle).toggle("active", true);
+    c.middle.toggle("active", true);
+
     m.favorites.updateRoster(dummydata);
 
     API.onLoginSuccessful();
@@ -114,13 +144,12 @@ Module.Devices = function (moduleData) {
     Module.Devices.superclass.constructor.call(this);
 
     this.components = {
-        microphone : $$.Image({ element: "<device-toggle>", styleClass: "microphone", image: "img/microphone_on.svg"}),
+        microphone : $$.Image({ element: "<device-toggle>", styleClass: "microphone", image: $$.images.microphoneOn }),
         selfView   : $$.Basic({ element: "<self-view>" }),
-        camera     : $$.Image({ element: "<device-toggle>", styleClass: "camera", image: "img/camera_on.svg"}),
+        camera     : $$.Image({ element: "<device-toggle>", styleClass: "camera", image: $$.images.cameraOn }),
     }
 
-    this.assemble();
-    this.addEvents();
+    this.assemble().addEvents();
 }
 
 $$.extendClass(Module.Devices, Module.Base);
@@ -128,6 +157,8 @@ $$.extendClass(Module.Devices, Module.Base);
 Module.Devices.prototype.assemble = function () {
     var c = this.components;
     this.add(c.microphone).add(c.selfView).add(c.camera);
+
+    return this;
 };
 
 Module.Devices.prototype.addEvents = function () {
@@ -136,19 +167,60 @@ Module.Devices.prototype.addEvents = function () {
     c.selfView   .addEvent("click", function (e) { thisModule.toggle("selected") });
     c.microphone .addEvent("click", function (e) { thisModule.toggleMute("microphone"); });
     c.camera     .addEvent("click", function (e) { thisModule.toggleMute("camera"); });
+
+    return this;
 };
 
 Module.Devices.prototype.toggleMute = function (deviceName) {
     var c = this.components;
-    var state = "on";
+    var state = "On";
 
     c[deviceName].toggle("muted");
 
     if (c[deviceName].toggles.muted) {
-        state = "off";
+        state = "Off";
     }
 
-    c[deviceName].updateProperty("image", "img/" + deviceName + "_" + state + ".svg");
+    if (deviceName === "camera") {
+        if (state === "On") {
+            this.toggle("restricted", false);
+        } else {
+            this.toggle("selected", false).toggle("restricted", true);
+        }
+    }
+
+    c[deviceName].updateProperty("image", $$.images[deviceName + state]);
+
+    return this;
+};
+
+
+// ========================================================
+//                     DETAILS MODULE
+// ========================================================
+
+Module.Details = function (moduleData) {
+    var data     = $$.object(moduleData, {});
+    this.ID      = data.ID || "details-module";
+    this.subtype = "details";
+    this.element = $$.getElement(data.element || "<details-module>");
+
+    Module.Details.superclass.constructor.call(this);
+
+    this.components = {
+    }
+
+    this.assemble().this.addEvents();
+}
+
+$$.extendClass(Module.Details, Module.Base);
+
+Module.Details.prototype.assemble = function () {
+    return this;
+};
+
+Module.Details.prototype.addEvents = function () {
+    return this;
 };
 
 
@@ -166,8 +238,8 @@ Module.Login = function (moduleData) {
 
     this.components = {
         loginMenu      : $$.Basic({ element: "<login-menu>" }),
-        backgroundBlur : $$.Basic({ element: "<background-blur>" }),
-        appLogo        : $$.Image({ element: "<app-logo>", image: "img/default_logo.svg" }),
+        backgroundBlur : $$.Image({ element: "<background-blur>" }),
+        appLogo        : $$.Image({ element: "<app-logo>", image: $$.images.appLogo }),
         loginForm      : $$.Basic({ element: "<form>" }),
         welcomeMessage : $$.Text({ element: "<header>", text: "Oh, hello. Glad you could join us." }),
         server         : $$.Input({ type: "text", placeholder: "Server", readonly: "true" }),
@@ -179,6 +251,7 @@ Module.Login = function (moduleData) {
     };
 
     this.properties = {
+        background  : $$.images.background,
         serverMin   : 1,
         serverMax   : 128,
         usernameMin : 2,
@@ -187,13 +260,34 @@ Module.Login = function (moduleData) {
         passwordMax : 64,
     };
 
-    this.assemble();
-    this.addEvents();
-    this.verifyInput();
-    this.setFocus();
+    this.attributes = {
+        background  : "string",
+        serverMin   : "number",
+        serverMax   : "number",
+        usernameMin : "number",
+        usernameMax : "number",
+        passwordMin : "number",
+        passwordMax : "number",
+    };
+
+    this.assemble().addEvents().verifyInput().setFocus();
 };
 
 $$.extendClass(Module.Login, Module.Base);
+
+Module.Login.prototype.updateProperty = function (propertyName, propertyValue) {
+    if (this.properties.hasOwnProperty(propertyName)) {
+        var type  = this.attributes[propertyName];
+        var value = $$[type](propertyValue);
+        if (value) {
+            this.properties[propertyName] = value;
+        }
+        if (propertyName === "background") {
+            this.components.backgroundBlur.updateProperty("image", propertyValue);
+        }
+    }
+    return this;
+};
 
 Module.Login.prototype.assemble = function () {
     var c = this.components;
@@ -218,6 +312,8 @@ Module.Login.prototype.assemble = function () {
         .updateProperty("maxlength", this.properties.passwordMax);
 
     if (localStorage.autoLogin === "true") { c.autoLogin.input.setAttribute("checked", true); }
+
+    return this;
 };
 
 Module.Login.prototype.addEvents = function () {
@@ -227,6 +323,8 @@ Module.Login.prototype.addEvents = function () {
     c.loginForm .addEvent("keyup",  function (e) { thisModule.verifyInput(e); });
     c.loginForm .addEvent("input",  function (e) { thisModule.verifyInput(e); });
     c.loginForm .addEvent("submit", function (e) { thisModule.submit(e); });
+
+    return this;
 };
 
 Module.Login.prototype.verifyInput = function () {
@@ -242,6 +340,8 @@ Module.Login.prototype.verifyInput = function () {
     c.username.toggle("active", (username.length >= p.usernameMin));
     c.password.toggle("active", (password.length >= p.passwordMin));
     c.submit.toggle("disabled", !(c.server.toggles.active && c.username.toggles.active && c.password.toggles.active));
+
+    return this;
 };
 
 Module.Login.prototype.submit = function (e) {
@@ -255,6 +355,8 @@ Module.Login.prototype.submit = function (e) {
         this.loginSuccessful();
     }
     e.preventDefault();
+
+    return this;
 };
 
 Module.Login.prototype.setFocus = function () {
@@ -267,6 +369,8 @@ Module.Login.prototype.setFocus = function () {
             break;
         }
     }
+
+    return this;
 };
 
 Module.Login.prototype.loginSuccessful = function () {
@@ -275,10 +379,12 @@ Module.Login.prototype.loginSuccessful = function () {
         if (e.propertyName === "opacity") { app.loginSuccessful(); }
     }
     this.singleEvent("transitionend", removeModule).toggle("active", false);
+
+    return this;
 };
 
 Module.Login.prototype.loginFailed = function (reasonCode) {
-
+    return this;
 };
 
 
@@ -296,9 +402,9 @@ Module.Favorites = function (moduleData) {
 
     this.components = {
         nav          : $$.Basic({ element: "<nav>" }),
-        contactsIcon : $$.Image({ image: "img/contacts_light.svg", styleClass: "contacts" }),
-        roomsIcon    : $$.Image({ image: "img/rooms_light.svg", styleClass: "rooms" }),
-        meetingsIcon : $$.Image({ image: "img/meetings_light.svg", styleClass: "meetings" }),
+        contactsIcon : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
+        roomsIcon    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
+        meetingsIcon : $$.Image({ image: $$.images.meetingsLight, styleClass: "meetings" }),
         meetingDate  : $$.Time({ format: "[D]", interval: "every day" }),
         menu         : $$.Basic({ element: "<menu>" }),
         contactsList : $$.List({ styleClass: "contacts" }),
@@ -383,6 +489,8 @@ Module.Favorites.prototype.selectTab = function (tabName) {
         p.selectedTab = "";
         this.toggle("selected" , false);
     }
+
+    return this;
 };
 
 Module.Favorites.prototype.updateRoster = function (rosterObject) {
@@ -395,6 +503,8 @@ Module.Favorites.prototype.updateRoster = function (rosterObject) {
         }
         this.components[rosterCategory + "sList"].sort();
     }
+
+    return this;
 };
 
 Module.Favorites.prototype.addRosterCard = function (modelObject, sortNeeded) {
@@ -448,19 +558,19 @@ Module.Search = function (moduleData) {
         resultsCategories : $$.Basic({ element: "<results-categories>" }),
 
         contactsResults   : $$.Basic({ element: "<contacts-results>", styleClass: "results-category" }),
-        contactsIcon      : $$.Icon({ image: "img/contacts.svg", text: "Contacts", styleClass: "contacts" }),
+        contactsIcon      : $$.Icon({ image: $$.images.contactsDark, text: "Contacts", styleClass: "contacts" }),
         contactsList      : $$.List({ styleClass: "contacts" }),
 
         roomsResults      : $$.Basic({ element: "<rooms-results>", styleClass: "results-category" }),
-        roomsIcon         : $$.Icon({ image: "img/rooms.svg", text: "Rooms", styleClass: "rooms" }),
+        roomsIcon         : $$.Icon({ image: $$.images.roomsDark, text: "Rooms", styleClass: "rooms" }),
         roomsList         : $$.List({ styleClass: "rooms" }),
 
         meetingsResults   : $$.Basic({ element: "<meetings-results>", styleClass: "results-category" }),
-        meetingsIcon      : $$.Icon({ image: "img/meetings.svg", text: "Meetings", styleClass: "meetings" }),
+        meetingsIcon      : $$.Icon({ image: $$.images.meetingsDark, text: "Meetings", styleClass: "meetings" }),
         iconDate          : $$.Time({ format: "[D]", interval: "every day" }),
         meetingsList      : $$.List({ styleClass: "meetings" }),
 
-        backgroundBlur : $$.Basic({ element: "<background-blur>" }),
+        backgroundBlur    : $$.Image({ element: "<background-blur>", image: $$.images.background }),
     };
 
     this.properties = {

@@ -30,6 +30,9 @@ $$.Login = function (moduleData) {
 $$.Favorites = function (moduleData) {
     return new Module.Favorites(moduleData);
 };
+$$.Details = function (moduleData) {
+    return new Module.Details(moduleData);
+};
 $$.Search = function (moduleData) {
     return new Module.Search(moduleData);
 };

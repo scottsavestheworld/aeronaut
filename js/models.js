@@ -178,7 +178,7 @@ Model.Contact = function (dataObject) {
         firstName    : data.firstName    || "",
         lastName     : data.lastName     || "",
         image        : data.image        || "",
-        defaultImage : data.defaultImage || "img/default_contact.svg",
+        defaultImage : data.defaultImage || $$.images.defaultContact,
         showInitials : data.showInitials || true,
         status       : data.status       || "",
         rosterState  : data.rosterState  || "not-in-roster",
@@ -222,7 +222,7 @@ Model.Room = function (dataObject) {
     this.properties = {
         name         : data.name         || "",
         image        : data.image        || "",
-        defaultImage : data.defaultImage || "img/default_" + this.subtype + ".svg",
+        defaultImage : data.defaultImage || $$.images["default" + $$.capitalize(this.subtype)],
         showInitials : data.showInitials || false,
         location     : data.location     || "",
         startTime    : data.startTime    || 0,
