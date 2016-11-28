@@ -4,7 +4,7 @@ $$.images = {
     defaultRoom      : "img/default_room.svg",
     background       : "img/backgrounds/daylight.jpg",
     customBackground : "img/backgrounds/moonlight.jpg",
-    contactsDark     : "img/contacs_dark.svg",
+    contactsDark     : "img/contacts_dark.svg",
     contactsLight    : "img/contacts_light.svg",
     cameraOff        : "img/camera_off.svg",
     cameraOn         : "img/camera_on.svg",

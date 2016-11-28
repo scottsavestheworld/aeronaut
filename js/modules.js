@@ -401,15 +401,18 @@ Module.Favorites = function (moduleData) {
     Module.Favorites.superclass.constructor.call(this);
 
     this.components = {
-        nav          : $$.Basic({ element: "<nav>" }),
-        contactsIcon : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
-        roomsIcon    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
-        meetingsIcon : $$.Image({ image: $$.images.meetingsLight, styleClass: "meetings" }),
-        meetingDate  : $$.Time({ format: "[D]", interval: "every day" }),
-        menu         : $$.Basic({ element: "<menu>" }),
-        contactsList : $$.List({ styleClass: "contacts" }),
-        roomsList    : $$.List({ styleClass: "rooms" }),
-        meetingsList : $$.List({ styleClass: "meetings" })
+        nav            : $$.Basic({ element: "<nav>" }),
+        contactsButton : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
+        roomsButton    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
+        meetingsButton : $$.Image({ image: $$.images.meetingsLight, styleClass: "meetings" }),
+        buttonDate     : $$.Time({ format: "[D]", interval: "every day" }),
+        menu           : $$.Basic({ element: "<menu>" }),
+        menuHeader     : $$.Basic({ element: "<header>" }),
+        headerIcon     : $$.Icon({ image: $$.images.contactsDark, styleClass: "contacts", text: "Contacts" }),
+        iconDate       : $$.Time({ format: "[D]", interval: "every day" }),
+        contactsList   : $$.List({ styleClass: "contacts" }),
+        roomsList      : $$.List({ styleClass: "rooms" }),
+        meetingsList   : $$.List({ styleClass: "meetings" })
     };
 
     this.properties = {
@@ -425,13 +428,15 @@ $$.extendClass(Module.Favorites, Module.Base);
 Module.Favorites.prototype.assemble = function () {
     var c = this.components;
     this.add(c.nav
-            .add(c.contactsIcon)
-            .add(c.roomsIcon)
-            .add(c.meetingsIcon.add(c.meetingDate)))
+            .add(c.contactsButton)
+            .add(c.roomsButton)
+            .add(c.meetingsButton.add(c.buttonDate)))
         .add(c.menu
+            .add(c.menuHeader.add(c.headerIcon))
             .add(c.contactsList)
             .add(c.roomsList)
             .add(c.meetingsList));
+    c.headerIcon.components.image.add(c.iconDate);
 
     return this;
 };
@@ -440,10 +445,10 @@ Module.Favorites.prototype.addEvents = function () {
     var thisModule = this;
     var c = this.components;
     var p = this.properties;
-    var icons = { contacts: c.contactsIcon, rooms: c.roomsIcon, meetings: c.meetingsIcon };
+    var buttons = { contacts: c.contactsButton, rooms: c.roomsButton, meetings: c.meetingsButton };
 
-    for (var tabName in icons) {
-        icons[tabName].addEvent("click", function (e) {
+    for (var tabName in buttons) {
+        buttons[tabName].addEvent("click", function (e) {
            thisModule.selectTab(this.object.styleClass);
         });
     }
@@ -477,13 +482,21 @@ Module.Favorites.prototype.selectTab = function (tabName) {
 
     if (p.selectedTab) {
         c[p.selectedTab + "List"].toggle("selected", false);
-        c[p.selectedTab + "Icon"].toggle("selected", false);
+        c[p.selectedTab + "Button"].toggle("selected", false);
     }
 
     if (p.selectedTab !== tabName) {
         p.selectedTab = tabName;
-        c[p.selectedTab + "List"].toggle("selected", true);
-        c[p.selectedTab + "Icon"].toggle("selected", true);
+        c[tabName + "List"].toggle("selected", true);
+        c[tabName + "Button"].toggle("selected", true);
+        c.headerIcon.updateProperties({text: $$.capitalize(tabName), image: $$.images[tabName + "Dark"]});
+
+        if (tabName === "meetings") { 
+            c.iconDate.add();
+        } else {
+            c.iconDate.remove();
+        }
+
         this.toggle("selected" , true);
     } else {
         p.selectedTab = "";

@@ -292,7 +292,7 @@ devices-module self-view {
     position: relative;
     display: inline-block;
     width: 7.125em;
-    height: 100%;
+    height: 4em;
     background-color: black;
     background-size: cover;
     background-position: center;
@@ -594,10 +594,48 @@ favorites-module.is-selected menu {
     left: 3em;
 }
 
+favorites-module menu header {
+    height: 3.5em;
+    border-bottom: 3px double rgba(0,0,0,.15);
+}
+
+favorites-module menu icon {
+    display: inline-block;
+    display: inline-block;
+    vertical-align: middle;
+    height: 3em;
+    width: 100%;
+    padding: .5em .75em;
+    font-weight: 300;
+}
+
+favorites-module menu icon image {
+    display: inline-block;
+    vertical-align: middle;
+    height: 2.5em;
+    width: 2.5em;
+    background-size: 2em;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+favorites-module header icon image time {
+    line-height: 2.75em;
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+
+favorites-module menu icon text {
+    vertical-align: middle;
+    padding-left: .75em;
+}
+
 favorites-module list {
     position: absolute;
+    top: 3.5em;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 3em);
     opacity: 0;
     overflow: auto;
     transition: opacity .3s;
