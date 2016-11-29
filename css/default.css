@@ -9,7 +9,7 @@
 html {
     height: 100%;
     font-size: 16px;
-    font-family: Roboto;
+    font-family: Roboto, Heebo, sans-serif;
     font-weight: 300;
     color: #666;
     cursor: default;
@@ -38,8 +38,8 @@ body {
     margin: 0px;
     width: 100%;
     height: 100%;
-    min-height: 600px;
-    mine-width: 900px;
+    min-height: 640px;
+    min-width: 960px;
     padding: 0px;
     background-size: cover;
     background-position: center;
@@ -56,7 +56,7 @@ app-fade {
     height: 100%;
     width: 100%;
     z-index: 1000000;
-    animation: fade-out 1s;
+    animation: fade-out 2s;
     animation-fill-mode: forwards;
     pointer-events: none;
 }
@@ -70,7 +70,7 @@ app-fade {
 }
 
 input {
-    font-family: Roboto, sans-serif;
+    font-family: Roboto, Heebo, sans-serif;
     font-size: 16px;
     height: 2.5em;
     color: #555;
@@ -80,21 +80,28 @@ input {
     border-radius: .5em;
 }
 
+/*
 ::-webkit-scrollbar {
     visibility: hidden;
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
+    padding: 2px;
 }
 ::-webkit-scrollbar-track {
-    background-color: rgba(0,0,0,.35);
+    background-color: rgba(255, 255, 255, 0.85);
+    padding: 1px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(255,255,255,.5);
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    display: block;
+    width: 8px;
 }
 ::-webkit-scrollbar-thumb:horizontal:hover, ::-webkit-scrollbar-thumb:vertical:hover {
-    background-color: rgba(255,255,255,.75);
+    background-color: rgba(255, 255, 255, 0.75);
     cursor: pointer;
 }
+*/
 
 list {
     display: block;
@@ -110,7 +117,7 @@ avatar {
     font-size: 1em;
     font-weight: 100;
     color: #FFF;
-    background-color: #D0D3D7;
+    background-color: #A5ABB0;
     background-size: cover;
     border-radius: .25em;
 }
@@ -161,7 +168,7 @@ card > content {
 card > content > name {
     display: block;
     max-width: 100%;
-    font-size: .8125em;
+    font-size: .875em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -220,7 +227,7 @@ middle {
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0);
-    transition: background-color .5s;
+    transition: background-color .5s ease .5s;
 }
 
 middle.is-active {
@@ -237,18 +244,16 @@ bottom {
     background: linear-gradient(#2D333D, #101215);
 }
 
-main {
-    flex: 2 1 auto;
-    display: block;
-    opacity: 0;
-    height: 100%;
-    background-color: rgba(255, 255, 255, .6);
-    transition: opacity .5s;
-}
+settings-dropdown {
+    position: absolute;
+    right: 0px;
+    margin: .75em;
+    width: 2.5em;
+    height: 2.5em;
+    background-size: 1.5em;
+    background-position: center;
+    background-repeat: no-repeat;
 
-main.is-active {
-    opacity: 1;
-    transition: opacity 1s;
 }
 
 /* ====== DEVICE MODULE */
@@ -402,7 +407,6 @@ login-module app-logo {
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
-/*    background: linear-gradient(to top, rgb(7, 43, 53), rgba(16, 28, 41, 0.9));*/
     border-bottom-left-radius: .25em;
     border-top-left-radius: .25em;
 }
@@ -523,7 +527,6 @@ login-module form-input.is-disabled input[type=submit] {
 
 favorites-module {
     display: block;
-    font-weight: 200;
     position: relative;
     top: 0em;
     left: -3em;
@@ -606,7 +609,7 @@ favorites-module menu icon {
     height: 3em;
     width: 100%;
     padding: .5em .75em;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 favorites-module menu icon image {

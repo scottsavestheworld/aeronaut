@@ -47,12 +47,13 @@ Module.App = function (moduleData) {
     };
 
     this.components = {
-        top    : $$.Basic({ element: "<top>" }),
-        middle : $$.Basic({ element: "<middle>" }),
-        bottom : $$.Basic({ element: "<bottom>" }),
-        nav    : $$.Basic({ element: "<nav>" }),
-        main   : $$.Basic({ element: "<main>" }),
-        fade   : $$.Basic({ element: "<app-fade>" })
+        top      : $$.Basic({ element: "<top>" }),
+        middle   : $$.Basic({ element: "<middle>" }),
+        bottom   : $$.Basic({ element: "<bottom>" }),
+        nav      : $$.Basic({ element: "<nav>" }),
+        main     : $$.Basic({ element: "<main>" }),
+        fade     : $$.Basic({ element: "<app-fade>" }),
+        settings : $$.Image({ element: "<settings-dropdown>", image: $$.images.settingsLight })
     };
 
     this.properties = {
@@ -69,6 +70,7 @@ Module.App = function (moduleData) {
         activeRoom  : "object"
     }
 
+    this.assemble();
     this.updateProperty("background", $$.images.background);
 };
 
@@ -94,7 +96,7 @@ Module.App.prototype.updateProperty = function (propertyName, propertyValue) {
 Module.App.prototype.assemble = function () {
     var c = this.components;
 
-    this.add(c.top)
+    this.add(c.top.add(c.settings))
         .add(c.middle)
         .add(c.bottom);
 };
@@ -105,9 +107,8 @@ Module.App.prototype.registerCallback = function (callbackName) {
 Module.App.prototype.start = function () {
     var loginModule = this.modules.login;
 
-    this.assemble();
     this.add(this.components.fade);
-    this.modules.devices.addTo(this.components.top).toggle("active", true, 100);
+    this.modules.devices.addTo(this.components.top, 0).toggle("active", true, 100);
     this.modules.login.addTo(this.components.middle).toggle("active", true, 100);
     this.remove($$.getElement("#initialize-app"));
 
@@ -491,7 +492,7 @@ Module.Favorites.prototype.selectTab = function (tabName) {
         c[tabName + "Button"].toggle("selected", true);
         c.headerIcon.updateProperties({text: $$.capitalize(tabName), image: $$.images[tabName + "Dark"]});
 
-        if (tabName === "meetings") { 
+        if (tabName === "meetings") {
             c.iconDate.add();
         } else {
             c.iconDate.remove();

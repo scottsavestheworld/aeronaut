@@ -40,26 +40,26 @@
 @font-face {
     font-family: Roboto;
     src: url(../fonts/Roboto/Roboto-Light.ttf);
-    font-weight: 200;
+    font-weight: 300;
 }
 
 @font-face {
     font-family: Roboto;
     src: url(../fonts/Roboto/Roboto-LightItalic.ttf);
-    font-weight: 200;
+    font-weight: 300;
     font-style: italic;
 }
 
 @font-face {
     font-family: Roboto;
     src: url(../fonts/Roboto/Roboto-Regular.ttf);
-    font-weight: 300;
+    font-weight: 400;
 }
 
 @font-face {
     font-family: Roboto;
     src: url(../fonts/Roboto/Roboto-RegularItalic.ttf);
-    font-weight: 300;
+    font-weight: 400;
     font-style: italic;
 }
 
@@ -100,4 +100,162 @@
     src: url(../fonts/Roboto/Roboto-BlackItalic.ttf);
     font-weight: 900;
     font-style: italic;
+}
+
+
+/* Alegreya */
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/Alegreya-Regular.ttf);
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/Alegreya-RegularItalic.ttf);
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/Alegreya-Bold.ttf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/Alegreya-BoldItalic.ttf);
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-Thin.ttf);
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-ThinItalic.ttf);
+    font-weight: 100;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-Light.ttf);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-LightItalic.ttf);
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-Regular.ttf);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-RegularItalic.ttf);
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-Medium.ttf);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-MediumItalic.ttf);
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-Bold.ttf);
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-BoldItalic.ttf);
+    font-weight: 700;
+    font-style: Alegreya;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-Black.ttf);
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: Alegreya;
+    src: url(../fonts/Alegreya/AlegreyaSans-BlackItalic.ttf);
+    font-weight: 900;
+    font-style: italic;
+}
+
+
+/* Heebo */
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-Regular.ttf);
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-Bold.ttf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-Thin.ttf);
+    font-weight: 100;
+}
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-Light.ttf);
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-Regular.ttf);
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-Medium.ttf);
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-Bold.ttf);
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: Heebo;
+    src: url(../fonts/Heebo/Heebo-ExtraBold.ttf);
+    font-weight: 900;
 }

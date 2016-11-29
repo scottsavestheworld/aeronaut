@@ -13,5 +13,6 @@ $$.images = {
     microphoneOff    : "img/microphone_off.svg",
     microphoneOn     : "img/microphone_on.svg",
     roomsDark        : "img/rooms_dark.svg",
-    roomsLight       : "img/rooms_light.svg"
+    roomsLight       : "img/rooms_light.svg",
+    settingsLight    : "img/settings_light.svg"
 }
