@@ -403,6 +403,7 @@ Module.Favorites = function (moduleData) {
 
     this.components = {
         nav            : $$.Basic({ element: "<nav>" }),
+        searchButton   : $$.Image({ image: $$.images.searchLight, styleClass: "search" }),
         contactsButton : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
         roomsButton    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
         meetingsButton : $$.Image({ image: $$.images.meetingsLight, styleClass: "meetings" }),
@@ -411,9 +412,10 @@ Module.Favorites = function (moduleData) {
         menuHeader     : $$.Basic({ element: "<header>" }),
         headerIcon     : $$.Icon({ image: $$.images.contactsDark, styleClass: "contacts", text: "Contacts" }),
         iconDate       : $$.Time({ format: "[D]", interval: "every day" }),
-        contactsList   : $$.List({ styleClass: "contacts" }),
-        roomsList      : $$.List({ styleClass: "rooms" }),
-        meetingsList   : $$.List({ styleClass: "meetings" })
+        searchMenu     : $$.List({ styleClass: "search" }),
+        contactsMenu   : $$.List({ styleClass: "contacts" }),
+        roomsMenu      : $$.List({ styleClass: "rooms" }),
+        meetingsMenu   : $$.List({ styleClass: "meetings" })
     };
 
     this.properties = {
@@ -429,14 +431,16 @@ $$.extendClass(Module.Favorites, Module.Base);
 Module.Favorites.prototype.assemble = function () {
     var c = this.components;
     this.add(c.nav
+            .add(c.searchButton)
             .add(c.contactsButton)
             .add(c.roomsButton)
             .add(c.meetingsButton.add(c.buttonDate)))
         .add(c.menu
             .add(c.menuHeader.add(c.headerIcon))
-            .add(c.contactsList)
-            .add(c.roomsList)
-            .add(c.meetingsList));
+            .add(c.searchMenu)
+            .add(c.contactsMenu)
+            .add(c.roomsMenu)
+            .add(c.meetingsMenu));
     c.headerIcon.components.image.add(c.iconDate);
 
     return this;
@@ -446,7 +450,7 @@ Module.Favorites.prototype.addEvents = function () {
     var thisModule = this;
     var c = this.components;
     var p = this.properties;
-    var buttons = { contacts: c.contactsButton, rooms: c.roomsButton, meetings: c.meetingsButton };
+    var buttons = { search: c.searchButton, contacts: c.contactsButton, rooms: c.roomsButton, meetings: c.meetingsButton };
 
     for (var tabName in buttons) {
         buttons[tabName].addEvent("click", function (e) {
@@ -482,13 +486,13 @@ Module.Favorites.prototype.selectTab = function (tabName) {
     var p = this.properties;
 
     if (p.selectedTab) {
-        c[p.selectedTab + "List"].toggle("selected", false);
+        c[p.selectedTab + "Menu"].toggle("selected", false);
         c[p.selectedTab + "Button"].toggle("selected", false);
     }
 
     if (p.selectedTab !== tabName) {
         p.selectedTab = tabName;
-        c[tabName + "List"].toggle("selected", true);
+        c[tabName + "Menu"].toggle("selected", true);
         c[tabName + "Button"].toggle("selected", true);
         c.headerIcon.updateProperties({text: $$.capitalize(tabName), image: $$.images[tabName + "Dark"]});
 
@@ -515,7 +519,7 @@ Module.Favorites.prototype.updateRoster = function (rosterObject) {
         for (i; i < total; i++) {
             this.addRosterCard($$[$$.capitalize(rosterCategory)](roster[rosterCategory][i]));
         }
-        this.components[rosterCategory + "sList"].sort();
+        this.components[rosterCategory + "sMenu"].sort();
     }
 
     return this;
@@ -523,7 +527,7 @@ Module.Favorites.prototype.updateRoster = function (rosterObject) {
 
 Module.Favorites.prototype.addRosterCard = function (modelObject, sortNeeded) {
     var thisModule  = this;
-    var list        = this.components[modelObject.subtype + "sList"];
+    var list        = this.components[modelObject.subtype + "sMenu"];
     var listItems   = list.addedComponents;
     var listHasCard = false;
 

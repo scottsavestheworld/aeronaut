@@ -667,6 +667,15 @@ favorites-module list.contacts avatar {
     border-radius: 50%;
 }
 
+favorites-module nav image.search:hover {
+    background-color: #055;
+}
+
+favorites-module nav image.search.is-selected,
+favorites-module list.search.is-selected card.is-selected {
+    background-color: #099;
+}
+
 favorites-module nav image.contacts:hover {
     background-color: rgba(26, 170, 0, 0.5);
 }
