@@ -197,35 +197,6 @@ Module.Devices.prototype.toggleMute = function (deviceName) {
 
 
 // ========================================================
-//                     DETAILS MODULE
-// ========================================================
-
-Module.Details = function (moduleData) {
-    var data     = $$.object(moduleData, {});
-    this.ID      = data.ID || "details-module";
-    this.subtype = "details";
-    this.element = $$.getElement(data.element || "<details-module>");
-
-    Module.Details.superclass.constructor.call(this);
-
-    this.components = {
-    }
-
-    this.assemble().this.addEvents();
-}
-
-$$.extendClass(Module.Details, Module.Base);
-
-Module.Details.prototype.assemble = function () {
-    return this;
-};
-
-Module.Details.prototype.addEvents = function () {
-    return this;
-};
-
-
-// ========================================================
 //                      LOGIN MODULE
 // ========================================================
 
@@ -404,6 +375,7 @@ Module.Favorites = function (moduleData) {
     this.components = {
         nav            : $$.Basic({ element: "<nav>" }),
         searchButton   : $$.Image({ image: $$.images.searchLight, styleClass: "search" }),
+        alertsButton   : $$.Image({ image: $$.images.alertsLight, styleClass: "alerts" }),
         contactsButton : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
         roomsButton    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
         meetingsButton : $$.Image({ image: $$.images.meetingsLight, styleClass: "meetings" }),
@@ -413,6 +385,7 @@ Module.Favorites = function (moduleData) {
         headerIcon     : $$.Icon({ image: $$.images.contactsDark, styleClass: "contacts", text: "Contacts" }),
         iconDate       : $$.Time({ format: "[D]", interval: "every day" }),
         searchMenu     : $$.List({ styleClass: "search" }),
+        alertsMenu     : $$.List({ styleClass: "alert" }),
         contactsMenu   : $$.List({ styleClass: "contacts" }),
         roomsMenu      : $$.List({ styleClass: "rooms" }),
         meetingsMenu   : $$.List({ styleClass: "meetings" })
@@ -434,13 +407,15 @@ Module.Favorites.prototype.assemble = function () {
             .add(c.searchButton)
             .add(c.contactsButton)
             .add(c.roomsButton)
-            .add(c.meetingsButton.add(c.buttonDate)))
+            .add(c.meetingsButton.add(c.buttonDate))
+            .add(c.alertsButton))
         .add(c.menu
             .add(c.menuHeader.add(c.headerIcon))
             .add(c.searchMenu)
             .add(c.contactsMenu)
             .add(c.roomsMenu)
-            .add(c.meetingsMenu));
+            .add(c.meetingsMenu)
+            .add(c.alertsMenu));
     c.headerIcon.components.image.add(c.iconDate);
 
     return this;
@@ -450,7 +425,13 @@ Module.Favorites.prototype.addEvents = function () {
     var thisModule = this;
     var c = this.components;
     var p = this.properties;
-    var buttons = { search: c.searchButton, contacts: c.contactsButton, rooms: c.roomsButton, meetings: c.meetingsButton };
+    var buttons = { 
+                    search   : c.searchButton, 
+                    alerts   : c.alertsButton, 
+                    contacts : c.contactsButton, 
+                    rooms    : c.roomsButton, 
+                    meetings : c.meetingsButton 
+                  };
 
     for (var tabName in buttons) {
         buttons[tabName].addEvent("click", function (e) {
@@ -636,8 +617,8 @@ Module.Search.prototype.update = function (modelObject) {
 //                    DETAILS MODULE
 // ========================================================
 
-Module.Details = function (modelObject, dataObject) {
-    var data        = $$.object(dataObject, {});
+Module.Details = function (moduleData, modelObject) {
+    var data        = $$.object(moduleData, {});
     var model       = $$.object(modelObject, {});
     var info        = model.isModel ? model.properties : model;
     this.ID         = "details-module-" + (model.ID || Date.now());
@@ -648,11 +629,15 @@ Module.Details = function (modelObject, dataObject) {
 
     Module.Details.superclass.constructor.call(this);
 
-    if (model.subtype) {
-        this[model.subtype + "Components"](info);
-    }
-
-    this.addModel(model);
+    this.addModel(model).assemble().addEvents();
 };
 
 $$.extendClass(Module.Details, Module.Base);
+
+Module.Details.prototype.assemble = function () {
+    return this;
+};
+
+Module.Details.prototype.addEvents = function () {
+    return this;
+};

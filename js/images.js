@@ -1,4 +1,6 @@
 $$.images = {
+    alertsDark       : "img/alerts_dark.svg",
+    alertsLight      : "img/alerts_light.svg",
     appLogo          : "img/default_logo.svg",
     defaultContact   : "img/default_contact.svg",
     defaultRoom      : "img/default_room.svg",

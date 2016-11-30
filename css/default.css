@@ -464,7 +464,7 @@ login-module input {
 }
 
 login-module input:focus {
-    box-shadow: 0 0 0 3px rgba(255,120,100,1);
+    box-shadow: 0 0 0 3px #FF644B;
 }
 
 login-module form-input.is-active input {
@@ -534,7 +534,7 @@ favorites-module {
     height: 100%;
     overflow: hidden;
     box-shadow: 1px 1px 6px rgba(0,0,0,.5);
-    transition: left .3s, width .5s;
+    transition: left .5s, width .5s;
 }
 
 favorites-module.is-active {
@@ -568,6 +568,14 @@ favorites-module nav image {
     border-radius: .25em;
     cursor: pointer;
     transition: background-color .3s;
+}
+
+favorites-module nav image:hover {
+    background-color: rgba(80, 85, 90, 0.5);
+}
+
+favorites-module nav image.is-selected {
+    background-color: #50555A;
 }
 
 favorites-module nav image time {
@@ -660,7 +668,7 @@ favorites-module list.is-selected card.is-selected > avatar {
 }
 
 favorites-module list.contacts.is-selected card.is-selected > avatar > status {
-    border: 1px solid #1AAA00;
+    border: 1px solid #0A0;
 }
 
 favorites-module list.contacts avatar {
@@ -668,7 +676,7 @@ favorites-module list.contacts avatar {
 }
 
 favorites-module nav image.search:hover {
-    background-color: #055;
+    background-color: rgba(0, 153, 153, 0.5);
 }
 
 favorites-module nav image.search.is-selected,
@@ -677,12 +685,12 @@ favorites-module list.search.is-selected card.is-selected {
 }
 
 favorites-module nav image.contacts:hover {
-    background-color: rgba(26, 170, 0, 0.5);
+    background-color: rgba(0, 170, 0, 0.5);
 }
 
 favorites-module nav image.contacts.is-selected,
 favorites-module list.contacts.is-selected card.is-selected {
-    background-color: #1AAA00;
+    background-color: #0A0;
 }
 
 favorites-module nav image.rooms:hover {
@@ -695,12 +703,21 @@ favorites-module list.rooms.is-selected card.is-selected {
 }
 
 favorites-module nav image.meetings:hover {
-    background-color: rgba(255, 149, 0, 0.5);
+    background-color: rgba(238, 119, 34, 0.5);
 }
 
 favorites-module nav image.meetings.is-selected,
 favorites-module list.meetings.is-selected card.is-selected {
-    background-color: #FF9500;
+    background-color: #E72;
+}
+
+favorites-module nav image.alerts:hover {
+    background-color: rgba(204, 68, 68, 0.5);
+}
+
+favorites-module nav image.alerts.is-selected,
+favorites-module list.alerts.is-selected card.is-selected {
+    background-color: #C44;
 }
 
 /* ====== FAVORITES MODULE */
