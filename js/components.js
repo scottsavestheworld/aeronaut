@@ -204,31 +204,31 @@ Component.Text.prototype.text = function (text) {
 
 
 // ========================================================
-//                      ICON COMPONENT
+//                     HEADER COMPONENT
 // ========================================================
 
-Component.Icon = function (dataObject) {
+Component.Header = function (dataObject) {
     var data        = $$.object(dataObject, {});
     var text        = $$.string(data.text, "");
     var image       = $$.string(data.image, "");
-    this.subtype    = "icon";
-    this.element    = $$.getElement(data.element || "<icon>");
+    this.subtype    = "header";
+    this.element    = $$.getElement(data.element || "<header>");
     this.styleClass = $$.string(data.styleClass, "");
 
-    Component.Icon.superclass.constructor.call(this);
+    Component.Header.superclass.constructor.call(this);
 
     this.components = {
-        image : $$.Image(dataObject),
-        text  : $$.Text(dataObject)
+        image : $$.Image({ image: data.image }),
+        text  : $$.Text({ text: data.text })
     };
 
-    this.add(this.components.image);
-    this.add(this.components.text);
+    this.add(this.components.image)
+        .add(this.components.text);
 };
 
-$$.extendClass(Component.Icon, Component.Base);
+$$.extendClass(Component.Header, Component.Base);
 
-Component.Icon.prototype.updateProperty = function (propertyName, propertyValue) {
+Component.Header.prototype.updateProperty = function (propertyName, propertyValue) {
     this.updateComponents(propertyName, propertyValue);
     return this;
 };

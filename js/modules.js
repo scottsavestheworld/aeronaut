@@ -39,16 +39,17 @@ Module.App = function (moduleData) {
     };
 
     this.modules = {
-        devices   : $$.Devices(),
-        login     : $$.Login(),
-        favorites : $$.Favorites(),
-        details   : $$.Details(),
-        search    : $$.Search()
+        devices    : $$.Devices(),
+        login      : $$.Login(),
+        navigation : $$.Navigation(),
+        results    : $$.Results(),
+        details    : $$.Details(),
+//        search    : $$.Search()
     };
 
     this.components = {
         top      : $$.Basic({ element: "<top>" }),
-        middle   : $$.Basic({ element: "<middle>" }),
+        main     : $$.Basic({ element: "<main>" }),
         bottom   : $$.Basic({ element: "<bottom>" }),
         nav      : $$.Basic({ element: "<nav>" }),
         main     : $$.Basic({ element: "<main>" }),
@@ -97,11 +98,32 @@ Module.App.prototype.assemble = function () {
     var c = this.components;
 
     this.add(c.top.add(c.settings))
-        .add(c.middle)
+        .add(c.main)
         .add(c.bottom);
+
+    return this;
 };
 
 Module.App.prototype.registerCallback = function (callbackName) {
+};
+
+
+Module.App.prototype.signalModules = function (signalObject ) {
+    for (var module in this.modules) {
+        this.modules[module].signal(signalObject);
+    }
+
+    return this;
+};
+
+Module.App.prototype.toggleNavigation = function (sectionName) {
+    var signalObject = {
+        name       : "TOGGLE_NAVIGATION",
+        target     : this,
+        stopBubble : true,
+        info       : $$.string(sectionName),
+    };
+    this.signalModules(signalObject);
 };
 
 Module.App.prototype.start = function () {
@@ -109,11 +131,13 @@ Module.App.prototype.start = function () {
 
     this.add(this.components.fade);
     this.modules.devices.addTo(this.components.top, 0).toggle("active", true, 100);
-    this.modules.login.addTo(this.components.middle).toggle("active", true, 100);
+    this.modules.login.addTo(this.components.main).toggle("active", true, 100);
     this.remove($$.getElement("#initialize-app"));
 
     API.onAppStart();
-}
+
+    return this;
+};
 
 Module.App.prototype.loginSuccessful = function () {
     var c = this.components;
@@ -122,13 +146,18 @@ Module.App.prototype.loginSuccessful = function () {
     m.login.remove();
     c.fade.remove();
 
-    m.favorites.addTo(c.middle).toggle("active", true).selectTab("contacts");
-    m.details.addTo(c.middle).toggle("active", true);
-    c.middle.toggle("active", true);
+    m.navigation.addTo(c.main).toggle("active", true);
+    m.results.addTo(c.main);
+    m.details.addTo(c.main).toggle("active", true);
+    c.main.toggle("active", true);
 
-    m.favorites.updateRoster(dummydata);
+    m.results.updateRoster(dummydata);
+
+    app.toggleNavigation("contacts");
 
     API.onLoginSuccessful();
+
+    return this;
 };
 
 
@@ -140,7 +169,7 @@ Module.Devices = function (moduleData) {
     var data     = $$.object(moduleData, {});
     this.ID      = data.ID || "devices-module";
     this.subtype = "devices";
-    this.element = $$.getElement(data.element || "<devices-module>");
+    this.element = $$.getElement(data.element || "<devices>");
 
     Module.Devices.superclass.constructor.call(this);
 
@@ -204,7 +233,7 @@ Module.Login = function (moduleData) {
     var data     = $$.object(moduleData, {});
     this.ID      = data.ID || "login-module";
     this.subtype = "login";
-    this.element = $$.getElement(data.element || "<login-module>");
+    this.element = $$.getElement(data.element || "<login>");
 
     Module.Login.superclass.constructor.call(this);
 
@@ -341,7 +370,6 @@ Module.Login.prototype.setFocus = function () {
             break;
         }
     }
-
     return this;
 };
 
@@ -361,138 +389,175 @@ Module.Login.prototype.loginFailed = function (reasonCode) {
 
 
 // ========================================================
-//                    FAVORITES MODULE
+//                  NAVIGATION MODULE
 // ========================================================
 
-Module.Favorites = function (moduleData) {
+Module.Navigation = function (moduleData) {
     var data      = $$.object(moduleData, {});
-    this.ID       = data.ID || "favorites-module";
-    this.subtype  = "favorites";
-    this.element  = $$.getElement(data.element || "<favorites-module>");
+    this.ID       = data.ID || "navigation-module";
+    this.subtype  = "navigation";
+    this.element  = $$.getElement(data.element || "<navigation>");
 
-    Module.Favorites.superclass.constructor.call(this);
+    Module.Navigation.superclass.constructor.call(this);
 
     this.components = {
-        nav            : $$.Basic({ element: "<nav>" }),
-        searchButton   : $$.Image({ image: $$.images.searchLight, styleClass: "search" }),
-        alertsButton   : $$.Image({ image: $$.images.alertsLight, styleClass: "alerts" }),
-        contactsButton : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
-        roomsButton    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
-        meetingsButton : $$.Image({ image: $$.images.meetingsLight, styleClass: "meetings" }),
-        buttonDate     : $$.Time({ format: "[D]", interval: "every day" }),
-        menu           : $$.Basic({ element: "<menu>" }),
-        menuHeader     : $$.Basic({ element: "<header>" }),
-        headerIcon     : $$.Icon({ image: $$.images.contactsDark, styleClass: "contacts", text: "Contacts" }),
-        iconDate       : $$.Time({ format: "[D]", interval: "every day" }),
-        searchMenu     : $$.List({ styleClass: "search" }),
-        alertsMenu     : $$.List({ styleClass: "alert" }),
-        contactsMenu   : $$.List({ styleClass: "contacts" }),
-        roomsMenu      : $$.List({ styleClass: "rooms" }),
-        meetingsMenu   : $$.List({ styleClass: "meetings" })
+        search   : $$.Image({ image: $$.images.searchLight, styleClass: "search" }),
+        contacts : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
+        rooms    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
+        meetings : $$.Image({ image: $$.images.meetingsLight, styleClass: "meetings" }),
+        alerts   : $$.Image({ image: $$.images.alertsLight, styleClass: "alerts" })
     };
 
     this.properties = {
-        selectedTab   : "",
-        selectedCards : []
+        selectedNav : "",
     };
 
     this.assemble().addEvents();
 };
 
-$$.extendClass(Module.Favorites, Module.Base);
+$$.extendClass(Module.Navigation, Module.Base);
 
-Module.Favorites.prototype.assemble = function () {
+Module.Navigation.prototype.assemble = function () {
     var c = this.components;
-    this.add(c.nav
-            .add(c.searchButton)
-            .add(c.contactsButton)
-            .add(c.roomsButton)
-            .add(c.meetingsButton.add(c.buttonDate))
-            .add(c.alertsButton))
-        .add(c.menu
-            .add(c.menuHeader.add(c.headerIcon))
-            .add(c.searchMenu)
-            .add(c.contactsMenu)
-            .add(c.roomsMenu)
-            .add(c.meetingsMenu)
-            .add(c.alertsMenu));
-    c.headerIcon.components.image.add(c.iconDate);
+    this.add(c.search)
+        .add(c.contacts)
+        .add(c.rooms)
+        .add(c.meetings.add($$.Time({ format: "[D]", interval: "every day" })))
+        .add(c.alerts);
 
     return this;
 };
 
-Module.Favorites.prototype.addEvents = function () {
+Module.Navigation.prototype.addEvents = function () {
     var thisModule = this;
     var c = this.components;
     var p = this.properties;
-    var buttons = { 
-                    search   : c.searchButton, 
-                    alerts   : c.alertsButton, 
-                    contacts : c.contactsButton, 
-                    rooms    : c.roomsButton, 
-                    meetings : c.meetingsButton 
-                  };
 
-    for (var tabName in buttons) {
-        buttons[tabName].addEvent("click", function (e) {
-           thisModule.selectTab(this.object.styleClass);
+    for (var component in c) {
+        c[component].addEvent("click", function (event) {
+            app.toggleNavigation(this.object.styleClass);
         });
     }
 
-    this.addSignal("CLICKED", function (event, origin) {
-        var cards = p.selectedCards;
-        var wasSelected = false;
-
-        var i = 0, total = cards.length;
-        for (i; i < total; i++) {
-            if (cards[i] === origin) {
-                wasSelected = true;
+    this.addSignal("TOGGLE_NAVIGATION", function (signalObject) {
+        var data = $$.object(signalObject, {});
+        var isSelected = true;
+        if (c.hasOwnProperty(data.info)) {
+            if (data.info !== p.selectedNav) {
+                if (c[p.selectedNav]) {
+                    c[p.selectedNav].toggle("selected", false);
+                }
+                p.selectedNav = data.info;
+            } else {
+                p.selectedNav = "";
+                isSelected = false;
             }
-            cards[i].toggle("selected", false);
-        }
-
-        p.selectedCards = [];
-
-        if (!wasSelected) {
-            origin.toggle("selected", true);
-            p.selectedCards.push(origin);
+            c[data.info].toggle("selected", isSelected);
         }
     });
 
     return this;
 };
 
-Module.Favorites.prototype.selectTab = function (tabName) {
+
+// ========================================================
+//                      RESULTS MODULE
+// ========================================================
+
+Module.Results = function (moduleData) {
+    var data      = $$.object(moduleData, {});
+    this.ID       = data.ID || "results-module";
+    this.subtype  = "results";
+    this.element  = $$.getElement(data.element || "<results>");
+
+    Module.Results.superclass.constructor.call(this);
+
+    this.components = {
+        search          : $$.Basic({ element: "<section>", styleClass: "search" }),
+        contacts        : $$.Basic({ element: "<section>", styleClass: "contacts" }),
+        rooms           : $$.Basic({ element: "<section>", styleClass: "rooms" }),
+        meetings        : $$.Basic({ element: "<section>", styleClass: "meetings" }),
+        alerts          : $$.Basic({ element: "<section>", styleClass: "alerts" }),
+
+        searchHeader    : $$.Header({ image: $$.images.searchDark,   text: "Search" }),
+        contactsHeader  : $$.Header({ image: $$.images.contactsDark, text: "Contacts" }),
+        roomsHeader     : $$.Header({ image: $$.images.roomsDark,    text: "Rooms" }),
+        meetingsHeader  : $$.Header({ image: $$.images.meetingsDark, text: "Meetings" }),
+        alertsHeader    : $$.Header({ image: $$.images.alertsDark,   text: "Alerts" }),
+
+        searchResults   : $$.List(),
+        contactsResults : $$.List(),
+        roomsResults    : $$.List(),
+        meetingsResults : $$.List(),
+        alertsResults   : $$.List(),
+    };
+
+    this.properties = {
+        selectedNav    : "",
+        selectedResult : null
+    };
+
+    this.assemble().addEvents();
+};
+
+$$.extendClass(Module.Results, Module.Base);
+
+Module.Results.prototype.assemble = function () {
     var c = this.components;
-    var p = this.properties;
-
-    if (p.selectedTab) {
-        c[p.selectedTab + "Menu"].toggle("selected", false);
-        c[p.selectedTab + "Button"].toggle("selected", false);
-    }
-
-    if (p.selectedTab !== tabName) {
-        p.selectedTab = tabName;
-        c[tabName + "Menu"].toggle("selected", true);
-        c[tabName + "Button"].toggle("selected", true);
-        c.headerIcon.updateProperties({text: $$.capitalize(tabName), image: $$.images[tabName + "Dark"]});
-
-        if (tabName === "meetings") {
-            c.iconDate.add();
-        } else {
-            c.iconDate.remove();
-        }
-
-        this.toggle("selected" , true);
-    } else {
-        p.selectedTab = "";
-        this.toggle("selected" , false);
-    }
+    this.add(c.search.add(c.searchHeader).add(c.searchResults))
+        .add(c.contacts.add(c.contactsHeader).add(c.contactsResults))
+        .add(c.rooms.add(c.roomsHeader).add(c.roomsResults))
+        .add(c.meetings.add(c.meetingsHeader).add(c.meetingsResults))
+        .add(c.alerts.add(c.alertsHeader).add(c.alertsResults));
+    c.meetingsHeader.components.image.add($$.Time({ format: "[D]", interval: "every day" }));
 
     return this;
 };
 
-Module.Favorites.prototype.updateRoster = function (rosterObject) {
+Module.Results.prototype.addEvents = function () {
+    var thisModule = this;
+    var c = this.components;
+    var p = this.properties;
+
+    this.addSignal("TOGGLE_NAVIGATION", function (signalObject) {
+        var data = $$.object(signalObject, {});
+        var isSelected = true;
+        if (c.hasOwnProperty(data.info)) {
+            if (data.info !== p.selectedNav) {
+                if (p.selectedNav) {
+                    c[p.selectedNav].toggle("selected", false);
+                }
+                p.selectedNav = data.info;
+            } else {
+                p.selectedNav = "";
+                isSelected = false;
+            }
+            thisModule.toggle("selected", isSelected);
+            c[data.info].toggle("selected", isSelected);
+        }
+    });
+
+    this.addSignal("TOGGLE_RESULT", function (signalObject) {
+        var data = $$.object(signalObject, {});
+        var isSelected = true;
+        if (data.origin.isView) {
+            if (data.origin !== p.selectedResult) {
+                if (p.selectedResult) {
+                    p.selectedResult.toggle("selected", false);
+                }
+                p.selectedResult = data.origin;
+            } else {
+                p.selectedResult = null;
+                isSelected = false;
+            }
+            data.origin.toggle("selected", isSelected);
+        }
+    });
+
+    return this;
+};
+
+Module.Results.prototype.updateRoster = function (rosterObject) {
     var roster = $$.object(rosterObject, {});
     var rosterCategory;
     for (rosterCategory in roster) {
@@ -500,15 +565,15 @@ Module.Favorites.prototype.updateRoster = function (rosterObject) {
         for (i; i < total; i++) {
             this.addRosterCard($$[$$.capitalize(rosterCategory)](roster[rosterCategory][i]));
         }
-        this.components[rosterCategory + "sMenu"].sort();
+        this.components[rosterCategory + "sResults"].sort();
     }
 
     return this;
 };
 
-Module.Favorites.prototype.addRosterCard = function (modelObject, sortNeeded) {
+Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
     var thisModule  = this;
-    var list        = this.components[modelObject.subtype + "sMenu"];
+    var list        = this.components[modelObject.subtype + "sResults"];
     var listItems   = list.addedComponents;
     var listHasCard = false;
 
@@ -521,7 +586,16 @@ Module.Favorites.prototype.addRosterCard = function (modelObject, sortNeeded) {
 
     if (!listHasCard) {
         var card = $$.Card(modelObject);
-        card.addEvent("click", function (e) { card.signal(e, card, "CLICKED", thisModule); });
+        var signalObject = {
+            name   : "TOGGLE_RESULT",
+            origin : card,
+            target : thisModule
+        }
+
+        card.addEvent("click", function (event) {
+            card.signal(signalObject);
+        });
+
         list.add(card);
 
         if (sortNeeded) {
@@ -530,86 +604,6 @@ Module.Favorites.prototype.addRosterCard = function (modelObject, sortNeeded) {
     }
 
     return this;
-};
-
-
-// ========================================================
-//                      SEARCH MODULE
-// ========================================================
-
-Module.Search = function (moduleData) {
-    var data     = $$.object(moduleData, {});
-    this.ID      = data.ID || "search-module";
-    this.subtype = "search";
-    this.element = $$.getElement(data.element || "<search-module>");
-
-    Module.Search.superclass.constructor.call(this);
-
-    this.components = {
-        searchBox         : $$.Input({ element: "<global-search>" }),
-
-        searchResults     : $$.Basic({ element: "<search-results>" }),
-        resultsHeader     : $$.Basic({ element: "<results-header>" }),
-        resultsNumber     : $$.Text({ element: "<results-number>" }),
-        resultsText       : $$.Text({ element: "<results-text>", text: " results match " }),
-        searchedString    : $$.Text({ element: "<searched-string>" }),
-
-        resultsCategories : $$.Basic({ element: "<results-categories>" }),
-
-        contactsResults   : $$.Basic({ element: "<contacts-results>", styleClass: "results-category" }),
-        contactsIcon      : $$.Icon({ image: $$.images.contactsDark, text: "Contacts", styleClass: "contacts" }),
-        contactsList      : $$.List({ styleClass: "contacts" }),
-
-        roomsResults      : $$.Basic({ element: "<rooms-results>", styleClass: "results-category" }),
-        roomsIcon         : $$.Icon({ image: $$.images.roomsDark, text: "Rooms", styleClass: "rooms" }),
-        roomsList         : $$.List({ styleClass: "rooms" }),
-
-        meetingsResults   : $$.Basic({ element: "<meetings-results>", styleClass: "results-category" }),
-        meetingsIcon      : $$.Icon({ image: $$.images.meetingsDark, text: "Meetings", styleClass: "meetings" }),
-        iconDate          : $$.Time({ format: "[D]", interval: "every day" }),
-        meetingsList      : $$.List({ styleClass: "meetings" }),
-
-        backgroundBlur    : $$.Image({ element: "<background-blur>", image: $$.images.background }),
-    };
-
-    this.properties = {
-        selectedCards : []
-    };
-
-    this.assemble();
-//    this.addEvents();
-};
-
-$$.extendClass(Module.Search, Module.Base);
-
-Module.Search.prototype.assemble = function () {
-    var c = this.components;
-    this.add(c.searchBox)
-        .add(c.searchResults
-            .add(c.resultsHeader
-                .add(c.resultsNumber)
-                .add(c.resultsText)
-                .add(c.searchedString))
-            .add(c.resultsCategories
-                .add(c.contactsResults
-                    .add(c.contactsIcon)
-                    .add(c.contactsList))
-                .add(c.roomsResults
-                    .add(c.roomsIcon)
-                    .add(c.roomsList))
-                .add(c.meetingsResults
-                    .add(c.meetingsIcon)
-                    .add(c.meetingsList))));
-//        .add(c.backgroundBlur);
-
-    c.meetingsIcon.components.image.add(c.iconDate);
-};
-
-Module.Search.prototype.update = function (modelObject) {
-    var thisModule = this;
-    var card = $$.Card(modelObject);
-    card.addEvent("click", function (e) { card.signal(e, card, "CLICKED", thisModule); });
-    this.components[modelObject.subtype + "sList"].add(card);
 };
 
 

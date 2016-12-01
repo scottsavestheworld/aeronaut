@@ -27,15 +27,18 @@ $$.Devices = function (moduleData) {
 $$.Login = function (moduleData) {
     return new Module.Login(moduleData);
 };
-$$.Favorites = function (moduleData) {
-    return new Module.Favorites(moduleData);
+$$.Navigation = function (moduleData) {
+    return new Module.Navigation(moduleData);
+};
+$$.Results = function (moduleData) {
+    return new Module.Results(moduleData);
 };
 $$.Details = function (moduleData) {
     return new Module.Details(moduleData);
 };
-$$.Search = function (moduleData) {
-    return new Module.Search(moduleData);
-};
+//$$.Search = function (moduleData) {
+//    return new Module.Search(moduleData);
+//};
 
 //--------------------------------------------------------- Components
 
@@ -51,8 +54,8 @@ $$.Image = function (dataObject) {
 $$.Text = function (dataObject) {
      return new Component.Text(dataObject);
 };
-$$.Icon = function (dataObject) {
-    return new Component.Icon(dataObject);
+$$.Header = function (dataObject) {
+    return new Component.Header(dataObject);
 };
 $$.Input = function (dataObject) {
     return new Component.Input(dataObject);

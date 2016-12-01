@@ -31,20 +31,27 @@ View.Base = function () {
     this.updateStyleClass();
 };
 
-View.Base.prototype.signal = function (event, origin, signalName, target) {
-    var outcome = "This view does not have a signal by that name."
-    target = $$.object(target, this.parent);
+View.Base.prototype.signal = function (signalObject) {
+    var data    = $$.object(signalObject, {});
+    var outcome = "This view does not have a signal by that name.";
 
-    if (this.signals.hasOwnProperty(signalName)) {
+    data.event      = $$.object(data.event, null);
+    data.origin     = $$.object(data.origin);
+    data.target     = $$.object(data.target, (data.stopBubble ? this : this.parent || this));
+    data.name       = $$.string(data.name, "UNKNOWN_SIGNAL");
+    data.stopBubble = $$.boolean(data.stopBubble, false);
+    data.info       = data.info || null;
+
+    if (this.signals.hasOwnProperty(data.name)) {
         outcome = "OK";
-        this.signals[signalName](event, origin);
+        this.signals[data.name](data);
     }
 
-    if (target) {
-        target.signal(event, origin, signalName);
+    if (data.target !== this) {
+        data.target.signal(data);
     }
 
-    Log.write("signal", this, outcome, signalName);
+    Log.write("signal", this, outcome, data.name);
     return this;
 };
 

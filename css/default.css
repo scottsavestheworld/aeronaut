@@ -191,7 +191,7 @@ status.is-unknown {
 
 top {
     position: relative;
-    z-index: 2;
+    z-index: 4;
     overflow: visible;
     flex 0 0 4em;
     display: block;
@@ -204,7 +204,7 @@ top {
     box-shadow: 1px 1px 3px rgba(0,0,0,.5);
 }
 
-middle {
+main {
     display: -ms-flexbox;
     -ms-flex-direction: row;
     -ms-flex-wrap: nowrap;
@@ -226,11 +226,12 @@ middle {
     flex: 2 1 auto;
     width: 100%;
     height: 100%;
+    overflow: hidden;
     background-color: rgba(255, 255, 255, 0);
-    transition: background-color .5s ease .5s;
+    transition: background-color .3s ease .3s;
 }
 
-middle.is-active {
+main.is-active {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
@@ -258,7 +259,7 @@ settings-dropdown {
 
 /* ====== DEVICE MODULE */
 
-devices-module {
+devices {
     position: relative;
     display: inline-block;
     overflow: visible;
@@ -267,7 +268,7 @@ devices-module {
     height: 100%;
 }
 
-devices-module device-toggle {
+devices device-toggle {
     position: absolute;
     z-index: 2;
     display: inline-block;
@@ -285,15 +286,15 @@ devices-module device-toggle {
     transition: opacity .3s;
 }
 
-devices-module device-toggle.microphone {
+devices device-toggle.microphone {
     left: 0px;
 }
 
-devices-module device-toggle.camera {
+devices device-toggle.camera {
     right: 0px;
 }
 
-devices-module self-view {
+devices self-view {
     position: relative;
     display: inline-block;
     width: 7.125em;
@@ -307,34 +308,34 @@ devices-module self-view {
     transition: height .5s, width .5s, box-shadow .5s;
 }
 
-devices-module.is-restricted self-view {
+devices.is-restricted self-view {
     pointer-events: none;
 }
 
-devices-module.is-selected self-view {
+devices.is-selected self-view {
     width: 100%;
     height: 10em;
     box-shadow: 1px 1px 4px rgba(0,0,0,.5);
     cursor: zoom-out;
 }
 
-devices-module.is-selected device-toggle {
+devices.is-selected device-toggle {
     opacity: .1;
 }
 
-devices-module.is-selected:hover device-toggle {
+devices.is-selected:hover device-toggle {
     opacity: 1;
 }
 
-devices-module device-toggle.is-muted,
-devices-module.is-selected device-toggle.is-muted {
+devices device-toggle.is-muted,
+devices.is-selected device-toggle.is-muted {
     border-color: #FF644B;
     opacity: 1;
 }
 
 /* ====== LOGIN MODULE */
 
-login-module {
+login {
     position: relative;
     align-self: center;
     opacity: 0;
@@ -346,18 +347,18 @@ login-module {
     transition: opacity .3s;
 }
 
-login-module.is-active {
+login.is-active {
     opacity: 1;
     transition: opacity .8s;
 }
 
-login-module login-menu {
+login login-menu {
     display: flex;
     position: relative;
     z-index: 1;
 }
 
-login-module login-menu header {
+login login-menu header {
     text-align: center;
     font-weight: 700;
 }
@@ -396,7 +397,7 @@ background-blur:before {
     background-repeat: no-repeat;
 }
 
-login-module app-logo {
+login app-logo {
     flex: 0 1 auto;
     display: flex;
     flex-direction: column;
@@ -411,7 +412,7 @@ login-module app-logo {
     border-top-left-radius: .25em;
 }
 
-login-module app-info > image {
+login app-info > image {
     display: block;
     width: 12em;
     height: 18em;
@@ -420,7 +421,7 @@ login-module app-info > image {
     background-repeat: no-repeat;
 }
 
-login-module form {
+login form {
     flex: 1 0 auto;
     width: 25em;
     padding: 1em;
@@ -429,15 +430,15 @@ login-module form {
     border-top-right-radius: .25em;
 }
 
-login-module form > * {
+login form > * {
     margin: 1em;
 }
 
-login-module form-input {
+login form-input {
     display: block;
 }
 
-login-module input {
+login input {
     display: block;
     font-size: 16px;
     width: 18em;
@@ -446,50 +447,50 @@ login-module input {
     margin: 0px auto;
 }
 
-login-module label{
+login label{
     display: block;
     margin: 0px auto;
     width: 18em;
 }
 
-login-module label text{
+login label text{
     width: 18em;
 }
 
-login-module input {
+login input {
     background-color: rgba(255,255,255,0.9);
     border: none;
     box-shadow: 0 0 0 1px #FF644B;
     transition: box-shadow .2s;
 }
 
-login-module input:focus {
+login input:focus {
     box-shadow: 0 0 0 3px #FF644B;
 }
 
-login-module form-input.is-active input {
+login form-input.is-active input {
     box-shadow: 0 0 0 1px rgba(26,170,0,1);
 }
 
-login-module form-input.is-active input:focus {
+login form-input.is-active input:focus {
     box-shadow: 0 0 0 3px rgba(26,170,0,1);
 }
 
-login-module form-input input[type=text]:read-only {
+login form-input input[type=text]:read-only {
     background: rgba(255,255,255,.1);
     color: #BBB;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     cursor: default;
 }
 
-login-module input[type=text]:-moz-read-only {
+login input[type=text]:-moz-read-only {
     background: rgba(255,255,255,.1);
     color: #BBB;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     cursor: default;
 }
 
-login-module input[type=checkbox] {
+login input[type=checkbox] {
     box-shadow: initial;
     display: inline;
     margin: 0 8px 0 2px;
@@ -498,7 +499,7 @@ login-module input[type=checkbox] {
     width: auto;
 }
 
-login-module input[type=submit] {
+login input[type=submit] {
     font-weight: 500;
     color: #FFF;
     border: 1px solid rgba(0,0,0,.3);
@@ -506,58 +507,45 @@ login-module input[type=submit] {
     box-shadow: none;
 }
 
-login-module input[type=submit]:hover {
+login input[type=submit]:hover {
     position: relative;
     background: linear-gradient(rgba(26,170,0,.7), rgba(26,170,0,1));
     cursor: pointer;
 }
 
-login-module input[type=submit]:active {
+login input[type=submit]:active {
     background: linear-gradient(rgba(26,170,0,1), rgba(26,170,0,.7));
 }
 
-login-module form-input.is-disabled input[type=submit] {
+login form-input.is-disabled input[type=submit] {
     background: rgba(0,0,0,.1);
     color: rgba(255,255,255,.5);
     border: 1px solid rgba(0,0,0,.1);
     pointer-events: none;
 }
 
-/* ====== FAVORITES MODULE */
+/* ====== NAVIGATION & RESULTS MODULES */
 
-favorites-module {
-    display: block;
+navigation {
     position: relative;
-    top: 0em;
+    z-index: 5;
+    display: inline-block;
     left: -3em;
+    margin-right: -3em;
     width: 3em;
     height: 100%;
-    overflow: hidden;
-    box-shadow: 1px 1px 6px rgba(0,0,0,.5);
-    transition: left .5s, width .5s;
-}
-
-favorites-module.is-active {
-    left: 0em;
-}
-
-favorites-module.is-selected {
-    width: 20em;
-}
-
-favorites-module nav {
-    display: block;
-    position: absolute;
-    z-index: 2;
-    top: 0px;
-    left: 0px;
-    width: 3em;
-    height: 100%;
+    overflow: visible;
     background-color: #2D333D;
-    box-shadow: 1px 0px 3px rgba(0,0,0,.5)
+    box-shadow: 1px 0 3px rgba(0,0,0,.5);
+    transition: left .3s, margin-right .3s;
 }
 
-favorites-module nav image {
+navigation.is-active {
+    left: 0em;
+    margin-right: 0em;
+}
+
+navigation > image {
     display: block;
     margin: .5em auto 1em auto;
     height: 2.5em;
@@ -570,15 +558,15 @@ favorites-module nav image {
     transition: background-color .3s;
 }
 
-favorites-module nav image:hover {
-    background-color: rgba(80, 85, 90, 0.5);
+navigation > image:hover {
+    background-color: rgba(80, 85, 90, 0.8);
 }
 
-favorites-module nav image.is-selected {
+navigation > image.is-selected {
     background-color: #50555A;
 }
 
-favorites-module nav image time {
+navigation > image > time {
     line-height: 3.5em;
     text-align: center;
     width: 100%;
@@ -587,40 +575,52 @@ favorites-module nav image time {
     color: #FFF;
 }
 
-favorites-module menu {
-    position: absolute;
-    left: -14em;
-    vertical-align: top;
-    overflow: hidden;
-    margin: 0px;
+results {
+    position: relative;
+    z-index: 3;
+    display: inline-block;
+    left: -17em;
+    margin-right: -17em;
     width: 17em;
     height: 100%;
-    padding: 0px;
+    overflow: hidden;
     background-color: #F8F8F8;
+    box-shadow: 0px 0px 6px rgba(0,0,0,.5);
+    transition: left .3s, margin-right .3s;
+}
+
+results.is-selected {
+    left: 0em;
+    margin-right: 0em;
+}
+
+results section {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     pointer-events: none;
-    transition: left .5s;
+    transition: opacity .3s;
 }
 
-favorites-module.is-selected menu {
-    left: 3em;
+results section.is-selected {
+    opacity: 1;
+    pointer-events: all;
 }
 
-favorites-module menu header {
+results header {
+    position: relative;
+    width: 100%;
     height: 3.5em;
+    padding: .5em .75em;
+    background-color: #F8F8F8;
     border-bottom: 3px double rgba(0,0,0,.15);
 }
 
-favorites-module menu icon {
-    display: inline-block;
-    display: inline-block;
-    vertical-align: middle;
-    height: 3em;
-    width: 100%;
-    padding: .5em .75em;
-    font-weight: 400;
-}
-
-favorites-module menu icon image {
+results header image {
     display: inline-block;
     vertical-align: middle;
     height: 2.5em;
@@ -630,97 +630,68 @@ favorites-module menu icon image {
     background-repeat: no-repeat;
 }
 
-favorites-module header icon image time {
+results header image > time {
+    width: 100%;
     line-height: 2.75em;
     text-align: center;
-    width: 100%;
     display: block;
 }
 
-favorites-module menu icon text {
+results header text {
     vertical-align: middle;
     padding-left: .75em;
+    font-weight: 400;
 }
 
-favorites-module list {
-    position: absolute;
-    top: 3.5em;
+results list {
     width: 100%;
-    height: calc(100% - 3em);
-    opacity: 0;
+    height: calc(100% - 3.5em);
     overflow: auto;
-    transition: opacity .3s;
 }
 
-favorites-module list.is-selected {
-    opacity: 1;
-    pointer-events: all;
-    transition: opacity .3s;
-}
-
-favorites-module list.is-selected card.is-selected {
+results section.is-selected card.is-selected {
     color: #FFF;
 }
 
-favorites-module list.is-selected card.is-selected > avatar {
+results section.is-selected card.is-selected avatar {
     background-color: rgba(255,255,255,.4);
     color: #FFF;
 }
 
-favorites-module list.contacts.is-selected card.is-selected > avatar > status {
-    border: 1px solid #0A0;
-}
-
-favorites-module list.contacts avatar {
+results section.contacts avatar {
     border-radius: 50%;
 }
 
-favorites-module nav image.search:hover {
-    background-color: rgba(0, 153, 153, 0.5);
+results section.contacts.is-selected card.is-selected avatar status {
+    border: 1px solid #0A0;
 }
 
-favorites-module nav image.search.is-selected,
-favorites-module list.search.is-selected card.is-selected {
+navigation image.search.is-selected,
+results section.search.is-selected card.is-selected {
     background-color: #099;
 }
 
-favorites-module nav image.contacts:hover {
-    background-color: rgba(0, 170, 0, 0.5);
-}
-
-favorites-module nav image.contacts.is-selected,
-favorites-module list.contacts.is-selected card.is-selected {
+navigation image.contacts.is-selected,
+results section.contacts.is-selected card.is-selected {
     background-color: #0A0;
 }
 
-favorites-module nav image.rooms:hover {
-    background-color: rgba(0, 115, 185, 0.5);
-}
-
-favorites-module nav image.rooms.is-selected,
-favorites-module list.rooms.is-selected card.is-selected {
+navigation image.rooms.is-selected,
+results section.rooms.is-selected card.is-selected {
     background-color: #0073B9;
 }
 
-favorites-module nav image.meetings:hover {
-    background-color: rgba(238, 119, 34, 0.5);
+navigation image.meetings.is-selected,
+results section.meetings.is-selected card.is-selected {
+    background-color: #CA2;
 }
 
-favorites-module nav image.meetings.is-selected,
-favorites-module list.meetings.is-selected card.is-selected {
-    background-color: #E72;
-}
-
-favorites-module nav image.alerts:hover {
-    background-color: rgba(204, 68, 68, 0.5);
-}
-
-favorites-module nav image.alerts.is-selected,
-favorites-module list.alerts.is-selected card.is-selected {
+navigation image.alerts.is-selected,
+results section.alerts.is-selected card.is-selected {
     background-color: #C44;
 }
 
-/* ====== FAVORITES MODULE */
+/* ====== DETAILS MODULE */
 
 details-module {
     flex: 1 0 auto;
