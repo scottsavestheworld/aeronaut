@@ -65,7 +65,7 @@ Component.List.prototype.sort = function (sortProperty, sortByStatus, statusOrde
     statusOrder  = $$.array(statusOrder, this.properties.statusOrder);
 
     function propertySort() {
-        thisList.addedComponents.sort(function (a, b) {
+        thisList.addedObjects.sort(function (a, b) {
             if (a.properties[sortProperty] > b.properties[sortProperty]) {
                 return -1;
             }
@@ -77,7 +77,7 @@ Component.List.prototype.sort = function (sortProperty, sortByStatus, statusOrde
     }
 
     function statusSort() {
-        thisList.addedComponents.sort(function (a,b) {
+        thisList.addedObjects.sort(function (a,b) {
             if (statusOrder.indexOf(a.properties.status) > statusOrder.indexOf(b.properties.status)) {
                 return -1;
             }

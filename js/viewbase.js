@@ -7,7 +7,7 @@ View.Base = function () {
     this.element.object  = this;
     this.components      = {};
     this.properties      = {};
-    this.addedComponents = [];
+    this.addedObjects = [];
     this.signals         = {};
 
     this.toggles = {
@@ -104,7 +104,7 @@ View.Base.prototype.add = function (child, index) {
         child.remove();
         if (child.isView) {
             child.parent = this;
-            this.addedComponents.push(child);
+            this.addedObjects.push(child);
             child = child.element;
         }
         this.element.insertBefore(child, this.element.children[index]);
@@ -140,7 +140,7 @@ View.Base.prototype.remove = function (child, destroyChild) {
                 if (child.model)      { child.model.removeView(child); }
                 if (child.components) { child.eachComponent("removeModel"); }
             }
-            this.addedComponents.splice(this.addedComponents.indexOf(child), 1);
+            this.addedObjects.splice(this.addedObjects.indexOf(child), 1);
             child = child.element;
         }
         if (this.element.contains(child)) {
@@ -180,9 +180,9 @@ View.Base.prototype.eachComponent = function (method, arg1, arg2, arg3, arg4, ar
 };
 
 View.Base.prototype.eachAddedComponent = function (method, arg1, arg2, arg3, arg4, arg5) {
-    var index = this.addedComponents.length -1;
+    var index = this.addedObjects.length -1;
     for (index; index > -1; index --) {
-        this.addedComponents[index][method](arg1, arg2, arg3, arg4, arg5);
+        this.addedObjects[index][method](arg1, arg2, arg3, arg4, arg5);
     }
     return this;
 };

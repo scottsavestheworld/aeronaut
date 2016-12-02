@@ -43,7 +43,7 @@ Module.App = function (moduleData) {
         login      : $$.Login(),
         navigation : $$.Navigation(),
         results    : $$.Results(),
-        details    : $$.Details(),
+//        details    : $$.Details(),
 //        search    : $$.Search()
     };
 
@@ -148,7 +148,7 @@ Module.App.prototype.loginSuccessful = function () {
 
     m.navigation.addTo(c.main).toggle("active", true);
     m.results.addTo(c.main);
-    m.details.addTo(c.main).toggle("active", true);
+//    m.details.addTo(c.main).toggle("active", true);
     c.main.toggle("active", true);
 
     m.results.updateRoster(dummydata);
@@ -361,7 +361,7 @@ Module.Login.prototype.submit = function (e) {
 };
 
 Module.Login.prototype.setFocus = function () {
-    var formObjects = this.components.loginForm.addedComponents;
+    var formObjects = this.components.loginForm.addedObjects;
     var i = 0, total = formObjects.length;
     for (i; i < total; i++) {
         if (formObjects[i].subtype === "input" && !formObjects[i].toggles.active) {
@@ -574,7 +574,7 @@ Module.Results.prototype.updateRoster = function (rosterObject) {
 Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
     var thisModule  = this;
     var list        = this.components[modelObject.subtype + "sResults"];
-    var listItems   = list.addedComponents;
+    var listItems   = list.addedObjects;
     var listHasCard = false;
 
     var i = 0, total = listItems.length;
