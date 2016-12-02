@@ -38,23 +38,19 @@ Module.App = function (moduleData) {
         share        : {local :{}, remote: {}}
     };
 
-    this.modules = {
+    this.parts = {
+        // Components
+        top      : $$.Basic({ element: "<top>" }),
+        main     : $$.Basic({ element: "<main>" }),
+        bottom   : $$.Basic({ element: "<bottom>" }),
+        fade     : $$.Basic({ element: "<app-fade>" }),
+        settings : $$.Image({ element: "<settings-dropdown>", image: $$.images.settingsLight }), // make this a module
+        // Modules
         devices    : $$.Devices(),
         login      : $$.Login(),
         navigation : $$.Navigation(),
         results    : $$.Results(),
-//        details    : $$.Details(),
-//        search    : $$.Search()
-    };
-
-    this.parts = {
-        top      : $$.Basic({ element: "<top>" }),
-        main     : $$.Basic({ element: "<main>" }),
-        bottom   : $$.Basic({ element: "<bottom>" }),
-        nav      : $$.Basic({ element: "<nav>" }),
-        main     : $$.Basic({ element: "<main>" }),
-        fade     : $$.Basic({ element: "<app-fade>" }),
-        settings : $$.Image({ element: "<settings-dropdown>", image: $$.images.settingsLight })
+        details    : $$.Details(),
     };
 
     this.properties = {
@@ -83,8 +79,8 @@ Module.App.prototype.updateProperty = function (propertyName, propertyValue) {
         var value = $$[type](propertyValue);
         if (value) {
             this.properties[propertyName] = value;
-            for (var module in this.modules) {
-                this.modules[module].updateProperty(propertyName, propertyValue);
+            for (var part in this.parts) {
+                this.parts[part].updateProperty(propertyName, propertyValue);
             }
         }
         if (propertyName === "background") {
@@ -95,11 +91,11 @@ Module.App.prototype.updateProperty = function (propertyName, propertyValue) {
 };
 
 Module.App.prototype.assemble = function () {
-    var c = this.parts;
+    var parts = this.parts;
 
-    this.add(c.top.add(c.settings))
-        .add(c.main)
-        .add(c.bottom);
+    this.add(parts.top.add(parts.settings))
+        .add(parts.main)
+        .add(parts.bottom);
 
     return this;
 };
@@ -109,8 +105,8 @@ Module.App.prototype.registerCallback = function (callbackName) {
 
 
 Module.App.prototype.signalModules = function (signalObject ) {
-    for (var module in this.modules) {
-        this.modules[module].signal(signalObject);
+    for (var part in this.parts) {
+        this.parts[part].signal(signalObject);
     }
 
     return this;
@@ -130,8 +126,8 @@ Module.App.prototype.start = function () {
     var loginModule = this.modules.login;
 
     this.add(this.parts.fade);
-    this.modules.devices.addTo(this.parts.top, 0).toggle("active", true, 100);
-    this.modules.login.addTo(this.parts.main).toggle("active", true, 100);
+    this.parts.devices.addTo(this.parts.top, 0).toggle("active", true, 100);
+    this.parts.login.addTo(this.parts.main).toggle("active", true, 100);
     this.remove($$.getElement("#initialize-app"));
 
     API.onAppStart();
@@ -140,18 +136,17 @@ Module.App.prototype.start = function () {
 };
 
 Module.App.prototype.loginSuccessful = function () {
-    var c = this.parts;
-    var m = this.modules;
+    var parts = this.parts;
 
-    m.login.remove();
-    c.fade.remove();
+    parts.login.remove();
+    parts.fade.remove();
 
-    m.navigation.addTo(c.main).toggle("active", true);
-    m.results.addTo(c.main);
-//    m.details.addTo(c.main).toggle("active", true);
-    c.main.toggle("active", true);
+    parts.navigation.addTo(parts.main).toggle("active", true);
+    parts.results.addTo(parts.main);
+    parts.details.addTo(parts.main).toggle("active", true);
+    parts.main.toggle("active", true);
 
-    m.results.updateRoster(dummydata);
+    parts.results.updateRoster(dummydata);
 
     app.toggleNavigation("contacts");
 
@@ -185,29 +180,29 @@ Module.Devices = function (moduleData) {
 $$.extendClass(Module.Devices, Module.Base);
 
 Module.Devices.prototype.assemble = function () {
-    var c = this.parts;
-    this.add(c.microphone).add(c.selfView).add(c.camera);
+    var parts = this.parts;
+    this.add(parts.microphone).add(parts.selfView).add(parts.camera);
 
     return this;
 };
 
 Module.Devices.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.parts;
-    c.selfView   .addEvent("click", function (e) { thisModule.toggle("selected") });
-    c.microphone .addEvent("click", function (e) { thisModule.toggleMute("microphone"); });
-    c.camera     .addEvent("click", function (e) { thisModule.toggleMute("camera"); });
+    var parts = this.parts;
+    parts.selfView   .addEvent("click", function (e) { thisModule.toggle("selected") });
+    parts.microphone .addEvent("click", function (e) { thisModule.toggleMute("microphone"); });
+    parts.camera     .addEvent("click", function (e) { thisModule.toggleMute("camera"); });
 
     return this;
 };
 
 Module.Devices.prototype.toggleMute = function (deviceName) {
-    var c = this.parts;
+    var parts = this.parts;
     var state = "On";
 
-    c[deviceName].toggle("muted");
+    parts[deviceName].toggle("muted");
 
-    if (c[deviceName].toggles.muted) {
+    if (parts[deviceName].toggles.muted) {
         state = "Off";
     }
 
@@ -219,7 +214,7 @@ Module.Devices.prototype.toggleMute = function (deviceName) {
         }
     }
 
-    c[deviceName].updateProperty("image", $$.images[deviceName + state]);
+    parts[deviceName].updateProperty("image", $$.images[deviceName + state]);
 
     return this;
 };
@@ -291,67 +286,67 @@ Module.Login.prototype.updateProperty = function (propertyName, propertyValue) {
 };
 
 Module.Login.prototype.assemble = function () {
-    var c = this.parts;
-    this.add(c.loginMenu
-            .add(c.appLogo)
-            .add(c.loginForm
-                .add(c.welcomeMessage)
-                .add(c.server).add(c.username).add(c.password)
-                .add(c.autoLogin)
-                .add(c.submit)
+    var parts = this.parts;
+    this.add(parts.loginMenu
+            .add(parts.appLogo)
+            .add(parts.loginForm
+                .add(parts.welcomeMessage)
+                .add(parts.server).add(parts.username).add(parts.password)
+                .add(parts.autoLogin)
+                .add(parts.submit)
             )
-        ).add(c.backgroundBlur);
+        ).add(parts.backgroundBlur);
 
     var server   = $$.string(localStorage.server, "");
     var username = $$.string(localStorage.username, "");
 
-    c.server.updateProperty("value", server).updateProperty("readonly", server ? "true" : "")
+    parts.server.updateProperty("value", server).updateProperty("readonly", server ? "true" : "")
         .updateProperty("maxlength", this.properties.serverMax);
-    c.username.updateProperty("value", username)
+    parts.username.updateProperty("value", username)
         .updateProperty("maxlength", this.properties.usernameMax);
-    c.submit.toggle("disabled", true)
+    parts.submit.toggle("disabled", true)
         .updateProperty("maxlength", this.properties.passwordMax);
 
-    if (localStorage.autoLogin === "true") { c.autoLogin.input.setAttribute("checked", true); }
+    if (localStorage.autoLogin === "true") { parts.autoLogin.input.setAttribute("checked", true); }
 
     return this;
 };
 
 Module.Login.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.parts;
-    c.server    .addEvent("dblclick",  function (e) { c.server.updateProperty("readonly", "").input.select(); });
-    c.loginForm .addEvent("keyup",  function (e) { thisModule.verifyInput(e); });
-    c.loginForm .addEvent("input",  function (e) { thisModule.verifyInput(e); });
-    c.loginForm .addEvent("submit", function (e) { thisModule.submit(e); });
+    var parts = this.parts;
+    parts.server    .addEvent("dblclick", function (e) { parts.server.updateProperty("readonly", "").input.select(); });
+    parts.loginForm .addEvent("keyup",    function (e) { thisModule.verifyInput(e); });
+    parts.loginForm .addEvent("input",    function (e) { thisModule.verifyInput(e); });
+    parts.loginForm .addEvent("submit",   function (e) { thisModule.submit(e); });
 
     return this;
 };
 
 Module.Login.prototype.verifyInput = function () {
-    var c = this.parts;
-    var p = this.properties;
-    var server       = c.server.input.value;
-    var username     = c.username.input.value;
-    var password     = c.password.input.value;
+    var parts = this.parts;
+    var props = this.properties;
+    var server       = parts.server.input.value;
+    var username     = parts.username.input.value;
+    var password     = parts.password.input.value;
     var dotIndex     = server.indexOf(".") > -1 ? server.indexOf(".") : server.indexOf(":");
-    var inputIsValid = server.length >= p.serverMin && (dotIndex > -1 && dotIndex < server.length - 1)
+    var inputIsValid = server.length >= props.serverMin && (dotIndex > -1 && dotIndex < server.length - 1)
 
-    c.server.toggle("active", inputIsValid);
-    c.username.toggle("active", (username.length >= p.usernameMin));
-    c.password.toggle("active", (password.length >= p.passwordMin));
-    c.submit.toggle("disabled", !(c.server.toggles.active && c.username.toggles.active && c.password.toggles.active));
+    parts.server.toggle("active", inputIsValid);
+    parts.username.toggle("active", (username.length >= props.usernameMin));
+    parts.password.toggle("active", (password.length >= props.passwordMin));
+    parts.submit.toggle("disabled", !(parts.server.toggles.active && parts.username.toggles.active && parts.password.toggles.active));
 
     return this;
 };
 
 Module.Login.prototype.submit = function (e) {
-    var c = this.parts;
-    if (!c.submit.toggles.disabled) {
-        var saveCredentials = c.autoLogin.input.checked;
+    var parts = this.parts;
+    if (!parts.submit.toggles.disabled) {
+        var saveCredentials = parts.autoLogin.input.checked;
         // ** LOGIN API GOES HERE **
-        localStorage.server    = c.server.input.value;
-        localStorage.username  = saveCredentials ? c.username.input.value : "";
+        localStorage.server    = parts.server.input.value;
+        localStorage.username  = saveCredentials ? parts.username.input.value : "";
         localStorage.autoLogin = saveCredentials;
         this.loginSuccessful();
     }
@@ -418,23 +413,23 @@ Module.Navigation = function (moduleData) {
 $$.extendClass(Module.Navigation, Module.Base);
 
 Module.Navigation.prototype.assemble = function () {
-    var c = this.parts;
-    this.add(c.search)
-        .add(c.contacts)
-        .add(c.rooms)
-        .add(c.meetings.add($$.Time({ format: "[D]", interval: "every day" })))
-        .add(c.alerts);
+    var parts = this.parts;
+    this.add(parts.search)
+        .add(parts.contacts)
+        .add(parts.rooms)
+        .add(parts.meetings.add($$.Time({ format: "[D]", interval: "every day" })))
+        .add(parts.alerts);
 
     return this;
 };
 
 Module.Navigation.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.parts;
-    var p = this.properties;
+    var parts = this.parts;
+    var props = this.properties;
 
-    for (var component in c) {
-        c[component].addEvent("click", function (event) {
+    for (var part in parts) {
+        parts[part].addEvent("click", function (event) {
             app.toggleNavigation(this.object.styleClass);
         });
     }
@@ -442,17 +437,17 @@ Module.Navigation.prototype.addEvents = function () {
     this.addSignal("TOGGLE_NAVIGATION", function (signalObject) {
         var data = $$.object(signalObject, {});
         var isSelected = true;
-        if (c.hasOwnProperty(data.info)) {
-            if (data.info !== p.selectedNav) {
-                if (c[p.selectedNav]) {
-                    c[p.selectedNav].toggle("selected", false);
+        if (parts.hasOwnProperty(data.info)) {
+            if (data.info !== props.selectedNav) {
+                if (part[props.selectedNav]) {
+                    parts[props.selectedNav].toggle("selected", false);
                 }
-                p.selectedNav = data.info;
+                props.selectedNav = data.info;
             } else {
-                p.selectedNav = "";
+                props.selectedNav = "";
                 isSelected = false;
             }
-            c[data.info].toggle("selected", isSelected);
+            parts[data.info].toggle("selected", isSelected);
         }
     });
 
@@ -503,37 +498,37 @@ Module.Results = function (moduleData) {
 $$.extendClass(Module.Results, Module.Base);
 
 Module.Results.prototype.assemble = function () {
-    var c = this.parts;
-    this.add(c.search.add(c.searchHeader).add(c.searchResults))
-        .add(c.contacts.add(c.contactsHeader).add(c.contactsResults))
-        .add(c.rooms.add(c.roomsHeader).add(c.roomsResults))
-        .add(c.meetings.add(c.meetingsHeader).add(c.meetingsResults))
-        .add(c.alerts.add(c.alertsHeader).add(c.alertsResults));
-    c.meetingsHeader.parts.image.add($$.Time({ format: "[D]", interval: "every day" }));
+    var parts = this.parts;
+    this.add(parts.search.add(parts.searchHeader).add(parts.searchResults))
+        .add(parts.contacts.add(parts.contactsHeader).add(parts.contactsResults))
+        .add(parts.rooms.add(parts.roomsHeader).add(parts.roomsResults))
+        .add(parts.meetings.add(parts.meetingsHeader).add(parts.meetingsResults))
+        .add(parts.alerts.add(parts.alertsHeader).add(parts.alertsResults));
+    parts.meetingsHeader.parts.image.add($$.Time({ format: "[D]", interval: "every day" }));
 
     return this;
 };
 
 Module.Results.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.parts;
-    var p = this.properties;
+    var parts = this.parts;
+    var props = this.properties;
 
     this.addSignal("TOGGLE_NAVIGATION", function (signalObject) {
         var data = $$.object(signalObject, {});
         var isSelected = true;
-        if (c.hasOwnProperty(data.info)) {
-            if (data.info !== p.selectedNav) {
-                if (p.selectedNav) {
-                    c[p.selectedNav].toggle("selected", false);
+        if (parts.hasOwnProperty(data.info)) {
+            if (data.info !== props.selectedNav) {
+                if (props.selectedNav) {
+                    parts[p.selectedNav].toggle("selected", false);
                 }
-                p.selectedNav = data.info;
+                props.selectedNav = data.info;
             } else {
-                p.selectedNav = "";
+                props.selectedNav = "";
                 isSelected = false;
             }
             thisModule.toggle("selected", isSelected);
-            c[data.info].toggle("selected", isSelected);
+            parts[data.info].toggle("selected", isSelected);
         }
     });
 
@@ -541,13 +536,13 @@ Module.Results.prototype.addEvents = function () {
         var data = $$.object(signalObject, {});
         var isSelected = true;
         if (data.origin.isView) {
-            if (data.origin !== p.selectedResult) {
-                if (p.selectedResult) {
-                    p.selectedResult.toggle("selected", false);
+            if (data.origin !== props.selectedResult) {
+                if (props.selectedResult) {
+                    props.selectedResult.toggle("selected", false);
                 }
-                p.selectedResult = data.origin;
+                props.selectedResult = data.origin;
             } else {
-                p.selectedResult = null;
+                props.selectedResult = null;
                 isSelected = false;
             }
             data.origin.toggle("selected", isSelected);
