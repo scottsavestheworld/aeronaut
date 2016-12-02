@@ -94,7 +94,7 @@ Component.List.prototype.sort = function (sortProperty, sortByStatus, statusOrde
         statusSort();
     }
 
-    this.eachAddedComponent("add");
+    this.eachAddedObject("add");
 };
 
 Component.List.prototype.updateProperty = function (propertyName, propertyValue) {
@@ -217,19 +217,19 @@ Component.Header = function (dataObject) {
 
     Component.Header.superclass.constructor.call(this);
 
-    this.components = {
+    this.parts = {
         image : $$.Image({ image: data.image }),
         text  : $$.Text({ text: data.text })
     };
 
-    this.add(this.components.image)
-        .add(this.components.text);
+    this.add(this.parts.image)
+        .add(this.parts.text);
 };
 
 $$.extendClass(Component.Header, Component.Base);
 
 Component.Header.prototype.updateProperty = function (propertyName, propertyValue) {
-    this.updateComponents(propertyName, propertyValue);
+    this.updateParts(propertyName, propertyValue);
     return this;
 };
 
@@ -570,7 +570,7 @@ Component.Card = function (modelObject, dataObject) {
     Component.Card.superclass.constructor.call(this);
 
     if (model.subtype) {
-        this[model.subtype + "Components"](info);
+        this[model.subtype + "Parts"](info);
     }
 
     this.addModel(model);
@@ -583,7 +583,7 @@ $$.extendClass(Component.Card, Component.Base);
 Component.Card.prototype.updateProperty = function (propertyName, propertyValue) {
     if (this.properties.hasOwnProperty(propertyName)) {
         this.properties[propertyName] = propertyValue;
-        this.updateComponents(propertyName, propertyValue);
+        this.updateParts(propertyName, propertyValue);
 
         if (propertyName === "name" || propertyName === "firstName" || propertyName == "lastName") {
             this.updateNameAttribute();
@@ -602,8 +602,8 @@ Component.Card.prototype.updateNameAttribute = function () {
     this.element.setAttribute("name", (name + " " + firstName + " " + lastName).trim());
 };
 
-Component.Card.prototype.contactComponents = function (info) {
-    this.components = {
+Component.Card.prototype.contactParts = function (info) {
+    this.parts = {
         avatar  : $$.Avatar(info),
         status  : $$.Status(info),
         content : $$.Basic({element: "<content>"}),
@@ -620,12 +620,12 @@ Component.Card.prototype.contactComponents = function (info) {
     }
 
     this.updateNameAttribute();
-    this.add(this.components.avatar.add(this.components.status))
-        .add(this.components.content.add(this.components.name));
+    this.add(this.parts.avatar.add(this.parts.status))
+        .add(this.parts.content.add(this.parts.name));
 };
 
-Component.Card.prototype.roomComponents = function (info) {
-    this.components = {
+Component.Card.prototype.roomParts = function (info) {
+    this.parts = {
         avatar  : $$.Avatar(info),
         content : $$.Basic({element: "<content>"}),
         name    : $$.Name(info)
@@ -638,13 +638,13 @@ Component.Card.prototype.roomComponents = function (info) {
     }
 
     this.updateNameAttribute();
-    this.add(this.components.avatar);
-    this.add(this.components.content);
-    this.components.content.add(this.components.name);
+    this.add(this.parts.avatar);
+    this.add(this.parts.content);
+    this.parts.content.add(this.parts.name);
 };
 
-Component.Card.prototype.meetingComponents = function (info) {
-    this.components = {
+Component.Card.prototype.meetingParts = function (info) {
+    this.parts = {
         content : $$.Basic("<content>"),
         name    : $$.Name(info)
     };
@@ -657,8 +657,8 @@ Component.Card.prototype.meetingComponents = function (info) {
     }
 
     this.updateNameAttribute();
-    this.add(this.components.avatar);
-    this.components.avatar.add(this.components.status);
-    this.add(this.components.content);
-    this.components.content.add(this.components.name);
+    this.add(this.parts.avatar);
+    this.parts.avatar.add(this.parts.status);
+    this.add(this.parts.content);
+    this.parts.content.add(this.parts.name);
 };

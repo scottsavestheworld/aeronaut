@@ -1,14 +1,14 @@
 var View = {};
 
 View.Base = function () {
-    this.isView          = true;
-    this.parent          = null;
-    this.model           = null;
-    this.element.object  = this;
-    this.components      = {};
-    this.properties      = {};
-    this.addedObjects = [];
-    this.signals         = {};
+    this.isView         = true;
+    this.parent         = null;
+    this.model          = null;
+    this.element.object = this;
+    this.parts          = {};
+    this.properties     = {};
+    this.addedObjects   = [];
+    this.signals        = {};
 
     this.toggles = {
         active     : false,
@@ -138,7 +138,7 @@ View.Base.prototype.remove = function (child, destroyChild) {
                 child.parent = null;
                 if (child.freeze)     { child.freeze(); }
                 if (child.model)      { child.model.removeView(child); }
-                if (child.components) { child.eachComponent("removeModel"); }
+                if (child.parts) { child.eachPart("removeModel"); }
             }
             this.addedObjects.splice(this.addedObjects.indexOf(child), 1);
             child = child.element;
@@ -171,15 +171,15 @@ View.Base.prototype.removeModel = function () {
     return this;
 };
 
-View.Base.prototype.eachComponent = function (method, arg1, arg2, arg3, arg4, arg5) {
+View.Base.prototype.eachPart = function (method, arg1, arg2, arg3, arg4, arg5) {
     var component;
-    for (component in this.components) {
-        this.components[component][method](arg1, arg2, arg3, arg4, arg5);
+    for (component in this.parts) {
+        this.parts[component][method](arg1, arg2, arg3, arg4, arg5);
     }
     return this;
 };
 
-View.Base.prototype.eachAddedComponent = function (method, arg1, arg2, arg3, arg4, arg5) {
+View.Base.prototype.eachAddedObject = function (method, arg1, arg2, arg3, arg4, arg5) {
     var index = this.addedObjects.length -1;
     for (index; index > -1; index --) {
         this.addedObjects[index][method](arg1, arg2, arg3, arg4, arg5);
@@ -187,10 +187,10 @@ View.Base.prototype.eachAddedComponent = function (method, arg1, arg2, arg3, arg
     return this;
 };
 
-View.Base.prototype.updateComponents = function (propertyName, propertyValue) {
+View.Base.prototype.updateParts = function (propertyName, propertyValue) {
     var component;
-    for (var component in this.components) {
-        this.components[component].updateProperty(propertyName, propertyValue);
+    for (var component in this.parts) {
+        this.parts[component].updateProperty(propertyName, propertyValue);
     }
     return this;
 };

@@ -47,7 +47,7 @@ Module.App = function (moduleData) {
 //        search    : $$.Search()
     };
 
-    this.components = {
+    this.parts = {
         top      : $$.Basic({ element: "<top>" }),
         main     : $$.Basic({ element: "<main>" }),
         bottom   : $$.Basic({ element: "<bottom>" }),
@@ -95,7 +95,7 @@ Module.App.prototype.updateProperty = function (propertyName, propertyValue) {
 };
 
 Module.App.prototype.assemble = function () {
-    var c = this.components;
+    var c = this.parts;
 
     this.add(c.top.add(c.settings))
         .add(c.main)
@@ -129,9 +129,9 @@ Module.App.prototype.toggleNavigation = function (sectionName) {
 Module.App.prototype.start = function () {
     var loginModule = this.modules.login;
 
-    this.add(this.components.fade);
-    this.modules.devices.addTo(this.components.top, 0).toggle("active", true, 100);
-    this.modules.login.addTo(this.components.main).toggle("active", true, 100);
+    this.add(this.parts.fade);
+    this.modules.devices.addTo(this.parts.top, 0).toggle("active", true, 100);
+    this.modules.login.addTo(this.parts.main).toggle("active", true, 100);
     this.remove($$.getElement("#initialize-app"));
 
     API.onAppStart();
@@ -140,7 +140,7 @@ Module.App.prototype.start = function () {
 };
 
 Module.App.prototype.loginSuccessful = function () {
-    var c = this.components;
+    var c = this.parts;
     var m = this.modules;
 
     m.login.remove();
@@ -173,7 +173,7 @@ Module.Devices = function (moduleData) {
 
     Module.Devices.superclass.constructor.call(this);
 
-    this.components = {
+    this.parts = {
         microphone : $$.Image({ element: "<device-toggle>", styleClass: "microphone", image: $$.images.microphoneOn }),
         selfView   : $$.Basic({ element: "<self-view>" }),
         camera     : $$.Image({ element: "<device-toggle>", styleClass: "camera", image: $$.images.cameraOn }),
@@ -185,7 +185,7 @@ Module.Devices = function (moduleData) {
 $$.extendClass(Module.Devices, Module.Base);
 
 Module.Devices.prototype.assemble = function () {
-    var c = this.components;
+    var c = this.parts;
     this.add(c.microphone).add(c.selfView).add(c.camera);
 
     return this;
@@ -193,7 +193,7 @@ Module.Devices.prototype.assemble = function () {
 
 Module.Devices.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.components;
+    var c = this.parts;
     c.selfView   .addEvent("click", function (e) { thisModule.toggle("selected") });
     c.microphone .addEvent("click", function (e) { thisModule.toggleMute("microphone"); });
     c.camera     .addEvent("click", function (e) { thisModule.toggleMute("camera"); });
@@ -202,7 +202,7 @@ Module.Devices.prototype.addEvents = function () {
 };
 
 Module.Devices.prototype.toggleMute = function (deviceName) {
-    var c = this.components;
+    var c = this.parts;
     var state = "On";
 
     c[deviceName].toggle("muted");
@@ -237,7 +237,7 @@ Module.Login = function (moduleData) {
 
     Module.Login.superclass.constructor.call(this);
 
-    this.components = {
+    this.parts = {
         loginMenu      : $$.Basic({ element: "<login-menu>" }),
         backgroundBlur : $$.Image({ element: "<background-blur>" }),
         appLogo        : $$.Image({ element: "<app-logo>", image: $$.images.appLogo }),
@@ -284,14 +284,14 @@ Module.Login.prototype.updateProperty = function (propertyName, propertyValue) {
             this.properties[propertyName] = value;
         }
         if (propertyName === "background") {
-            this.components.backgroundBlur.updateProperty("image", propertyValue);
+            this.parts.backgroundBlur.updateProperty("image", propertyValue);
         }
     }
     return this;
 };
 
 Module.Login.prototype.assemble = function () {
-    var c = this.components;
+    var c = this.parts;
     this.add(c.loginMenu
             .add(c.appLogo)
             .add(c.loginForm
@@ -319,7 +319,7 @@ Module.Login.prototype.assemble = function () {
 
 Module.Login.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.components;
+    var c = this.parts;
     c.server    .addEvent("dblclick",  function (e) { c.server.updateProperty("readonly", "").input.select(); });
     c.loginForm .addEvent("keyup",  function (e) { thisModule.verifyInput(e); });
     c.loginForm .addEvent("input",  function (e) { thisModule.verifyInput(e); });
@@ -329,7 +329,7 @@ Module.Login.prototype.addEvents = function () {
 };
 
 Module.Login.prototype.verifyInput = function () {
-    var c = this.components;
+    var c = this.parts;
     var p = this.properties;
     var server       = c.server.input.value;
     var username     = c.username.input.value;
@@ -346,7 +346,7 @@ Module.Login.prototype.verifyInput = function () {
 };
 
 Module.Login.prototype.submit = function (e) {
-    var c = this.components;
+    var c = this.parts;
     if (!c.submit.toggles.disabled) {
         var saveCredentials = c.autoLogin.input.checked;
         // ** LOGIN API GOES HERE **
@@ -361,7 +361,7 @@ Module.Login.prototype.submit = function (e) {
 };
 
 Module.Login.prototype.setFocus = function () {
-    var formObjects = this.components.loginForm.addedObjects;
+    var formObjects = this.parts.loginForm.addedObjects;
     var i = 0, total = formObjects.length;
     for (i; i < total; i++) {
         if (formObjects[i].subtype === "input" && !formObjects[i].toggles.active) {
@@ -400,7 +400,7 @@ Module.Navigation = function (moduleData) {
 
     Module.Navigation.superclass.constructor.call(this);
 
-    this.components = {
+    this.parts = {
         search   : $$.Image({ image: $$.images.searchLight, styleClass: "search" }),
         contacts : $$.Image({ image: $$.images.contactsLight, styleClass: "contacts" }),
         rooms    : $$.Image({ image: $$.images.roomsLight, styleClass: "rooms" }),
@@ -418,7 +418,7 @@ Module.Navigation = function (moduleData) {
 $$.extendClass(Module.Navigation, Module.Base);
 
 Module.Navigation.prototype.assemble = function () {
-    var c = this.components;
+    var c = this.parts;
     this.add(c.search)
         .add(c.contacts)
         .add(c.rooms)
@@ -430,7 +430,7 @@ Module.Navigation.prototype.assemble = function () {
 
 Module.Navigation.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.components;
+    var c = this.parts;
     var p = this.properties;
 
     for (var component in c) {
@@ -472,7 +472,7 @@ Module.Results = function (moduleData) {
 
     Module.Results.superclass.constructor.call(this);
 
-    this.components = {
+    this.parts = {
         search          : $$.Basic({ element: "<section>", styleClass: "search" }),
         contacts        : $$.Basic({ element: "<section>", styleClass: "contacts" }),
         rooms           : $$.Basic({ element: "<section>", styleClass: "rooms" }),
@@ -503,20 +503,20 @@ Module.Results = function (moduleData) {
 $$.extendClass(Module.Results, Module.Base);
 
 Module.Results.prototype.assemble = function () {
-    var c = this.components;
+    var c = this.parts;
     this.add(c.search.add(c.searchHeader).add(c.searchResults))
         .add(c.contacts.add(c.contactsHeader).add(c.contactsResults))
         .add(c.rooms.add(c.roomsHeader).add(c.roomsResults))
         .add(c.meetings.add(c.meetingsHeader).add(c.meetingsResults))
         .add(c.alerts.add(c.alertsHeader).add(c.alertsResults));
-    c.meetingsHeader.components.image.add($$.Time({ format: "[D]", interval: "every day" }));
+    c.meetingsHeader.parts.image.add($$.Time({ format: "[D]", interval: "every day" }));
 
     return this;
 };
 
 Module.Results.prototype.addEvents = function () {
     var thisModule = this;
-    var c = this.components;
+    var c = this.parts;
     var p = this.properties;
 
     this.addSignal("TOGGLE_NAVIGATION", function (signalObject) {
@@ -565,7 +565,7 @@ Module.Results.prototype.updateRoster = function (rosterObject) {
         for (i; i < total; i++) {
             this.addRosterCard($$[$$.capitalize(rosterCategory)](roster[rosterCategory][i]));
         }
-        this.components[rosterCategory + "sResults"].sort();
+        this.parts[rosterCategory + "sResults"].sort();
     }
 
     return this;
@@ -573,7 +573,7 @@ Module.Results.prototype.updateRoster = function (rosterObject) {
 
 Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
     var thisModule  = this;
-    var list        = this.components[modelObject.subtype + "sResults"];
+    var list        = this.parts[modelObject.subtype + "sResults"];
     var listItems   = list.addedObjects;
     var listHasCard = false;
 

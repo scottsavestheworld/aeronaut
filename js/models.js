@@ -8,18 +8,17 @@ Model.Base = function () {
     this.archetype  = "model";
     this.isModel    = true;
     this.app        = app;
-    this.components = [];
-    this.modules    = [];
+    this.views      = [];
 
     app.models[this.subtype][this.ID] = this;
 };
 
 Model.Base.prototype.destroy = function () {
-    this.resetAllRelationships().removeAllComponents();
+    this.resetAllRelationships().removeAllViews();
     if (app.models[this.subtype].hasOwnProperty(this.ID)) {
         delete app.models[this.subtype][this.ID];
     }
-    this.ID = this.subtype = this.properties = this.relationships = this.components = null;
+    this.ID = this.subtype = this.properties = this.relationships = this.views = null;
     Log.write("destroy", this, "OK");
     return this;
 }
@@ -29,7 +28,7 @@ Model.Base.prototype.updateProperty = function (propertyName, propertyValue) {
     if (this.properties.hasOwnProperty(propertyName)) {
         outcome = "OK";
         this.properties[propertyName] = propertyValue;
-        this.updateComponents(propertyName, propertyValue);
+        this.updateViews(propertyName, propertyValue);
     }
     Log.write("updateProperty", this, outcome, propertyName, propertyValue);
     return this;
@@ -49,10 +48,10 @@ Model.Base.prototype.addView = function (viewObject) {
     var archetype = $$.getArchetype(viewObject);
     if (archetype) {
         outcome = $$.capitalize(archetype) + " is already owned by this Model."
-        if (this[archetype + "s"].indexOf(viewObject) < 0) {
+        if (this.views.indexOf(viewObject) < 0) {
             outcome = "OK";
             viewObject.model = viewObject.element.model = this;
-            this[archetype + "s"].push(viewObject);
+            this.views.push(viewObject);
         }
     }
     Log.write("addView", this, outcome, $$.getSubtype(viewObject));
@@ -76,22 +75,22 @@ Model.Base.prototype.removeView = function (viewObject) {
     return this;
 };
 
-Model.Base.prototype.updateComponents = function (propertyName, propertyValue) {
+Model.Base.prototype.updateViews = function (propertyName, propertyValue) {
     var i = 0;
-    var total = this.components.length;
+    var total = this.views.length;
     for (i; i < total; i++) {
-        this.components[i].updateProperty(propertyName, propertyValue);
+        this.views[i].updateProperty(propertyName, propertyValue);
     }
-    Log.write("updateComponents", this, "OK", propertyName, propertyValue);
+    Log.write("updateViews", this, "OK", propertyName, propertyValue);
     return this;
 };
 
-Model.Base.prototype.removeAllComponents = function () {
-    var i = this.components.length - 1;
+Model.Base.prototype.removeAllViews = function () {
+    var i = this.views.length - 1;
     for (i; i > -1; i--) {
-        this.removeView(this.components[i]);
+        this.removeView(this.views[i]);
     }
-    Log.write("removeAllComponents", this, "OK");
+    Log.write("removeAllViews", this, "OK");
     return this;
 }
 

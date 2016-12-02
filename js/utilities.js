@@ -40,7 +40,7 @@ $$.Details = function (moduleData) {
 //    return new Module.Search(moduleData);
 //};
 
-//--------------------------------------------------------- Components
+//--------------------------------------------------------- Parts
 
 $$.Basic = function (dataObject) {
     return new Component.Basic(dataObject);
