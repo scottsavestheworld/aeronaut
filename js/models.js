@@ -63,12 +63,12 @@ Model.Base.prototype.removeView = function (viewObject) {
     var archetype = $$.getArchetype(viewObject);
     if (archetype) {
         outcome = $$.capitalize(archetype) + " is not owned by this Model.";
-        var index = this[archetype + "s"].indexOf(viewObject);
+        var index = this.views.indexOf(viewObject);
         if (index > -1) {
             outcome = "OK";
             viewObject.remove();
             viewObject.model = viewObject.element.model = null;
-            this[archetype + "s"].splice(index, 1);
+            this.views.splice(index, 1);
         }
     }
     Log.write("removeView", this, outcome, $$.getSubtype(viewObject));

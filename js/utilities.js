@@ -33,8 +33,8 @@ $$.Navigation = function (moduleData) {
 $$.Results = function (moduleData) {
     return new Module.Results(moduleData);
 };
-$$.Details = function (moduleData) {
-    return new Module.Details(moduleData);
+$$.Stage = function (moduleData) {
+    return new Module.Stage(moduleData);
 };
 //$$.Search = function (moduleData) {
 //    return new Module.Search(moduleData);
@@ -54,8 +54,8 @@ $$.Image = function (dataObject) {
 $$.Text = function (dataObject) {
      return new Component.Text(dataObject);
 };
-$$.Header = function (dataObject) {
-    return new Component.Header(dataObject);
+$$.Icon = function (dataObject) {
+    return new Component.Icon(dataObject);
 };
 $$.Input = function (dataObject) {
     return new Component.Input(dataObject);

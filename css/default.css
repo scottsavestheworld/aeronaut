@@ -79,7 +79,7 @@ input {
     font-size: 16px;
     font-weight: 400;
     color: #555;
-    background-color: rgba(255,255,255,0);
+    background-color: rgba(255,255,255,.9);
     border: none;
     border-radius: .5em;
     outline: none;
@@ -128,56 +128,9 @@ avatar {
     border-radius: .25em;
 }
 
-card {
-    position: relative;
-    display: block;
-    height: 3.25em;
-    padding: .375em .75em;
-    cursor: pointer;
-}
-
-card > avatar {
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: .5em;
-}
-
-
-card status {
-    width: .75em;
-    height: .75em;
-    border-radius: 50%;
-}
-
-card > status {
-    display: inline-block;
-    vertical-align: middle;
-    margin: auto .25em;
-}
-
-card > avatar > status {
-    position: absolute;
-    bottom: .875em;
-    right: -.375em;
-    border: 1px solid #F8F8F8;
-}
-
-card > content {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: .25em;
-    width: calc(100% - 4em);
-    max-height: 2.5em;
-}
-
-card > content > name {
-    display: block;
-    max-width: 100%;
-    font-size: .875em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+status {
+    background-color: rgba(0,0,0,.0);
+    transition: background-color .3s;
 }
 
 status.is-available {
@@ -190,7 +143,6 @@ status.is-busy {
 
 status.is-offline,
 status.is-unknown {
-    display: none;
 }
 
 /* ====== APP MODULE */
@@ -356,7 +308,7 @@ login {
     width: 37.5em;
     overflow: hidden;
     border-radius: .25em;
-    box-shadow: 1px 1px 3px rgba(0,0,0,.3);
+    box-shadow: 1px 1px 6px rgba(0,0,0,.3);
     transition: opacity .4s;
 }
 
@@ -473,11 +425,11 @@ login input:focus {
 }
 
 login form-input.is-active input {
-    box-shadow: 0 0 0 1px rgba(26,170,0,1);
+    box-shadow: 0 0 0 1px #1A0;
 }
 
 login form-input.is-active input:focus {
-    box-shadow: 0 0 0 3px rgba(26,170,0,1);
+    box-shadow: 0 0 0 3px #1A0;
 }
 
 login form-input input[type=text]:read-only {
@@ -649,6 +601,63 @@ results list {
     overflow: auto;
 }
 
+results card {
+    position: relative;
+    display: block;
+    height: 3.25em;
+    padding: .375em .75em;
+    cursor: pointer;
+}
+
+results card > avatar {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: .5em;
+}
+
+
+results card status {
+    width: .75em;
+    height: .75em;
+    border-radius: 50%;
+}
+
+results card > status {
+    display: inline-block;
+    vertical-align: middle;
+    margin: auto .25em;
+}
+
+results card > avatar > status {
+    position: absolute;
+    bottom: .875em;
+    right: -.375em;
+    border: 1px solid #F8F8F8;
+}
+
+results card > avatar > status.is-offline,
+results card > avatar > status.is-unknown {
+    display: none;
+}
+
+results card > content {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: .25em;
+    width: calc(100% - 4em);
+    max-height: 2.5em;
+}
+
+results card > content > name {
+    display: block;
+    max-width: 100%;
+    font-size: .875em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 results section.is-selected card.is-selected {
     color: #FFF;
 }
@@ -660,11 +669,10 @@ results section.is-selected card.is-selected avatar {
 
 results section.search input {
     width: 100%;
-    outline: none;
 }
 
 results section.search input:focus {
-    box-shadow: 0 0 0 3px #567;/*#30A7D9*/
+    box-shadow: 0 0 0 3px rgba(0,0,0,.3);
 }
 
 results section.contacts avatar {
@@ -672,7 +680,7 @@ results section.contacts avatar {
 }
 
 results section.contacts.is-selected card.is-selected avatar status {
-    border: 1px solid #090;
+    border: 1px solid #1A0;
 }
 
 navigation image.is-selected,
@@ -682,7 +690,7 @@ results section.is-selected card.is-selected {
 
 navigation image.contacts.is-selected,
 results section.contacts.is-selected card.is-selected {
-    background-color: #090;
+    background-color: #1A0;
 }
 
 navigation image.rooms.is-selected,
@@ -695,9 +703,92 @@ results section.meetings.is-selected card.is-selected {
     background-color: #099;
 }
 
-/* ====== DETAILS MODULE */
+/* ====== INFORMATION MODULE */
 
-details-module {
+stage {
+    display: flex;
     flex: 1 0 auto;
-    height: 100%
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+stage card {
+    display: inline-block;
+    width: 30em;
+    background-color: rgba(255,255,255,.95);
+    border-radius: .25em;
+    box-shadow: 1px 1px 6px rgba(0,0,0,.3);
+    transition: opacity .4s;
+}
+
+stage card avatar {
+    margin: .5em;
+    font-size: 2em;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+stage card content {
+    display: inline-block;
+    vertical-align: middle;
+    width: 19em;
+    padding-right: 1em;
+}
+
+stage card call {
+    display: inline-block;
+    vertical-align: middle;
+    width: 3em;
+    height: 3em;
+    background-size: 2.5em;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-color: #1A0;
+    border-radius: 50%;
+}
+
+stage card name {
+    display:  block;
+    padding-bottom: .25em;
+    font-size: 1.5em;
+}
+
+stage card status {
+    display: inline-block;
+    vertical-align: middle;
+    width: 1em;
+    height: 1em;
+    margin-right: .5em;
+    border-radius: 50%;
+    background-color: #A5ABB0;
+}
+
+stage card status-text {
+    display: inline-block;
+    vertical-align: middle;
+    text-transform: capitalize;
+}
+
+stage card buttons {
+    display: flex;
+    width: 100%;
+    padding: 1em;
+}
+
+stage card buttons icon {
+    flex: 1 0 auto;
+    text-align: center;
+}
+
+stage card buttons icon image {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    
+}
+
+stage card buttons icon text {
+    display: block;
+    font-size: .75em;
 }

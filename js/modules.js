@@ -50,7 +50,7 @@ Module.App = function (moduleData) {
         login      : $$.Login(),
         navigation : $$.Navigation(),
         results    : $$.Results(),
-        details    : $$.Details(),
+        stage      : $$.Stage(),
     };
 
     this.properties = {
@@ -148,6 +148,7 @@ Module.App.prototype.loginSuccessful = function () {
     parts.main
         .add(parts.navigation)
         .add(parts.results)
+        .add(parts.stage)
         .toggle("active", true);
 
     parts.navigation.toggle("active", true, "left");
@@ -481,10 +482,10 @@ Module.Results = function (moduleData) {
         alerts          : $$.Basic({ element: "<section>", styleClass: "alerts" }),
 
         searchHeader    : $$.Basic({ element: "<header>" }),
-        contactsHeader  : $$.Header({ image: $$.images.contactsDark, text: "Contacts" }),
-        roomsHeader     : $$.Header({ image: $$.images.roomsDark,    text: "Rooms" }),
-        meetingsHeader  : $$.Header({ image: $$.images.meetingsDark, text: "Meetings" }),
-        alertsHeader    : $$.Header({ image: $$.images.alertsDark,   text: "Alerts" }),
+        contactsHeader  : $$.Icon({ element: "<header>", image: $$.images.contactsDark, text: "Contacts" }),
+        roomsHeader     : $$.Icon({ element: "<header>", image: $$.images.roomsDark,    text: "Rooms" }),
+        meetingsHeader  : $$.Icon({ element: "<header>", image: $$.images.meetingsDark, text: "Meetings" }),
+        alertsHeader    : $$.Icon({ element: "<header>", image: $$.images.alertsDark,   text: "Alerts" }),
 
         searchResults   : $$.List(),
         contactsResults : $$.List(),
@@ -493,7 +494,7 @@ Module.Results = function (moduleData) {
         alertsResults   : $$.List(),
 
         headerDate      : $$.Time({ format: "[D]", interval: "every day" }),
-        searchField     : $$.Input({ placeholder: "Search" })
+        searchField     : $$.Input({ placeholder: "Search", type: "search" })
     };
 
     this.properties = {
@@ -550,11 +551,13 @@ Module.Results.prototype.addEvents = function () {
         var data = $$.object(signalObject, {});
         var isSelected = true;
         if (data.origin.isView) {
+            app.parts.stage.eachAddedObject("remove", null, true);
             if (data.origin !== props.selectedResult) {
                 if (props.selectedResult) {
                     props.selectedResult.toggle("selected", false);
                 }
                 props.selectedResult = data.origin;
+                app.parts.stage.addCard(data.origin.model);
             } else {
                 props.selectedResult = null;
                 isSelected = false;
@@ -617,30 +620,30 @@ Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
 
 
 // ========================================================
-//                    DETAILS MODULE
+//                      STAGE MODULE
 // ========================================================
 
-Module.Details = function (moduleData, modelObject) {
+Module.Stage = function (moduleData) {
     var data        = $$.object(moduleData, {});
-    var model       = $$.object(modelObject, {});
-    var info        = model.isModel ? model.properties : model;
-    this.ID         = "details-module-" + (model.ID || Date.now());
-    this.subtype    = "details";
-    this.altClass   = model.subtype || "";
-    this.element    = $$.getElement(data.element || "<details-module>");
+    this.ID         = "-module-" + Date.now();
+    this.subtype    = "stage";
+    this.element    = $$.getElement(data.element || "<stage>");
     this.styleClass = $$.string(data.styleClass, "");
 
-    Module.Details.superclass.constructor.call(this);
-
-    this.addModel(model).assemble().addEvents();
+    Module.Stage.superclass.constructor.call(this);
 };
 
-$$.extendClass(Module.Details, Module.Base);
+$$.extendClass(Module.Stage, Module.Base);
 
-Module.Details.prototype.assemble = function () {
+Module.Stage.prototype.assemble = function (model) {
     return this;
 };
 
-Module.Details.prototype.addEvents = function () {
+Module.Stage.prototype.addEvents = function () {
     return this;
 };
+
+Module.Stage.prototype.addCard = function (modelObject) {
+    var newCard = $$.Card(modelObject, { size: "large" });
+    this.add(newCard);
+}

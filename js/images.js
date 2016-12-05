@@ -7,6 +7,7 @@ $$.images = {
     background0      : "img/backgrounds/daylight.jpg",
     background1      : "img/backgrounds/moonlight.jpg",
     background2      : "img/backgrounds/starlight.jpg",
+    callLight        : "img/call_light.svg",
     contactsDark     : "img/contacts_dark.svg",
     contactsLight    : "img/contacts_light.svg",
     cameraOff        : "img/camera_off.svg",
@@ -19,5 +20,7 @@ $$.images = {
     roomsLight       : "img/rooms_light.svg",
     searchDark       : "img/search_dark.svg",
     searchLight      : "img/search_light.svg",    
-    settingsLight    : "img/settings_light.svg"
+    settingsLight    : "img/settings_light.svg",
+    xDark            : "img/x_dark.svg",
+    xLight           : "img/x_light.svg"
 }

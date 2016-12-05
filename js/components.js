@@ -204,18 +204,18 @@ Component.Text.prototype.text = function (text) {
 
 
 // ========================================================
-//                     HEADER COMPONENT
+//                      ICON COMPONENT
 // ========================================================
 
-Component.Header = function (dataObject) {
+Component.Icon = function (dataObject) {
     var data        = $$.object(dataObject, {});
     var text        = $$.string(data.text, "");
     var image       = $$.string(data.image, "");
-    this.subtype    = "header";
-    this.element    = $$.getElement(data.element || "<header>");
+    this.subtype    = "icon";
+    this.element    = $$.getElement(data.element || "<icon>");
     this.styleClass = $$.string(data.styleClass, "");
 
-    Component.Header.superclass.constructor.call(this);
+    Component.Icon.superclass.constructor.call(this);
 
     this.parts = {
         image : $$.Image({ image: data.image }),
@@ -226,9 +226,9 @@ Component.Header = function (dataObject) {
         .add(this.parts.text);
 };
 
-$$.extendClass(Component.Header, Component.Base);
+$$.extendClass(Component.Icon, Component.Base);
 
-Component.Header.prototype.updateProperty = function (propertyName, propertyValue) {
+Component.Icon.prototype.updateProperty = function (propertyName, propertyValue) {
     this.updateParts(propertyName, propertyValue);
     return this;
 };
@@ -527,6 +527,7 @@ Component.Status = function (modelObject, dataObject) {
     Component.Status.superclass.constructor.call(this);
 
     this.properties = {
+        showText : $$.boolean(data.showText) || false,
         status : ""
     };
 
@@ -540,6 +541,8 @@ $$.extendClass(Component.Status, Component.Base);
 Component.Status.prototype.updateProperty = function (propertyName, propertyValue) {
     if (propertyName === "status") {
         this.status(propertyValue);
+    } else if (propertyName === "showText") {
+        this.showText(propertyValue);
     }
     return this;
 };
@@ -548,9 +551,20 @@ Component.Status.prototype.status = function (status) {
     status = this.properties.status = $$.string(status, "unknown");
     this.altClass = "is-" + status;
     this.updateStyleClass();
+    this.showText();
 
     return this.properties.status;
 };
+
+Component.Status.prototype.showText = function (boolean) {
+    var showText = $$.boolean(boolean, this.properties.showText);
+    this.properties.showText = showText;
+    if (showText) {
+        this.textNode.nodeValue = this.properties.status;
+    } else {
+        this.textNode.nodeValue = "";
+    }
+}
 
 
 // ========================================================
@@ -569,11 +583,45 @@ Component.Card = function (modelObject, dataObject) {
 
     Component.Card.superclass.constructor.call(this);
 
-    if (model.subtype) {
-        this[model.subtype + "Parts"](info);
+    this.properties = {
+        size         : $$.string(data.size, "small"),
+        name         : $$.string(info.name, ""),
+        firstName    : $$.string(info.firstName, ""),
+        lastName     : $$.string(info.lastName, ""),
+        image        : $$.string(info.image, ""),
+        status       : $$.string(info.status, "unknown"),
+        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
+        showInitials : $$.boolean(info.showInitials, false)
+    }
+    
+    this.attributes = {
+        size         : "string",
+        name         : "string",
+        firstName    : "string",
+        lastName     : "string",
+        image        : "string",
+        status       : "string",
+        defaultImage : "string",
+        showInitials : "boolean"
     }
 
-    this.addModel(model);
+    this.parts = {
+        avatar          : $$.Avatar(info),
+        name            : $$.Name(info),
+        status          : $$.Image({ element: "<status>", styleClass: "is-" + this.properties.status }),
+        statusText      : $$.Text({ element: "<status-text>", styleClass: "is-" + this.properties.status, text: this.properties.status }),
+        content         : $$.Basic({ element: "<content>" }),
+        call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
+        buttons         : $$.Basic({ element: "<buttons>" }),
+        scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", text: "Schedule a Meeting" }),
+        saveToContacts  : $$.Icon({ styleClass: "save-to-contacts", text: "Save to Contacts" })
+    };
+    
+    if (model.subtype) {
+        this[model.subtype + "Parts"](info, data);
+    }
+
+    this.addModel(model).updateNameAttribute();
 
 //    this.element.onclick = function (event) { thisCard.signal(event, thisCard, "CARD_CLICKED") };
 };
@@ -582,14 +630,21 @@ $$.extendClass(Component.Card, Component.Base);
 
 Component.Card.prototype.updateProperty = function (propertyName, propertyValue) {
     if (this.properties.hasOwnProperty(propertyName)) {
-        this.properties[propertyName] = propertyValue;
+        this.properties[propertyName] = $$[this.attributes[propertyName]](propertyValue, this.properties[propertyName]);
         this.updateParts(propertyName, propertyValue);
 
         if (propertyName === "name" || propertyName === "firstName" || propertyName == "lastName") {
             this.updateNameAttribute();
         }
-        else if (propertyName === "status" && this.parent && this.parent.isComponent && this.parent.subtype === "list") {
-            this.parent.sort();
+        else if (propertyName === "status") {
+            var status = $$.string(propertyValue, this.properties.status);
+
+            this.parts.status.updateStyleClass("is-" + status);
+            this.parts.statusText.updateStyleClass("is-" + status).updateProperty("text", status);
+
+            if (this.parent && this.parent.isComponent && this.parent.subtype === "list") {
+                this.parent.sort();
+            }
         }
     }
     return this;
@@ -600,47 +655,35 @@ Component.Card.prototype.updateNameAttribute = function () {
     var firstName = this.properties.firstName || "";
     var lastName  = this.properties.lastName  || "";
     this.element.setAttribute("name", (name + " " + firstName + " " + lastName).trim());
+
+    return this;
 };
 
-Component.Card.prototype.contactParts = function (info) {
-    this.parts = {
-        avatar  : $$.Avatar(info),
-        status  : $$.Status(info),
-        content : $$.Basic({element: "<content>"}),
-        name    : $$.Name(info)
-    };
-
-    this.properties = {
-        firstName    : $$.string(info.firstName, ""),
-        lastName     : $$.string(info.lastName, ""),
-        image        : $$.string(info.image, ""),
-        status       : $$.string(info.status, ""),
-        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
-        showInitials : $$.boolean(info.showInitials, false)
+Component.Card.prototype.contactParts = function () {
+    var parts = this.parts;
+    if (this.properties.size === "small") {
+        this.add(parts.avatar.add(parts.status))
+            .add(parts.content.add(parts.name));
+    } else {
+        this.add(parts.avatar)
+            .add(parts.content
+                .add(parts.name)
+                .add(parts.status)
+                .add(parts.statusText))
+            .add(parts.call)
+            .add(parts.buttons
+                 .add(parts.scheduleMeeting)
+                 .add(parts.saveToContacts));
     }
 
-    this.updateNameAttribute();
-    this.add(this.parts.avatar.add(this.parts.status))
-        .add(this.parts.content.add(this.parts.name));
+    return this;
 };
 
 Component.Card.prototype.roomParts = function (info) {
-    this.parts = {
-        avatar  : $$.Avatar(info),
-        content : $$.Basic({element: "<content>"}),
-        name    : $$.Name(info)
-    };
+    this.add(this.parts.avatar)
+        .add(this.parts.content.add(this.parts.name));
 
-    this.properties = {
-        name      : info.name   || "",
-        image     : info.image  || "",
-        status    : info.status || ""
-    }
-
-    this.updateNameAttribute();
-    this.add(this.parts.avatar);
-    this.add(this.parts.content);
-    this.parts.content.add(this.parts.name);
+    return this;
 };
 
 Component.Card.prototype.meetingParts = function (info) {
