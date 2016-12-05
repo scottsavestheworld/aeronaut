@@ -716,6 +716,7 @@ stage {
 stage card {
     display: inline-block;
     width: 30em;
+    overflow: hidden;
     background-color: rgba(255,255,255,.95);
     border-radius: .25em;
     box-shadow: 1px 1px 6px rgba(0,0,0,.3);
@@ -727,6 +728,7 @@ stage card avatar {
     font-size: 2em;
     display: inline-block;
     vertical-align: middle;
+    border-radius: .125em;
 }
 
 stage card content {
@@ -741,11 +743,12 @@ stage card call {
     vertical-align: middle;
     width: 3em;
     height: 3em;
-    background-size: 2.5em;
+    background-size: 1.5em;
     background-position: center center;
     background-repeat: no-repeat;
     background-color: #1A0;
-    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.3);
+    border-radius: .5em;
 }
 
 stage card name {
@@ -774,17 +777,19 @@ stage card buttons {
     display: flex;
     width: 100%;
     padding: 1em;
+    background-color: #2D333D;
 }
 
 stage card buttons icon {
-    flex: 1 0 auto;
+    flex: 1 1 50%;
     text-align: center;
+    color: rgba(255,255,255,.5);
 }
 
 stage card buttons icon image {
     display: inline-block;
-    width: 2em;
-    height: 2em;
+    width: 1.5em;
+    height: 1.5em;
     
 }
 

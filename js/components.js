@@ -613,8 +613,8 @@ Component.Card = function (modelObject, dataObject) {
         content         : $$.Basic({ element: "<content>" }),
         call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
         buttons         : $$.Basic({ element: "<buttons>" }),
-        scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", text: "Schedule a Meeting" }),
-        saveToContacts  : $$.Icon({ styleClass: "save-to-contacts", text: "Save to Contacts" })
+        scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsLight, text: "Schedule a Meeting" }),
+        addToContacts   : $$.Icon({ styleClass: "add-to-contacts", image: $$.images.contactsLight, text: "Add to Contacts" })
     };
     
     if (model.subtype) {
@@ -673,7 +673,7 @@ Component.Card.prototype.contactParts = function () {
             .add(parts.call)
             .add(parts.buttons
                  .add(parts.scheduleMeeting)
-                 .add(parts.saveToContacts));
+                 .add(parts.addToContacts));
     }
 
     return this;
