@@ -56,17 +56,11 @@ app-fade {
     height: 100%;
     width: 100%;
     z-index: 1000000;
-    animation: fade-out 1s ease 1s;
-    animation-fill-mode: forwards;
     pointer-events: none;
+    transition: opacity .5s ease .5s;
 }
-
-@-webkit-keyframes fade-out {
-    0% { opacity: 1 } 20% { opacity: 1 } 100% { opacity: 0 }
-}
-
-@-moz-keyframes fade-out {
-    0% { opacity: 1 } 20% { opacity: 1 } 100% { opacity: 0 }
+app-fade.is-active {
+    opacity: 0;
 }
 
 input {
@@ -192,6 +186,7 @@ status.is-unknown {
 top {
     position: relative;
     z-index: 4;
+    top: -4em;
     overflow: visible;
     flex 0 0 4em;
     display: block;
@@ -202,6 +197,11 @@ top {
     text-align: center;
     background: linear-gradient(#23282D, #2D333D);
     box-shadow: 1px 1px 3px rgba(0,0,0,.5);
+    transition: top .4s ease 1.5s;
+}
+
+top.is-active {
+    top: 0em;
 }
 
 main {
@@ -338,6 +338,7 @@ devices.is-selected device-toggle.is-muted {
 login {
     position: relative;
     align-self: center;
+    top: -1em;
     opacity: 0;
     margin: 0px auto;
     width: 37.5em;
@@ -349,7 +350,7 @@ login {
 
 login.is-active {
     opacity: 1;
-    transition: opacity .8s;
+    transition: opacity .4s ease 1s;
 }
 
 login login-menu {

@@ -54,7 +54,7 @@ Module.App = function (moduleData) {
     };
 
     this.properties = {
-        background  : $$.images.background,
+        background  : "",
         isXMPP      : $$.boolean(data.isXMPP, false),
         isGuestMode : $$.boolean(data.isGuestMode, false),
         activeRoom  : null
@@ -68,7 +68,7 @@ Module.App = function (moduleData) {
     }
 
     this.assemble();
-    this.updateProperty("background", $$.images.background);
+    this.updateProperty("background", $$.images.background0);
 };
 
 $$.extendClass(Module.App, Module.Base);
@@ -97,6 +97,8 @@ Module.App.prototype.assemble = function () {
         .add(parts.main)
         .add(parts.bottom);
 
+    parts.top.toggle("active", true, "top");
+    
     return this;
 };
 
@@ -123,12 +125,14 @@ Module.App.prototype.toggleNavigation = function (sectionName) {
 };
 
 Module.App.prototype.start = function () {
-    var loginModule = this.modules.login;
+    var loginModule = this.parts.login;
 
-    this.add(this.parts.fade);
-    this.parts.devices.addTo(this.parts.top, 0).toggle("active", true, 100);
-    this.parts.login.addTo(this.parts.main).toggle("active", true, 100);
+    this.parts.fade.addTo(this).toggle("active", true, "opacity");
+    this.parts.devices.addTo(this.parts.top, 0);
+    this.parts.login.addTo(this.parts.main);
     this.remove($$.getElement("#initialize-app"));
+
+    this.parts.login.toggle("active", true, "opacity");
 
     API.onAppStart();
 
@@ -141,10 +145,12 @@ Module.App.prototype.loginSuccessful = function () {
     parts.login.remove();
     parts.fade.remove();
 
-    parts.navigation.addTo(parts.main).toggle("active", true);
-    parts.results.addTo(parts.main);
-    parts.details.addTo(parts.main).toggle("active", true);
-    parts.main.toggle("active", true);
+    parts.main
+        .add(parts.navigation)
+        .add(parts.results)
+        .toggle("active", true);
+
+    parts.navigation.toggle("active", true, "left");
 
     parts.results.updateRoster(dummydata);
 
@@ -439,7 +445,7 @@ Module.Navigation.prototype.addEvents = function () {
         var isSelected = true;
         if (parts.hasOwnProperty(data.info)) {
             if (data.info !== props.selectedNav) {
-                if (part[props.selectedNav]) {
+                if (parts[props.selectedNav]) {
                     parts[props.selectedNav].toggle("selected", false);
                 }
                 props.selectedNav = data.info;
@@ -520,7 +526,7 @@ Module.Results.prototype.addEvents = function () {
         if (parts.hasOwnProperty(data.info)) {
             if (data.info !== props.selectedNav) {
                 if (props.selectedNav) {
-                    parts[p.selectedNav].toggle("selected", false);
+                    parts[props.selectedNav].toggle("selected", false);
                 }
                 props.selectedNav = data.info;
             } else {

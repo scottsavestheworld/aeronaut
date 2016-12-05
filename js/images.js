@@ -4,7 +4,7 @@ $$.images = {
     appLogo          : "img/default_logo.svg",
     defaultContact   : "img/default_contact.svg",
     defaultRoom      : "img/default_room.svg",
-    background       : "img/backgrounds/daylight.jpg",
+    background0      : "img/backgrounds/daylight.jpg",
     background1      : "img/backgrounds/moonlight.jpg",
     background2      : "img/backgrounds/starlight.jpg",
     contactsDark     : "img/contacts_dark.svg",

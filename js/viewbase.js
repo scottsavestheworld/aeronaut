@@ -195,15 +195,23 @@ View.Base.prototype.updateParts = function (propertyName, propertyValue) {
     return this;
 };
 
-View.Base.prototype.updateStyleClass = function (styleClass) {
+View.Base.prototype.updateStyleClass = function (styleClass, animatedProperties) {
     this.styleClass = $$.string(styleClass, this.styleClass);
     var classArray = [];
     var toggleName;
+    var animate = $$.string(animatedProperties, "");
 
     if (this.altClass) { classArray.push(this.altClass); }
     if (this.styleClass) { classArray.push(this.styleClass); }
     for (toggleName in this.toggles) {
         if (this.toggles[toggleName]) { classArray.push(this.toggleClasses[toggleName]); }
+    }
+    
+    if (animate) {
+        var styleProperties = animate.split(" ");
+        for (var i = 0; i < styleProperties.length; i++) {
+            window.getComputedStyle(this.element)[styleProperties[i]];
+        }
     }
 
     if (classArray.length) { this.element.className = classArray.join(" "); }
@@ -212,14 +220,14 @@ View.Base.prototype.updateStyleClass = function (styleClass) {
     return this;
 };
 
-View.Base.prototype.toggle = function (toggleName, toggleValue, delay) {
+View.Base.prototype.toggle = function (toggleName, toggleValue, animatedProperties) {
     var thisView = this;
 
-    if (this.toggles.hasOwnProperty(toggleName)) {
+    if (this.toggles.hasOwnProperty(toggleName) && this.toggles[toggleName] !== toggleValue) {
         var newValue = (toggleValue != null) ? toggleValue : !this.toggles[toggleName];
         this.toggles[toggleName] = newValue;
 
-        setTimeout(function () { thisView.updateStyleClass(); }, delay || 0 );
+        this.updateStyleClass(null, animatedProperties);
     }
     return this;
 };
