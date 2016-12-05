@@ -98,7 +98,7 @@ Module.App.prototype.assemble = function () {
         .add(parts.bottom);
 
     parts.top.toggle("active", true, "top");
-    
+
     return this;
 };
 
@@ -480,7 +480,7 @@ Module.Results = function (moduleData) {
         meetings        : $$.Basic({ element: "<section>", styleClass: "meetings" }),
         alerts          : $$.Basic({ element: "<section>", styleClass: "alerts" }),
 
-        searchHeader    : $$.Header({ image: $$.images.searchDark,   text: "Search" }),
+        searchHeader    : $$.Basic({ element: "<header>" }),
         contactsHeader  : $$.Header({ image: $$.images.contactsDark, text: "Contacts" }),
         roomsHeader     : $$.Header({ image: $$.images.roomsDark,    text: "Rooms" }),
         meetingsHeader  : $$.Header({ image: $$.images.meetingsDark, text: "Meetings" }),
@@ -491,6 +491,9 @@ Module.Results = function (moduleData) {
         roomsResults    : $$.List(),
         meetingsResults : $$.List(),
         alertsResults   : $$.List(),
+
+        headerDate      : $$.Time({ format: "[D]", interval: "every day" }),
+        searchField     : $$.Input({ placeholder: "Search" })
     };
 
     this.properties = {
@@ -510,7 +513,9 @@ Module.Results.prototype.assemble = function () {
         .add(parts.rooms.add(parts.roomsHeader).add(parts.roomsResults))
         .add(parts.meetings.add(parts.meetingsHeader).add(parts.meetingsResults))
         .add(parts.alerts.add(parts.alertsHeader).add(parts.alertsResults));
-    parts.meetingsHeader.parts.image.add($$.Time({ format: "[D]", interval: "every day" }));
+
+    parts.meetingsHeader.parts.image.add(parts.headerDate);
+    parts.searchHeader.add(parts.searchField);
 
     return this;
 };
@@ -529,6 +534,9 @@ Module.Results.prototype.addEvents = function () {
                     parts[props.selectedNav].toggle("selected", false);
                 }
                 props.selectedNav = data.info;
+                if (data.info === "search") {
+                    parts.searchField.input.focus();
+                }
             } else {
                 props.selectedNav = "";
                 isSelected = false;
