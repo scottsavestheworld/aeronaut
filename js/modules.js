@@ -645,5 +645,8 @@ Module.Stage.prototype.addEvents = function () {
 
 Module.Stage.prototype.addCard = function (modelObject) {
     var newCard = $$.Card(modelObject, { size: "large" });
+    newCard.parts.rosterToggle.addEvent("click", function (event) {
+        modelObject.updateProperty("isInRoster", !newCard.properties.isInRoster);
+    });
     this.add(newCard);
 }

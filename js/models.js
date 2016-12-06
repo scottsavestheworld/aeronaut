@@ -180,7 +180,7 @@ Model.Contact = function (dataObject) {
         defaultImage : data.defaultImage || $$.images.defaultContact,
         showInitials : data.showInitials || true,
         status       : data.status       || "",
-        rosterState  : data.rosterState  || "not-in-roster",
+        isInRoster   : data.isInRoster   || false,
         jobTitle     : data.jobTitle     || "",
         emails       : data.emails       || [],
         phones       : data.phones       || []

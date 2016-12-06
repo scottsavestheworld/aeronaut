@@ -591,9 +591,10 @@ Component.Card = function (modelObject, dataObject) {
         image        : $$.string(info.image, ""),
         status       : $$.string(info.status, "unknown"),
         defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
+        isInRoster   : $$.boolean(info.isInRoster, false),
         showInitials : $$.boolean(info.showInitials, false)
     }
-    
+
     this.attributes = {
         size         : "string",
         name         : "string",
@@ -602,6 +603,7 @@ Component.Card = function (modelObject, dataObject) {
         image        : "string",
         status       : "string",
         defaultImage : "string",
+        isInRoster   : "boolean",
         showInitials : "boolean"
     }
 
@@ -614,16 +616,14 @@ Component.Card = function (modelObject, dataObject) {
         call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
         buttons         : $$.Basic({ element: "<buttons>" }),
         scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsLight, text: "Schedule a Meeting" }),
-        addToContacts   : $$.Icon({ styleClass: "add-to-contacts", image: $$.images.contactsLight, text: "Add to Contacts" })
+        rosterToggle    : $$.Icon({ styleClass: "roster-toggle" })
     };
-    
+
     if (model.subtype) {
         this[model.subtype + "Parts"](info, data);
     }
 
-    this.addModel(model).updateNameAttribute();
-
-//    this.element.onclick = function (event) { thisCard.signal(event, thisCard, "CARD_CLICKED") };
+    this.addModel(model).updateNameAttribute().updateRosterState();
 };
 
 $$.extendClass(Component.Card, Component.Base);
@@ -635,8 +635,7 @@ Component.Card.prototype.updateProperty = function (propertyName, propertyValue)
 
         if (propertyName === "name" || propertyName === "firstName" || propertyName == "lastName") {
             this.updateNameAttribute();
-        }
-        else if (propertyName === "status") {
+        } else if (propertyName === "status") {
             var status = $$.string(propertyValue, this.properties.status);
 
             this.parts.status.updateStyleClass("is-" + status);
@@ -646,7 +645,23 @@ Component.Card.prototype.updateProperty = function (propertyName, propertyValue)
                 this.parent.sort();
             }
         }
+        else if (propertyName === "isInRoster") {
+            this.updateRosterState(propertyValue);
+        }
     }
+    return this;
+};
+
+Component.Card.prototype.updateRosterState = function (isInRoster) {
+    var inRoster = $$.boolean(isInRoster, this.properties.isInRoster);
+    var image    = $$.images.contactAddLight;
+    var text     = "Add to Contacts";
+    if (inRoster === true) {
+        image = $$.images.contactRemoveLight;
+        text  = "Remove from Contacts";
+    }
+    this.properties.isInRoster = inRoster;
+    this.parts.rosterToggle.updateProperties({ text : text, image: image });
     return this;
 };
 
@@ -673,7 +688,7 @@ Component.Card.prototype.contactParts = function () {
             .add(parts.call)
             .add(parts.buttons
                  .add(parts.scheduleMeeting)
-                 .add(parts.addToContacts));
+                 .add(parts.rosterToggle));
     }
 
     return this;

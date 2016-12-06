@@ -1,12 +1,12 @@
 var dummydata = {
-    contact: 
+    contact:
     [{
         ID            : "Contact1",
         firstName     : "Scott",
         lastName      : "Van Der Sluys",
         image         : "test/img/avatar.jpg",
         status        : "available",
-        rosterState   : "not-in-contacts",
+        isInRoster    : true,
         jobTitle      : "Codes Stuff",
         emails        : { work : "svandersluys@vidyo.com"},
         phones        : { home : "201-207-3695"}
@@ -17,7 +17,7 @@ var dummydata = {
         lastName      : "Pitchandi",
         image         : "",
         status        : "offline",
-        rosterState   : "not-in-contacts",
+        isInRoster    : true,
         jobTitle      : "The Boss",
         emails        : { work : "bala@vidyo.com"},
         phones        : { home : ""}
@@ -28,7 +28,7 @@ var dummydata = {
         lastName      : "Fiuk",
         image         : "",
         status        : "available",
-        rosterState   : "not-in-contacts",
+        isInRoster    : true,
         jobTitle      : "Codes Stuff",
         emails        : { work : "marek@vidyo.com"},
         phones        : { home : ""}
@@ -39,7 +39,7 @@ var dummydata = {
         lastName      : "Sylvester",
         image         : "",
         status        : "available",
-        rosterState   : "not-in-contacts",
+        isInRoster    : true,
         jobTitle      : "Codes Stuff",
         emails        : { work : "marek@vidyo.com"},
         phones        : { home : ""}
@@ -50,7 +50,7 @@ var dummydata = {
         lastName      : "Tewari",
         image         : "",
         status        : "busy",
-        rosterState   : "not-in-contacts",
+        isInRoster    : true,
         jobTitle      : "Codes Stuff",
         emails        : { work : "marek@vidyo.com"},
         phones        : { home : ""}
@@ -61,12 +61,12 @@ var dummydata = {
         lastName      : "Wakchaure",
         image         : "",
         status        : "offline",
-        rosterState   : "not-in-contacts",
+        isInRoster    : true,
         jobTitle      : "Codes Stuff",
         emails        : { work : "marek@vidyo.com"},
         phones        : { home : ""}
     }],
-    room: 
+    room:
     [{
         ID            : "Room1",
         name          : "Awesome Room",
