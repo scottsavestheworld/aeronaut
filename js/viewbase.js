@@ -134,13 +134,16 @@ View.Base.prototype.addTo = function (parent, index) {
 View.Base.prototype.remove = function (child, destroyChild) {
     if (child) {
         if (child.isView) {
+            var index = this.addedObjects.indexOf(child);
+            if (index > -1) {
+                this.addedObjects.splice(index, 1);
+            }
             if (destroyChild) {
                 child.parent = null;
-                if (child.freeze)     { child.freeze(); }
-                if (child.model)      { child.model.removeView(child); }
-                if (child.parts) { child.eachPart("removeModel"); }
+                if (child.freeze) { child.freeze(); }
+                if (child.model)  { child.model.removeView(child); }
+                if (child.parts)  { child.eachPart("removeModel"); }
             }
-            this.addedObjects.splice(this.addedObjects.indexOf(child), 1);
             child = child.element;
         }
         if (this.element.contains(child)) {
@@ -206,7 +209,7 @@ View.Base.prototype.updateStyleClass = function (styleClass, animatedProperties)
     for (toggleName in this.toggles) {
         if (this.toggles[toggleName]) { classArray.push(this.toggleClasses[toggleName]); }
     }
-    
+
     if (animate) {
         var styleProperties = animate.split(" ");
         for (var i = 0; i < styleProperties.length; i++) {

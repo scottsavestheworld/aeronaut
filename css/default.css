@@ -728,7 +728,7 @@ stage card avatar {
     font-size: 2em;
     display: inline-block;
     vertical-align: middle;
-    border-radius: .125em;
+    border-radius: 50%;
 }
 
 stage card content {
@@ -748,7 +748,7 @@ stage card call {
     background-repeat: no-repeat;
     background-color: #1A0;
     border: 1px solid rgba(0,0,0,.3);
-    border-radius: .5em;
+    border-radius: 50%;
     cursor: pointer;
 }
 
