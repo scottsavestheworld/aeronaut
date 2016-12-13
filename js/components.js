@@ -40,14 +40,14 @@ Component.List = function (dataObject) {
 
     Component.List.superclass.constructor.call(this, data);
 
-    this.properties = {
-        sortProperty  : $$.string(data.sortProperty, "firstName"),
-        sortByStatus  : $$.boolean(data.sortByStatus, true),
-        statusOrder   : $$.array(data.statusOrder, ["available", "busy", "offline", "unknown"])
+    this.props = {
+        sortProp     : $$.string(data.sortProp, "firstName"),
+        sortByStatus : $$.boolean(data.sortByStatus, true),
+        statusOrder  : $$.array(data.statusOrder, ["available", "busy", "offline", "unknown"])
     };
 
-    this.attributes = {
-        sortProperty : "string",
+    this.propType = {
+        sortProp     : "string",
         sortByStatus : "boolean",
         statusOrder  : "array"
     };
@@ -55,18 +55,18 @@ Component.List = function (dataObject) {
 
 $$.extendClass(Component.List, Component.Base);
 
-Component.List.prototype.sort = function (sortProperty, sortByStatus, statusOrder) {
+Component.List.prototype.sort = function (sortProp, sortByStatus, statusOrder) {
     var thisList = this;
-    sortProperty = $$.string(sortProperty, this.properties.sortProperty);
-    sortByStatus = $$.boolean(sortByStatus, this.properties.sortByStatus);
-    statusOrder  = $$.array(statusOrder, this.properties.statusOrder);
+    sortProp = $$.string(sortProp, this.props.sortProp);
+    sortByStatus = $$.boolean(sortByStatus, this.props.sortByStatus);
+    statusOrder  = $$.array(statusOrder, this.props.statusOrder);
 
-    function propertySort() {
+    function propSort() {
         thisList.addedObjects.sort(function (a, b) {
-            if (a.properties[sortProperty] > b.properties[sortProperty]) {
+            if (a.props[sortProp] > b.props[sortProp]) {
                 return -1;
             }
-            if (a.properties[sortProperty] < b.properties[sortProperty]) {
+            if (a.props[sortProp] < b.props[sortProp]) {
                 return 1;
             }
             return 0;
@@ -75,17 +75,17 @@ Component.List.prototype.sort = function (sortProperty, sortByStatus, statusOrde
 
     function statusSort() {
         thisList.addedObjects.sort(function (a,b) {
-            if (statusOrder.indexOf(a.properties.status) > statusOrder.indexOf(b.properties.status)) {
+            if (statusOrder.indexOf(a.props.status) > statusOrder.indexOf(b.props.status)) {
                 return -1;
             }
-            if (statusOrder.indexOf(a.properties.status) < statusOrder.indexOf(b.properties.status)) {
+            if (statusOrder.indexOf(a.props.status) < statusOrder.indexOf(b.props.status)) {
                 return 1;
             }
             return 0;
         });
     }
 
-    propertySort();
+    propSort();
 
     if (sortByStatus) {
         statusSort();
@@ -94,12 +94,12 @@ Component.List.prototype.sort = function (sortProperty, sortByStatus, statusOrde
     this.eachAddedObject("add");
 };
 
-Component.List.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (this.properties.hasOwnProperty(propertyName)) {
-        var type  = this.attributes[propertyName];
-        var value = $$[type](propertyValue);
+Component.List.prototype.updateProp = function (propName, propValue) {
+    if (this.props.hasOwnProperty(propName)) {
+        var type  = this.propType[propName];
+        var value = $$[type](propValue);
         if (value) {
-            this.properties[propertyName] = value;
+            this.props[propName] = value;
             this.sort();
         }
     }
@@ -119,11 +119,11 @@ Component.Image = function (dataObject) {
 
     Component.Image.superclass.constructor.call(this, data);
 
-    this.properties = {
+    this.props = {
         image : image
     };
 
-    this.attributes = {
+    this.propType = {
         image : "string"
     };
 
@@ -132,16 +132,16 @@ Component.Image = function (dataObject) {
 
 $$.extendClass(Component.Image, Component.Base);
 
-Component.Image.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (propertyName === "image") {
-        this.image(propertyValue);
+Component.Image.prototype.updateProp = function (propName, propValue) {
+    if (propName === "image") {
+        this.image(propValue);
     }
     return this;
 };
 
 Component.Image.prototype.image = function (imageSource) {
     if (imageSource != null) {
-        imageSource = this.properties.image = $$.string(imageSource, "");
+        imageSource = this.props.image = $$.string(imageSource, "");
         if (this.element.tagName === "IMG") {
             this.element.src = imageSource;
         } else {
@@ -152,7 +152,7 @@ Component.Image.prototype.image = function (imageSource) {
             }
         }
     }
-    return this.properties.image;
+    return this.props.image;
 };
 
 
@@ -169,11 +169,11 @@ Component.Text = function (dataObject) {
 
     Component.Text.superclass.constructor.call(this, data)
 
-    this.properties = {
+    this.props = {
         text : text
     };
 
-    this.attributes = {
+    this.propType = {
         text : "string"
     };
 
@@ -182,19 +182,19 @@ Component.Text = function (dataObject) {
 
 $$.extendClass(Component.Text, Component.Base);
 
-Component.Text.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (propertyName === "text") {
-        this.text(propertyValue);
+Component.Text.prototype.updateProp = function (propName, propValue) {
+    if (propName === "text") {
+        this.text(propValue);
     }
     return this;
 };
 
 Component.Text.prototype.text = function (text) {
     if (text != null) {
-        text = this.properties.text = $$.string(text, "");
+        text = this.props.text = $$.string(text, "");
         this.textNode.nodeValue = text;
     }
-    return this.properties.text;
+    return this.props.text;
 };
 
 
@@ -222,8 +222,8 @@ Component.Icon = function (dataObject) {
 
 $$.extendClass(Component.Icon, Component.Base);
 
-Component.Icon.prototype.updateProperty = function (propertyName, propertyValue) {
-    this.updateParts(propertyName, propertyValue);
+Component.Icon.prototype.updateProp = function (propName, propValue) {
+    this.updateParts(propName, propValue);
     return this;
 };
 
@@ -244,7 +244,7 @@ Component.Input = function (dataObject) {
 
     Component.Input.superclass.constructor.call(this, data);
 
-    this.properties = {
+    this.props = {
         placeholder   : $$.string(data.placeholder, ""),
         value         : $$.string(data.value, ""),
         readonly      : $$.string(data.readonly, ""),
@@ -253,7 +253,7 @@ Component.Input = function (dataObject) {
         labelPosition : data.labelPosition === "after" ? "after" : "before"
     };
 
-    this.attributes = {
+    this.propType = {
         placeholder   : "string",
         value         : "string",
         readonly      : "string",
@@ -262,43 +262,43 @@ Component.Input = function (dataObject) {
         labelPosition : "string"
     };
 
-    this.updateProperties();
+    this.updateProps();
 };
 
 $$.extendClass(Component.Input, Component.Base);
 
-Component.Input.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (this.properties.hasOwnProperty(propertyName)) {
-        var type = this.attributes[propertyName];
-        propertyValue = $$[type](propertyValue, this.properties[propertyName]);
-        this.properties[propertyName] = propertyValue;
+Component.Input.prototype.updateProp = function (propName, propValue) {
+    if (this.props.hasOwnProperty(propName)) {
+        var type = this.propType[propName];
+        propValue = $$[type](propValue, this.props[propName]);
+        this.props[propName] = propValue;
 
-        if (propertyName === "value") {
-            this.input.value = propertyValue;
+        if (propName === "value") {
+            this.input.value = propValue;
         }
-        else if (propertyName !== "label" && propertyName !== "labelPosition" && propertyName !== "value") {
-            if (propertyValue === "") {
-                this.input.removeAttribute(propertyName);
+        else if (propName !== "label" && propName !== "labelPosition" && propName !== "value") {
+            if (propValue === "") {
+                this.input.removeAttribute(propName);
             } else {
-                this.input.setAttribute(propertyName, propertyValue);
+                this.input.setAttribute(propName, propValue);
             }
         }
-        else if (propertyName === "label") {
-            if (propertyValue === "") {
+        else if (propName === "label") {
+            if (propValue === "") {
                 if (this.element.contains(this.label)) {
                     this.element.removeChild(this.label);
-                    this.properties.label = this.text.nodeValue = "";
+                    this.props.label = this.text.nodeValue = "";
                 }
                 this.element.appendChild(this.input);
             } else {
-                this.properties.label = this.text.nodeValue = propertyValue;
+                this.props.label = this.text.nodeValue = propValue;
                 this.element.appendChild(this.label);
-                this.updateProperty("labelPosition", this.properties.labelPosition);
+                this.updateProp("labelPosition", this.props.labelPosition);
             }
         }
-        else if (propertyName === "labelPosition") {
-            if (this.properties.label !== "") {
-                if (propertyValue === "after") {
+        else if (propName === "labelPosition") {
+            if (this.props.label !== "") {
+                if (propValue === "after") {
                     this.label.appendChild(this.input);
                     this.label.appendChild(this.text);
                 } else {
@@ -313,7 +313,7 @@ Component.Input.prototype.updateProperty = function (propertyName, propertyValue
 
 Component.Input.prototype.value = function (value) {
     if (value != null) {
-        this.updateProperty("value", value);
+        this.updateProp("value", value);
     }
     return this.input.value;
 };
@@ -331,7 +331,7 @@ Component.Time = function(dataObject) {
 
     Component.Time.superclass.constructor.call(this, data);
 
-    this.properties = {
+    this.props = {
         timestamp   : $$.number(data.timestamp, Date.now()),
         format      : $$.string(data.format, "[full date and time]"),
         interval    : $$.number(data.interval, 0),
@@ -346,39 +346,39 @@ Component.Time = function(dataObject) {
 $$.extendClass(Component.Time, Component.Base);
 
 Component.Time.prototype.time = function (timestamp, format, interval) {
-    this.properties.timestamp = $$.number(timestamp, Date.now());
+    this.props.timestamp = $$.number(timestamp, Date.now());
     this.format(format);
     this.interval(interval);
     return this;
 };
 
 Component.Time.prototype.format = function (format) {
-    this.properties.format = $$.string(format, this.properties.format);
-    this.textNode.nodeValue = $$.formatTime(this.properties.format, this.properties.timestamp);
+    this.props.format = $$.string(format, this.props.format);
+    this.textNode.nodeValue = $$.formatTime(this.props.format, this.props.timestamp);
     return this;
 };
 
 Component.Time.prototype.interval = function (interval) {
     var thisTime = this;
-    interval = $$.number(interval, $$.string(interval, this.properties.interval));
-    clearTimeout(this.properties.setTimeout);
-    clearInterval(this.properties.setInterval);
+    interval = $$.number(interval, $$.string(interval, this.props.interval));
+    clearTimeout(this.props.setTimeout);
+    clearInterval(this.props.setInterval);
     if (typeof interval === "number" && interval > 0) {
-        this.properties.interval = interval;
-        this.properties.setInterval = setInterval(function () {
+        this.props.interval = interval;
+        this.props.setInterval = setInterval(function () {
             thisTime.updateClock();
         }, interval * 1000);
     }
     else {
         var intervalObject = $$.getInterval(interval);
         if (intervalObject) {
-            this.properties.interval = intervalObject.interval;
-            this.properties.setTimeout = setTimeout(function () {
+            this.props.interval = intervalObject.interval;
+            this.props.setTimeout = setTimeout(function () {
                 thisTime.updateClock();
                 thisTime.interval();
             }, intervalObject.timeout * 1000);
         } else {
-            this.properties.interval = 0;
+            this.props.interval = 0;
             this.setInterval = null;
         }
     }
@@ -386,7 +386,7 @@ Component.Time.prototype.interval = function (interval) {
 };
 
 Component.Time.prototype.updateClock = function () {
-    this.properties.timestamp = Date.now();
+    this.props.timestamp = Date.now();
     this.format();
     return this;
 };
@@ -399,14 +399,14 @@ Component.Time.prototype.updateClock = function () {
 Component.Name = function (modelObject, dataObject) {
     var data        = $$.object(dataObject, {});
     var model       = $$.object(modelObject, {});
-    var info        = model.isModel ? model.properties : model;
+    var info        = model.isModel ? model.props : model;
     this.subtype    = "name";
     this.element    = $$.getElement(data.element || "<name>");
     this.textNode   = document.createTextNode("");
 
     Component.Name.superclass.constructor.call(this, data);
 
-    this.properties = {
+    this.props = {
         firstName : $$.string(info.firstName, $$.string(info.name,  "")),
         lastName  : $$.string(info.lastName, ""),
         format    : $$.string(info.format, "[firstName] [lastName]")
@@ -419,21 +419,21 @@ Component.Name = function (modelObject, dataObject) {
 
 $$.extendClass(Component.Name, Component.Base);
 
-Component.Name.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (propertyName === "name") { propertyName = "firstName"; }
-    if (this.properties.hasOwnProperty(propertyName)) {
-        this.properties[propertyName] = propertyValue;
+Component.Name.prototype.updateProp = function (propName, propValue) {
+    if (propName === "name") { propName = "firstName"; }
+    if (this.props.hasOwnProperty(propName)) {
+        this.props[propName] = propValue;
         this.formatName();
     }
     return this;
 };
 
 Component.Name.prototype.formatName = function (formatString) {
-    var nameString = this.properties.format
-        .replace(/\[firstName\]/g, this.properties.firstName)
-        .replace(/\[lastName\]/g, this.properties.lastName)
-        .replace(/\[firstInitial\]/g, $$.getInitial(this.properties.firstName))
-        .replace(/\[lastInitial\]/g, $$.getInitial(this.properties.lastName));
+    var nameString = this.props.format
+        .replace(/\[firstName\]/g, this.props.firstName)
+        .replace(/\[lastName\]/g, this.props.lastName)
+        .replace(/\[firstInitial\]/g, $$.getInitial(this.props.firstName))
+        .replace(/\[lastInitial\]/g, $$.getInitial(this.props.lastName));
 
     this.textNode.nodeValue = nameString.trim();
 
@@ -452,14 +452,14 @@ Component.Name.prototype.getInitials = function () {
 Component.Avatar = function (modelObject, dataObject) {
     var data        = $$.object(dataObject, {});
     var model       = $$.object(modelObject, {});
-    var info        = model.isModel ? model.properties : model;
+    var info        = model.isModel ? model.props : model;
     this.subtype    = "avatar";
     this.element    = $$.getElement(data.element || "<avatar>");
     this.textNode   = document.createTextNode("");
 
     Component.Avatar.superclass.constructor.call(this, data);
 
-    this.properties = {
+    this.props = {
         firstName    : $$.string(info.firstName, $$.string(info.name,  "")),
         lastName     : $$.string(info.lastName, ""),
         image        : $$.string(info.image, ""),
@@ -474,27 +474,27 @@ Component.Avatar = function (modelObject, dataObject) {
 
 $$.extendClass(Component.Avatar, Component.Base);
 
-Component.Avatar.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (propertyName === "name") { propertyName = "firstName"; }
-    if (this.properties.hasOwnProperty(propertyName)) {
-        this.properties[propertyName] = propertyValue;
+Component.Avatar.prototype.updateProp = function (propName, propValue) {
+    if (propName === "name") { propName = "firstName"; }
+    if (this.props.hasOwnProperty(propName)) {
+        this.props[propName] = propValue;
         this.formatAvatar();
     }
     return this;
 };
 
 Component.Avatar.prototype.formatAvatar = function () {
-    if (this.properties.image) {
-        this.element.style.backgroundImage = "url('" + this.properties.image + "')";
+    if (this.props.image) {
+        this.element.style.backgroundImage = "url('" + this.props.image + "')";
         this.textNode.nodeValue = "";
     }
-    else if (this.properties.showInitials && (this.properties.firstName || this.properties.lastName)) {
-        var initials = $$.getInitials([this.properties.firstName, this.properties.lastName]);
+    else if (this.props.showInitials && (this.props.firstName || this.props.lastName)) {
+        var initials = $$.getInitials([this.props.firstName, this.props.lastName]);
         this.textNode.nodeValue = initials;
         this.element.style.backgroundImage = "";
     }
     else {
-        this.element.style.backgroundImage = "url('" + this.properties.defaultImage + "')";
+        this.element.style.backgroundImage = "url('" + this.props.defaultImage + "')";
         this.textNode.nodeValue = "";
     }
     return this;
@@ -508,14 +508,14 @@ Component.Avatar.prototype.formatAvatar = function () {
 Component.Status = function (modelObject, dataObject) {
     var data        = $$.object(dataObject, {});
     var model       = $$.object(modelObject, {});
-    var info        = model.isModel ? model.properties : model;
+    var info        = model.isModel ? model.props : model;
     this.subtype    = "status";
     this.element    = $$.getElement(data.element || "<status>");
     this.textNode   = document.createTextNode("");
 
     Component.Status.superclass.constructor.call(this, data);
 
-    this.properties = {
+    this.props = {
         showText : $$.boolean(data.showText) || false,
         status : ""
     };
@@ -527,29 +527,29 @@ Component.Status = function (modelObject, dataObject) {
 
 $$.extendClass(Component.Status, Component.Base);
 
-Component.Status.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (propertyName === "status") {
-        this.status(propertyValue);
-    } else if (propertyName === "showText") {
-        this.showText(propertyValue);
+Component.Status.prototype.updateProp = function (propName, propValue) {
+    if (propName === "status") {
+        this.status(propValue);
+    } else if (propName === "showText") {
+        this.showText(propValue);
     }
     return this;
 };
 
 Component.Status.prototype.status = function (status) {
-    status = this.properties.status = $$.string(status, "unknown");
+    status = this.props.status = $$.string(status, "unknown");
     this.altClass = "is-" + status;
     this.updateStyleClass();
     this.showText();
 
-    return this.properties.status;
+    return this.props.status;
 };
 
 Component.Status.prototype.showText = function (boolean) {
-    var showText = $$.boolean(boolean, this.properties.showText);
-    this.properties.showText = showText;
+    var showText = $$.boolean(boolean, this.props.showText);
+    this.props.showText = showText;
     if (showText) {
-        this.textNode.nodeValue = this.properties.status;
+        this.textNode.nodeValue = this.props.status;
     } else {
         this.textNode.nodeValue = "";
     }
@@ -563,7 +563,7 @@ Component.Status.prototype.showText = function (boolean) {
 Component.Card = function (modelObject, dataObject) {
     var data        = $$.object(dataObject, {});
     var model       = $$.object(modelObject, {});
-    var info        = model.isModel ? model.properties : model;
+    var info        = model.isModel ? model.props : model;
     var thisCard    = this;
     this.subtype    = "card";
     this.altClass   = model.subtype || "";
@@ -571,7 +571,7 @@ Component.Card = function (modelObject, dataObject) {
 
     Component.Card.superclass.constructor.call(this, data);
 
-    this.properties = {
+    this.props = {
         size         : $$.string(data.size, "small"),
         name         : $$.string(info.name, ""),
         firstName    : $$.string(info.firstName, ""),
@@ -583,7 +583,7 @@ Component.Card = function (modelObject, dataObject) {
         showInitials : $$.boolean(info.showInitials, false)
     }
 
-    this.attributes = {
+    this.propType = {
         size         : "string",
         name         : "string",
         firstName    : "string",
@@ -598,9 +598,9 @@ Component.Card = function (modelObject, dataObject) {
     this.parts = {
         avatar          : $$.Avatar(info),
         name            : $$.Name(info),
-        status          : $$.Image({ element: "<status>", styleClass: "is-" + this.properties.status }),
-        statusText      : $$.Text({ element: "<status-text>", styleClass: "is-" + this.properties.status, text: this.properties.status }),
-        content         : $$.Basic({ element: "<content>" }),
+        status          : $$.Image({ element: "<status>", styleClass: "is-" + this.props.status }),
+        statusText      : $$.Text({ element: "<status-text>", styleClass: "is-" + this.props.status, text: this.props.status }),
+        contents        : $$.Basic({ element: "<contents>" }),
         call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
         buttons         : $$.Basic({ element: "<buttons>" }),
         scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsAddLight, text: "Schedule a Meeting" }),
@@ -616,10 +616,10 @@ Component.Card = function (modelObject, dataObject) {
 
 $$.extendClass(Component.Card, Component.Base);
 
-Component.Card.prototype.updateProperties = function (propertiesObject) {
-    var properties = $$.object(propertiesObject, this.properties);
-    for (var property in properties) {
-        this.updateProperty(property, properties[property], true);
+Component.Card.prototype.updateProps = function (propsObject) {
+    var props = $$.object(propsObject, this.props);
+    for (var prop in props) {
+        this.updateProp(prop, props[prop], true);
     }
     if (this.parent && this.parent.isComponent && this.parent.subtype === "list") {
         this.parent.sort();
@@ -627,21 +627,21 @@ Component.Card.prototype.updateProperties = function (propertiesObject) {
     return this;
 };
 
-Component.Card.prototype.updateProperty = function (propertyName, propertyValue, stopSort) {
-    if (this.properties.hasOwnProperty(propertyName)) {
-        this.properties[propertyName] = $$[this.attributes[propertyName]](propertyValue, this.properties[propertyName]);
-        this.updateParts(propertyName, propertyValue);
+Component.Card.prototype.updateProp = function (propName, propValue, stopSort) {
+    if (this.props.hasOwnProperty(propName)) {
+        this.props[propName] = $$[this.propType[propName]](propValue, this.props[propName]);
+        this.updateParts(propName, propValue);
 
-        if (propertyName === "name" || propertyName === "firstName" || propertyName == "lastName") {
+        if (propName === "name" || propName === "firstName" || propName == "lastName") {
             this.updateNameAttribute();
-        } else if (propertyName === "status") {
-            var status = $$.string(propertyValue, this.properties.status);
+        } else if (propName === "status") {
+            var status = $$.string(propValue, this.props.status);
 
             this.parts.status.updateStyleClass("is-" + status);
-            this.parts.statusText.updateStyleClass("is-" + status).updateProperty("text", status);
+            this.parts.statusText.updateStyleClass("is-" + status).updateProp("text", status);
         }
-        else if (propertyName === "isInRoster") {
-            this.updateRosterState(propertyValue);
+        else if (propName === "isInRoster") {
+            this.updateRosterState(propValue);
         }
 
         if (!stopSort && this.parent && this.parent.isComponent && this.parent.subtype === "list") {
@@ -652,22 +652,22 @@ Component.Card.prototype.updateProperty = function (propertyName, propertyValue,
 };
 
 Component.Card.prototype.updateRosterState = function (isInRoster) {
-    var inRoster = $$.boolean(isInRoster, this.properties.isInRoster);
+    var inRoster = $$.boolean(isInRoster, this.props.isInRoster);
     var image    = $$.images.contactsAddLight;
     var text     = "Add to Contacts";
     if (inRoster === true) {
         image = $$.images.contactsRemoveLight;
         text  = "Remove from Contacts";
     }
-    this.properties.isInRoster = inRoster;
-    this.parts.rosterToggle.updateProperties({ text : text, image: image });
+    this.props.isInRoster = inRoster;
+    this.parts.rosterToggle.updateProps({ text : text, image: image });
     return this;
 };
 
 Component.Card.prototype.updateNameAttribute = function () {
-    var name      = this.properties.name      || "";
-    var firstName = this.properties.firstName || "";
-    var lastName  = this.properties.lastName  || "";
+    var name      = this.props.name      || "";
+    var firstName = this.props.firstName || "";
+    var lastName  = this.props.lastName  || "";
     this.element.setAttribute("name", (name + " " + firstName + " " + lastName).trim());
 
     return this;
@@ -675,12 +675,12 @@ Component.Card.prototype.updateNameAttribute = function () {
 
 Component.Card.prototype.contactParts = function () {
     var parts = this.parts;
-    if (this.properties.size === "small") {
+    if (this.props.size === "small") {
         this.add(parts.avatar.add(parts.status))
-            .add(parts.content.add(parts.name));
+            .add(parts.contents.add(parts.name));
     } else {
         this.add(parts.avatar)
-            .add(parts.content
+            .add(parts.contents
                 .add(parts.name)
                 .add(parts.status)
                 .add(parts.statusText))
@@ -695,18 +695,18 @@ Component.Card.prototype.contactParts = function () {
 
 Component.Card.prototype.roomParts = function (info) {
     this.add(this.parts.avatar)
-        .add(this.parts.content.add(this.parts.name));
+        .add(this.parts.contents.add(this.parts.name));
 
     return this;
 };
 
 Component.Card.prototype.meetingParts = function (info) {
     this.parts = {
-        content : $$.Basic("<content>"),
-        name    : $$.Name(info)
+        contents : $$.Basic("<contents>"),
+        name     : $$.Name(info)
     };
 
-    this.properties = {
+    this.props = {
         name      : info.name      || "",
         organizer : info.organizer || {},
         startTime : info.startTime || 0,
@@ -716,6 +716,6 @@ Component.Card.prototype.meetingParts = function (info) {
     this.updateNameAttribute();
     this.add(this.parts.avatar);
     this.parts.avatar.add(this.parts.status);
-    this.add(this.parts.content);
-    this.parts.content.add(this.parts.name);
+    this.add(this.parts.contents);
+    this.parts.contents.add(this.parts.name);
 };

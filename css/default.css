@@ -161,7 +161,7 @@ top {
     text-align: center;
     background: linear-gradient(#23282D, #2D333D);
     box-shadow: 1px 1px 3px rgba(0,0,0,.5);
-    transition: top .4s ease 1.5s;
+    transition: top .5s ease .5s;
 }
 
 top.is-active {
@@ -192,7 +192,7 @@ main {
     height: 100%;
     overflow: hidden;
     background-color: rgba(255, 255, 255, 0);
-    transition: background-color .4s ease .4s;
+    transition: background-color .5s ease .5s;
 }
 
 main.is-active {
@@ -247,7 +247,7 @@ devices device-toggle {
     border-width: 1px;
     border-style: solid;
     cursor: pointer;
-    transition: opacity .4s;
+    transition: opacity .3s;
 }
 
 devices device-toggle.microphone {
@@ -309,12 +309,11 @@ login {
     overflow: hidden;
     border-radius: .25em;
     box-shadow: 1px 1px 6px rgba(0,0,0,.3);
-    transition: opacity .4s;
+    transition: opacity .5s;
 }
 
 login.is-active {
     opacity: 1;
-    transition: opacity .4s ease 1s;
 }
 
 login login-menu {
@@ -493,7 +492,7 @@ navigation {
     overflow: visible;
     background-color: #2D333D;
     box-shadow: 1px 0 3px rgba(0,0,0,.5);
-    transition: left .4s, margin-right .4s;
+    transition: left .5s, margin-right .5s;
 }
 
 navigation.is-active {
@@ -511,7 +510,7 @@ navigation > image {
     background-position: center;
     border-radius: .25em;
     cursor: pointer;
-    transition: background-color .4s;
+    transition: background-color .3s;
 }
 
 navigation > image:hover {
@@ -538,7 +537,7 @@ results {
     overflow: hidden;
     background-color: #F8F8F8;
     box-shadow: 0px 0px 6px rgba(0,0,0,.5);
-    transition: left .4s, margin-right .4s;
+    transition: left .5s, margin-right .5s;
 }
 
 results.is-selected {
@@ -555,7 +554,7 @@ results section {
     height: 100%;
     overflow: hidden;
     pointer-events: none;
-    transition: opacity .4s;
+    transition: opacity .5s;
 }
 
 results section.is-selected {
@@ -641,7 +640,7 @@ results card > avatar > status.is-unknown {
     display: none;
 }
 
-results card > content {
+results card > contents {
     display: inline-block;
     vertical-align: middle;
     margin-left: .25em;
@@ -649,7 +648,7 @@ results card > content {
     max-height: 2.5em;
 }
 
-results card > content > name {
+results card > contents > name {
     display: block;
     max-width: 100%;
     font-size: .875em;
@@ -705,7 +704,7 @@ results section.meetings.is-selected card.is-selected {
 
 /* ====== INFORMATION MODULE */
 
-stage {
+specifics {
     display: flex;
     flex: 1 0 auto;
     flex-direction: column;
@@ -714,7 +713,7 @@ stage {
     height: 100%;
 }
 
-stage card {
+specifics card {
     display: inline-block;
     margin: .5em;
     width: 30em;
@@ -722,10 +721,10 @@ stage card {
     background-color: rgba(255,255,255,.95);
     border-radius: .25em;
     box-shadow: 1px 1px 6px rgba(0,0,0,.3);
-    transition: opacity .4s;
+    transition: opacity .5s;
 }
 
-stage card avatar {
+specifics card avatar {
     margin: .5em;
     font-size: 2em;
     display: inline-block;
@@ -733,14 +732,14 @@ stage card avatar {
     border-radius: 50%;
 }
 
-stage card content {
+specifics card contents {
     display: inline-block;
     vertical-align: middle;
     width: 19em;
     padding-right: 1em;
 }
 
-stage card call {
+specifics card call {
     display: inline-block;
     vertical-align: middle;
     width: 3em;
@@ -754,13 +753,13 @@ stage card call {
     cursor: pointer;
 }
 
-stage card name {
+specifics card name {
     display:  block;
     padding-bottom: .25em;
     font-size: 1.5em;
 }
 
-stage card status {
+specifics card status {
     display: inline-block;
     vertical-align: middle;
     width: 1em;
@@ -770,39 +769,39 @@ stage card status {
     background-color: #A5ABB0;
 }
 
-stage card status-text {
+specifics card status-text {
     display: inline-block;
     vertical-align: middle;
     text-transform: capitalize;
 }
 
-stage card buttons {
+specifics card buttons {
     display: flex;
     width: 100%;
     padding: 1em;
     background-color: #2D333D;
 }
 
-stage card buttons icon {
+specifics card buttons icon {
     flex: 1 1 50%;
     height: 2.75em;
     text-align: center;
     color: rgba(255,255,255,.5);
 }
 
-stage card buttons icon image {
+specifics card buttons icon image {
     display: inline-block;
     width: 1.5em;
     height: 1.5em;
 
 }
 
-stage card buttons icon text {
+specifics card buttons icon text {
     display: block;
     font-size: .875em;
 }
 
-stage card buttons icon:hover {
+specifics card buttons icon:hover {
     color: #FFF;
     cursor: pointer;
 }

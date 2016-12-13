@@ -18,28 +18,28 @@ Model.Base.prototype.destroy = function () {
     if (app.models[this.subtype].hasOwnProperty(this.ID)) {
         delete app.models[this.subtype][this.ID];
     }
-    this.ID = this.subtype = this.properties = this.relationships = this.views = null;
+    this.ID = this.subtype = this.props = this.relationships = this.views = null;
     Log.write("destroy", this, "OK");
     return this;
 }
 
-Model.Base.prototype.updateProperty = function (propertyName, propertyValue) {
-    var outcome = "Unknown property name.";
-    if (this.properties.hasOwnProperty(propertyName)) {
+Model.Base.prototype.updateProp = function (propName, propValue) {
+    var outcome = "Unknown prop name.";
+    if (this.props.hasOwnProperty(propName)) {
         outcome = "OK";
-        this.properties[propertyName] = propertyValue;
-        this.updateViews(propertyName, propertyValue);
+        this.props[propName] = propValue;
+        this.updateViews(propName, propValue);
     }
-    Log.write("updateProperty", this, outcome, propertyName, propertyValue);
+    Log.write("updateProp", this, outcome, propName, propValue);
     return this;
 };
 
-Model.Base.prototype.updateProperties = function (propertiesObject) {
-    var property;
-    for (property in propertiesObject) {
-        this.updateProperty(property, propertiesObject[property]);
+Model.Base.prototype.updateProps = function (propsObject) {
+    var prop;
+    for (prop in propsObject) {
+        this.updateProp(prop, propsObject[prop]);
     }
-    Log.write("updateProperties", this, "OK");
+    Log.write("updateProps", this, "OK");
     return this;
 };
 
@@ -75,13 +75,13 @@ Model.Base.prototype.removeView = function (viewObject) {
     return this;
 };
 
-Model.Base.prototype.updateViews = function (propertyName, propertyValue) {
+Model.Base.prototype.updateViews = function (propName, propValue) {
     var i = 0;
     var total = this.views.length;
     for (i; i < total; i++) {
-        this.views[i].updateProperty(propertyName, propertyValue);
+        this.views[i].updateProp(propName, propValue);
     }
-    Log.write("updateViews", this, "OK", propertyName, propertyValue);
+    Log.write("updateViews", this, "OK", propName, propValue);
     return this;
 };
 
@@ -173,7 +173,7 @@ Model.Contact = function (dataObject) {
     this.ID      = data.ID;
     this.subtype = "contact";
 
-    this.properties = {
+    this.props = {
         firstName    : data.firstName    || "",
         lastName     : data.lastName     || "",
         image        : data.image        || "",
@@ -218,7 +218,7 @@ Model.Room = function (dataObject) {
                    data.subtype === "meeting"      ?
                    data.subtype :   "room";
 
-    this.properties = {
+    this.props = {
         name         : data.name         || "",
         image        : data.image        || "",
         defaultImage : data.defaultImage || $$.images["default" + $$.capitalize(this.subtype)],
@@ -256,8 +256,8 @@ Model.Message = function (dataObject) {
     this.ID      = data.ID;
     this.subtype = "message";
 
-    this.properties = {
-        content  : data.content  || "",
+    this.props = {
+        body     : data.body  || "",
         sendTime : data.sendTime || 0
     };
 

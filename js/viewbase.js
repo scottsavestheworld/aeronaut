@@ -7,7 +7,7 @@ View.Base = function (data) {
     this.model          = null;
     this.element.object = this;
     this.parts          = {};
-    this.properties     = {};
+    this.props     = {};
     this.addedObjects   = [];
     this.signals        = {};
 
@@ -176,9 +176,11 @@ View.Base.prototype.removeModel = function () {
 };
 
 View.Base.prototype.eachPart = function (method, arg1, arg2, arg3, arg4, arg5) {
-    var component;
-    for (component in this.parts) {
-        this.parts[component][method](arg1, arg2, arg3, arg4, arg5);
+    var part;
+    for (part in this.parts) {
+        if (this.parts[part][method]) {
+            this.parts[part][method](arg1, arg2, arg3, arg4, arg5);
+        }
     }
     return this;
 };
@@ -186,24 +188,26 @@ View.Base.prototype.eachPart = function (method, arg1, arg2, arg3, arg4, arg5) {
 View.Base.prototype.eachAddedObject = function (method, arg1, arg2, arg3, arg4, arg5) {
     var index = this.addedObjects.length -1;
     for (index; index > -1; index --) {
-        this.addedObjects[index][method](arg1, arg2, arg3, arg4, arg5);
+        if (this.addedObjects[index][method]) {
+            this.addedObjects[index][method](arg1, arg2, arg3, arg4, arg5);
+        }
     }
     return this;
 };
 
-View.Base.prototype.updateParts = function (propertyName, propertyValue) {
+View.Base.prototype.updateParts = function (propName, propValue) {
     var component;
     for (var component in this.parts) {
-        this.parts[component].updateProperty(propertyName, propertyValue);
+        this.parts[component].updateProp(propName, propValue);
     }
     return this;
 };
 
-View.Base.prototype.updateStyleClass = function (styleClass, animatedProperties) {
+View.Base.prototype.updateStyleClass = function (styleClass, animatedProps) {
     this.styleClass = $$.string(styleClass, this.styleClass);
     var classArray = [];
     var toggleName;
-    var animate = $$.string(animatedProperties, "");
+    var animate = $$.string(animatedProps, "");
 
     if (this.altClass) { classArray.push(this.altClass); }
     if (this.styleClass) { classArray.push(this.styleClass); }
@@ -212,9 +216,9 @@ View.Base.prototype.updateStyleClass = function (styleClass, animatedProperties)
     }
 
     if (animate) {
-        var styleProperties = animate.split(" ");
-        for (var i = 0; i < styleProperties.length; i++) {
-            window.getComputedStyle(this.element)[styleProperties[i]];
+        var styleProps = animate.split(" ");
+        for (var i = 0; i < styleProps.length; i++) {
+            window.getComputedStyle(this.element)[styleProps[i]];
         }
     }
 
@@ -224,14 +228,14 @@ View.Base.prototype.updateStyleClass = function (styleClass, animatedProperties)
     return this;
 };
 
-View.Base.prototype.toggle = function (toggleName, toggleValue, animatedProperties) {
+View.Base.prototype.toggle = function (toggleName, toggleValue, animatedProps) {
     var thisView = this;
 
     if (this.toggles.hasOwnProperty(toggleName) && this.toggles[toggleName] !== toggleValue) {
         var newValue = (toggleValue != null) ? toggleValue : !this.toggles[toggleName];
         this.toggles[toggleName] = newValue;
 
-        this.updateStyleClass(null, animatedProperties);
+        this.updateStyleClass(null, animatedProps);
     }
     return this;
 };
@@ -272,16 +276,16 @@ View.Base.prototype.getChildIndex = function (child) {
     }
 };
 
-View.Base.prototype.updateProperty = function (propertyName, propertyValue) {
-    var outcome = $$.capitalize(this.subtype) + " " + this.archetype + "s do not allow property updates via this method."
-    Log.write("updateProperty", this, outcome);
+View.Base.prototype.updateProp = function (propName, propValue) {
+    var outcome = $$.capitalize(this.subtype) + " " + this.archetype + "s do not allow prop updates via this method."
+    Log.write("updateProp", this, outcome);
     return this;
 };
 
-View.Base.prototype.updateProperties = function (propertiesObject) {
-    var properties = $$.object(propertiesObject, this.properties);
-    for (var property in properties) {
-        this.updateProperty(property, properties[property]);
+View.Base.prototype.updateProps = function (propsObject) {
+    var props = $$.object(propsObject, this.props);
+    for (var prop in props) {
+        this.updateProp(prop, props[prop]);
     }
     return this;
 };

@@ -50,17 +50,17 @@ Module.App = function (moduleData) {
         login      : $$.Login(),
         navigation : $$.Navigation(),
         results    : $$.Results(),
-        stage      : $$.Stage(),
+        specifics      : $$.Specifics(),
     };
 
-    this.properties = {
+    this.props = {
         background  : "",
         isXMPP      : $$.boolean(data.isXMPP, false),
         isGuestMode : $$.boolean(data.isGuestMode, false),
         activeRoom  : null
     };
 
-    this.attributes = {
+    this.propType = {
         background  : "string",
         isXMPP      : "boolean",
         isGuestMode : "boolean",
@@ -68,23 +68,23 @@ Module.App = function (moduleData) {
     }
 
     this.assemble();
-    this.updateProperty("background", $$.images.background0);
+    this.updateProp("background", $$.images.background0);
 };
 
 $$.extendClass(Module.App, Module.Base);
 
-Module.App.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (this.properties.hasOwnProperty(propertyName)) {
-        var type  = this.attributes[propertyName];
-        var value = $$[type](propertyValue);
+Module.App.prototype.updateProp = function (propName, propValue) {
+    if (this.props.hasOwnProperty(propName)) {
+        var type  = this.propType[propName];
+        var value = $$[type](propValue);
         if (value) {
-            this.properties[propertyName] = value;
+            this.props[propName] = value;
             for (var part in this.parts) {
-                this.parts[part].updateProperty(propertyName, propertyValue);
+                this.parts[part].updateProp(propName, propValue);
             }
         }
-        if (propertyName === "background") {
-            this.element.style.backgroundImage = "url(" + propertyValue + ")";
+        if (propName === "background") {
+            this.element.style.backgroundImage = "url(" + propValue + ")";
         }
     }
     return this;
@@ -114,23 +114,14 @@ Module.App.prototype.signalModules = function (signalObject ) {
     return this;
 };
 
-Module.App.prototype.toggleNavigation = function (sectionName) {
-    var signalObject = {
-        name       : "TOGGLE_NAVIGATION",
-        target     : this,
-        stopBubble : true,
-        info       : $$.string(sectionName),
-    };
-    this.signalModules(signalObject);
-};
-
 Module.App.prototype.start = function () {
     var loginModule = this.parts.login;
 
     this.parts.fade.addTo(this).toggle("active", true, "opacity");
     this.parts.devices.addTo(this.parts.top, 0);
     this.parts.login.addTo(this.parts.main);
-    this.remove($$.getElement("#initialize-app"));
+    this.remove($$.getElement("#initialize-app"))
+    delete this.element.onload;
 
     this.parts.login.toggle("active", true, "opacity");
 
@@ -148,14 +139,12 @@ Module.App.prototype.loginSuccessful = function () {
     parts.main
         .add(parts.navigation)
         .add(parts.results)
-        .add(parts.stage)
+        .add(parts.specifics)
         .toggle("active", true);
 
     parts.navigation.toggle("active", true, "left");
-
+    this.eachPart("selectNavigationItem", "contacts");
     parts.results.updateRoster(dummydata);
-
-    app.toggleNavigation("contacts");
 
     API.onLoginSuccessful();
 
@@ -221,7 +210,7 @@ Module.Devices.prototype.toggleMute = function (deviceName) {
         }
     }
 
-    parts[deviceName].updateProperty("image", $$.images[deviceName + state]);
+    parts[deviceName].updateProp("image", $$.images[deviceName + state]);
 
     return this;
 };
@@ -253,7 +242,7 @@ Module.Login = function (moduleData) {
         cancelButton   : $$.Text({ element: "<cancel-button>", text: "Cancel" })
     };
 
-    this.properties = {
+    this.props = {
         background  : $$.images.background,
         serverMin   : 1,
         serverMax   : 128,
@@ -263,7 +252,7 @@ Module.Login = function (moduleData) {
         passwordMax : 64,
     };
 
-    this.attributes = {
+    this.propType = {
         background  : "string",
         serverMin   : "number",
         serverMax   : "number",
@@ -278,15 +267,15 @@ Module.Login = function (moduleData) {
 
 $$.extendClass(Module.Login, Module.Base);
 
-Module.Login.prototype.updateProperty = function (propertyName, propertyValue) {
-    if (this.properties.hasOwnProperty(propertyName)) {
-        var type  = this.attributes[propertyName];
-        var value = $$[type](propertyValue);
+Module.Login.prototype.updateProp = function (propName, propValue) {
+    if (this.props.hasOwnProperty(propName)) {
+        var type  = this.propType[propName];
+        var value = $$[type](propValue);
         if (value) {
-            this.properties[propertyName] = value;
+            this.props[propName] = value;
         }
-        if (propertyName === "background") {
-            this.parts.backgroundBlur.updateProperty("image", propertyValue);
+        if (propName === "background") {
+            this.parts.backgroundBlur.updateProp("image", propValue);
         }
     }
     return this;
@@ -307,14 +296,16 @@ Module.Login.prototype.assemble = function () {
     var server   = $$.string(localStorage.server, "");
     var username = $$.string(localStorage.username, "");
 
-    parts.server.updateProperty("value", server).updateProperty("readonly", server ? "true" : "")
-        .updateProperty("maxlength", this.properties.serverMax);
-    parts.username.updateProperty("value", username)
-        .updateProperty("maxlength", this.properties.usernameMax);
+    parts.server.updateProp("value", server).updateProp("readonly", server ? "true" : "")
+        .updateProp("maxlength", this.props.serverMax);
+    parts.username.updateProp("value", username)
+        .updateProp("maxlength", this.props.usernameMax);
     parts.submit.toggle("disabled", true)
-        .updateProperty("maxlength", this.properties.passwordMax);
+        .updateProp("maxlength", this.props.passwordMax);
 
-    if (localStorage.autoLogin === "true") { parts.autoLogin.input.setAttribute("checked", true); }
+    if (localStorage.autoLogin === "true") { 
+        parts.autoLogin.input.setAttribute("checked", true); 
+    }
 
     return this;
 };
@@ -322,7 +313,7 @@ Module.Login.prototype.assemble = function () {
 Module.Login.prototype.addEvents = function () {
     var thisModule = this;
     var parts = this.parts;
-    parts.server    .addEvent("dblclick", function (e) { parts.server.updateProperty("readonly", "").input.select(); });
+    parts.server    .addEvent("dblclick", function (e) { parts.server.updateProp("readonly", "").input.select(); });
     parts.loginForm .addEvent("keyup",    function (e) { thisModule.verifyInput(e); });
     parts.loginForm .addEvent("input",    function (e) { thisModule.verifyInput(e); });
     parts.loginForm .addEvent("submit",   function (e) { thisModule.submit(e); });
@@ -332,7 +323,7 @@ Module.Login.prototype.addEvents = function () {
 
 Module.Login.prototype.verifyInput = function () {
     var parts = this.parts;
-    var props = this.properties;
+    var props = this.props;
     var server       = parts.server.input.value;
     var username     = parts.username.input.value;
     var password     = parts.password.input.value;
@@ -355,6 +346,7 @@ Module.Login.prototype.submit = function (e) {
         localStorage.server    = parts.server.input.value;
         localStorage.username  = saveCredentials ? parts.username.input.value : "";
         localStorage.autoLogin = saveCredentials;
+        parts.submit.toggle("disabled", true);
         this.loginSuccessful();
     }
     e.preventDefault();
@@ -410,8 +402,8 @@ Module.Navigation = function (moduleData) {
         alerts   : $$.Image({ image: $$.images.alertsLight, styleClass: "alerts" })
     };
 
-    this.properties = {
-        selectedNav : "",
+    this.props = {
+        selectedNavigation : "",
     };
 
     this.assemble().addEvents();
@@ -433,31 +425,32 @@ Module.Navigation.prototype.assemble = function () {
 Module.Navigation.prototype.addEvents = function () {
     var thisModule = this;
     var parts = this.parts;
-    var props = this.properties;
+    var props = this.props;
 
     for (var part in parts) {
         parts[part].addEvent("click", function (event) {
-            app.toggleNavigation(this.object.styleClass);
+            app.eachPart("selectNavigationItem", this.object.styleClass);
         });
     }
+    return this;
+};
 
-    this.addSignal("TOGGLE_NAVIGATION", function (signalObject) {
-        var data = $$.object(signalObject, {});
-        var isSelected = true;
-        if (parts.hasOwnProperty(data.info)) {
-            if (data.info !== props.selectedNav) {
-                if (parts[props.selectedNav]) {
-                    parts[props.selectedNav].toggle("selected", false);
-                }
-                props.selectedNav = data.info;
-            } else {
-                props.selectedNav = "";
-                isSelected = false;
+Module.Navigation.prototype.selectNavigationItem = function (sectionName) {
+    var section    = $$.string(sectionName, this.props.selectedNavigation);
+    var isSelected = false;
+    var newSection = "";
+
+    if (this.parts.hasOwnProperty(section)) {
+        if (section !== this.props.selectedNavigation) {
+            isSelected = true;
+            newSection = section;
+            if (this.props.selectedNavigation) {
+                this.parts[this.props.selectedNavigation].toggle("selected", false);
             }
-            parts[data.info].toggle("selected", isSelected);
         }
-    });
-
+        this.parts[section].toggle("selected", isSelected);
+        this.props.selectedNavigation = newSection;
+    }
     return this;
 };
 
@@ -497,12 +490,12 @@ Module.Results = function (moduleData) {
         searchField     : $$.Input({ placeholder: "Search", type: "search" })
     };
 
-    this.properties = {
-        selectedNav    : "",
-        selectedResult : null
+    this.props = {
+        selectedNavigation : "",
+        selectedResult     : null
     };
 
-    this.assemble().addEvents();
+    this.assemble();
 };
 
 $$.extendClass(Module.Results, Module.Base);
@@ -521,51 +514,47 @@ Module.Results.prototype.assemble = function () {
     return this;
 };
 
-Module.Results.prototype.addEvents = function () {
-    var thisModule = this;
-    var parts = this.parts;
-    var props = this.properties;
+Module.Results.prototype.selectNavigationItem = function (sectionName) {
+    var section    = $$.string(sectionName, this.props.selectedNavigation);
+    var isSelected = false;
+    var newSection = "";
 
-    this.addSignal("TOGGLE_NAVIGATION", function (signalObject) {
-        var data = $$.object(signalObject, {});
-        var isSelected = true;
-        if (parts.hasOwnProperty(data.info)) {
-            if (data.info !== props.selectedNav) {
-                if (props.selectedNav) {
-                    parts[props.selectedNav].toggle("selected", false);
-                }
-                props.selectedNav = data.info;
-                if (data.info === "search") {
-                    parts.searchField.input.focus();
-                }
-            } else {
-                props.selectedNav = "";
-                isSelected = false;
+    if (this.parts.hasOwnProperty(section)) {
+        if (section !== this.props.selectedNavigation) {
+            isSelected = true;
+            newSection = section;
+            if (this.props.selectedNavigation) {
+                this.parts[this.props.selectedNavigation].toggle("selected", false);
             }
-            thisModule.toggle("selected", isSelected);
-            parts[data.info].toggle("selected", isSelected);
-        }
-    });
-
-    this.addSignal("TOGGLE_RESULT", function (signalObject) {
-        var data = $$.object(signalObject, {});
-        var isSelected = true;
-        if (data.hasOwnProperty("origin") && data.origin.isView) {
-            app.parts.stage.eachAddedObject("remove", null, true);
-            if (data.origin !== props.selectedResult) {
-                if (props.selectedResult) {
-                    props.selectedResult.toggle("selected", false);
-                }
-                props.selectedResult = data.origin;
-                app.parts.stage.addCard(data.origin.model);
-            } else {
-                props.selectedResult = null;
-                isSelected = false;
+            if (section === "search") {
+                this.parts.searchField.input.focus();
             }
-            data.origin.toggle("selected", isSelected);
         }
-    });
+        this.toggle("selected", isSelected);
+        this.parts[section].toggle("selected", isSelected);
+        this.props.selectedNavigation = newSection;
+    }
+    return this;
+};
 
+Module.Results.prototype.selectResultItem = function (selectedItem, event) {
+    var result     = $$.view(selectedItem, false);
+    var isSelected = false;
+    var newResult  = null;
+
+    if (result) {
+        app.parts.specifics.eachAddedObject("remove", null, true);
+        if (result !== this.props.selectedResult) {
+            isSelected = true;
+            newResult = result;
+            if (this.props.selectedResult) {
+                this.props.selectedResult.toggle("selected", false);
+            }
+            app.parts.specifics.addCard(selectedItem.model);
+        }
+        this.props.selectedResult = newResult;
+        result.toggle("selected", isSelected);
+    }
     return this;
 };
 
@@ -598,15 +587,9 @@ Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
 
     if (!listHasCard) {
         var card = $$.Card(modelObject);
-        var signalObject = {
-            name   : "TOGGLE_RESULT",
-            origin : card,
-            target : thisModule
-        }
 
         card.addEvent("click", function (event) {
-            signalObject.event = event;
-            card.signal(signalObject);
+            app.eachPart("selectResultItem", card, event);
         });
 
         list.add(card);
@@ -621,32 +604,32 @@ Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
 
 
 // ========================================================
-//                      STAGE MODULE
+//                     SPECIFICS MODULE
 // ========================================================
 
-Module.Stage = function (moduleData) {
+Module.Specifics = function (moduleData) {
     var data        = $$.object(moduleData, {});
-    this.ID         = "-module-" + Date.now();
-    this.subtype    = "stage";
-    this.element    = $$.getElement(data.element || "<stage>");
+    this.ID         = "specifics-module-" + Date.now();
+    this.subtype    = "specifics";
+    this.element    = $$.getElement(data.element || "<specifics>");
 
-    Module.Stage.superclass.constructor.call(this, data);
+    Module.Specifics.superclass.constructor.call(this, data);
 };
 
-$$.extendClass(Module.Stage, Module.Base);
+$$.extendClass(Module.Specifics, Module.Base);
 
-Module.Stage.prototype.assemble = function (model) {
+Module.Specifics.prototype.assemble = function (model) {
     return this;
 };
 
-Module.Stage.prototype.addEvents = function () {
+Module.Specifics.prototype.addEvents = function () {
     return this;
 };
 
-Module.Stage.prototype.addCard = function (modelObject) {
+Module.Specifics.prototype.addCard = function (modelObject) {
     var newCard = $$.Card(modelObject, { size: "large" });
     newCard.parts.rosterToggle.addEvent("click", function (event) {
-        modelObject.updateProperty("isInRoster", !newCard.properties.isInRoster);
+        modelObject.updateProp("isInRoster", !newCard.props.isInRoster);
     });
     this.add(newCard);
 }

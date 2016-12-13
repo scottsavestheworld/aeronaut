@@ -2,15 +2,15 @@ var Log = {
     types: {
 
     },
-    properties: {
+    props: {
         fileOutput     : false,
         consoleOutput  : true,
         debuggerOutput : false
     },
     output: function (output, style1, style2) {
-        if (this.properties.fileOutput)     { $$.fileOutput(output); }
-        if (this.properties.consoleOutput)  { console.log(output, style1, style2); }
-        if (this.properties.dubuggerOutput) { $$.debuggerOutput(output); }
+        if (this.props.fileOutput)     { $$.fileOutput(output); }
+        if (this.props.consoleOutput)  { console.log(output, style1, style2); }
+        if (this.props.dubuggerOutput) { $$.debuggerOutput(output); }
     },
     for: {
         archetype : {
@@ -21,8 +21,8 @@ var Log = {
         method: {
             model: {
                 remove                    : false,
-                updateProperty            : false,
-                updateProperties          : false,
+                updateProp                : false,
+                updateProps               : false,
                 addView                   : false,
                 removeView                : false,
                 updateViews               : false,
@@ -35,12 +35,12 @@ var Log = {
             component: {
                 signal         : false,
                 addSignal      : false,
-                updateProperty : false
+                updateProp : false
             },
             module: {
                 signal         : false,
                 addSignal      : false,
-                updateProperty : false
+                updateProp     : false
             }
         }
     },

@@ -33,8 +33,8 @@ $$.Navigation = function (moduleData) {
 $$.Results = function (moduleData) {
     return new Module.Results(moduleData);
 };
-$$.Stage = function (moduleData) {
-    return new Module.Stage(moduleData);
+$$.Specifics = function (moduleData) {
+    return new Module.Specifics(moduleData);
 };
 //$$.Search = function (moduleData) {
 //    return new Module.Search(moduleData);
@@ -173,7 +173,7 @@ $$.getModel = function (dataObject, updateModel, modelType) {
         var modelObject = app.models[modelType.toLowerCase()][data.ID];
         if (modelObject) {
             if (updateModel) {
-                modelObject.updateProperties(data);
+                modelObject.updateProps(data);
             }
             return modelObject;
         } else {
