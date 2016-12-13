@@ -550,7 +550,7 @@ Module.Results.prototype.addEvents = function () {
     this.addSignal("TOGGLE_RESULT", function (signalObject) {
         var data = $$.object(signalObject, {});
         var isSelected = true;
-        if (data.hasOwnProperty.origin && data.origin.isView) {
+        if (data.hasOwnProperty("origin") && data.origin.isView) {
             app.parts.stage.eachAddedObject("remove", null, true);
             if (data.origin !== props.selectedResult) {
                 if (props.selectedResult) {
