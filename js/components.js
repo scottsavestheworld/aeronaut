@@ -4,8 +4,8 @@ var Component = {};
 //                      BASE COMPONENT
 // ========================================================
 
-Component.Base = function () {
-    Component.Base.superclass.constructor.call(this);
+Component.Base = function (data) {
+    Component.Base.superclass.constructor.call(this, data);
     this.archetype         = "component";
     this.isComponent       = true;
 };
@@ -21,9 +21,8 @@ Component.Basic = function (dataObject) {
     var data        = $$.object(dataObject, {});
     this.subtype    = "basic";
     this.element    = $$.getElement(data.element || "<basic>");
-    this.styleClass = $$.string(data.styleClass, "");
 
-    Component.Basic.superclass.constructor.call(this);
+    Component.Basic.superclass.constructor.call(this, data);
 };
 
 $$.extendClass(Component.Basic, Component.Base);
@@ -37,11 +36,9 @@ Component.List = function (dataObject) {
     var data        = $$.object(dataObject, {});
     var thisList    = this;
     this.subtype    = "list";
-
     this.element    = $$.getElement(data.element || "<list>");
-    this.styleClass = $$.string(data.styleClass, "");
 
-    Component.List.superclass.constructor.call(this);
+    Component.List.superclass.constructor.call(this, data);
 
     this.properties = {
         sortProperty  : $$.string(data.sortProperty, "firstName"),
@@ -119,9 +116,8 @@ Component.Image = function (dataObject) {
     var image       = $$.string(data.image, "");
     this.subtype    = "image";
     this.element    = $$.getElement(data.element || "<image>");
-    this.styleClass = $$.string(data.styleClass, "");
 
-    Component.Image.superclass.constructor.call(this);
+    Component.Image.superclass.constructor.call(this, data);
 
     this.properties = {
         image : image
@@ -169,10 +165,9 @@ Component.Text = function (dataObject) {
     var text        = $$.string(data.text, "");
     this.subtype    = "text";
     this.element    = $$.getElement(data.element || "<text>");
-    this.styleClass = $$.string(data.styleClass, "");
     this.textNode   = document.createTextNode(text);
 
-    Component.Text.superclass.constructor.call(this)
+    Component.Text.superclass.constructor.call(this, data)
 
     this.properties = {
         text : text
@@ -213,9 +208,8 @@ Component.Icon = function (dataObject) {
     var image       = $$.string(data.image, "");
     this.subtype    = "icon";
     this.element    = $$.getElement(data.element || "<icon>");
-    this.styleClass = $$.string(data.styleClass, "");
 
-    Component.Icon.superclass.constructor.call(this);
+    Component.Icon.superclass.constructor.call(this, data);
 
     this.parts = {
         image : $$.Image({ image: data.image }),
@@ -243,13 +237,12 @@ Component.Input = function (dataObject) {
     var inputType   = $$.string(data.type, "text");
     this.subtype    = "input"
     this.element    = $$.getElement(data.element || "<form-input>");
-    this.styleClass = $$.string(data.styleClass, "");
     this.input      = document.createElement("input");
     this.label      = document.createElement("label");
     this.text       = document.createTextNode($$.string(data.label, ""));
     this.input.type = inputType;
 
-    Component.Input.superclass.constructor.call(this);
+    Component.Input.superclass.constructor.call(this, data);
 
     this.properties = {
         placeholder   : $$.string(data.placeholder, ""),
@@ -334,10 +327,9 @@ Component.Time = function(dataObject) {
     var data        = $$.object(dataObject, {});
     this.subtype    = "time";
     this.element    = $$.getElement(data.element || "<time>");
-    this.styleClass = $$.string(data.styleClass, "");
     this.textNode   = document.createTextNode("");
 
-    Component.Time.superclass.constructor.call(this);
+    Component.Time.superclass.constructor.call(this, data);
 
     this.properties = {
         timestamp   : $$.number(data.timestamp, Date.now()),
@@ -410,10 +402,9 @@ Component.Name = function (modelObject, dataObject) {
     var info        = model.isModel ? model.properties : model;
     this.subtype    = "name";
     this.element    = $$.getElement(data.element || "<name>");
-    this.styleClass = $$.string(data.styleClass, "");
     this.textNode   = document.createTextNode("");
 
-    Component.Name.superclass.constructor.call(this);
+    Component.Name.superclass.constructor.call(this, data);
 
     this.properties = {
         firstName : $$.string(info.firstName, $$.string(info.name,  "")),
@@ -464,10 +455,9 @@ Component.Avatar = function (modelObject, dataObject) {
     var info        = model.isModel ? model.properties : model;
     this.subtype    = "avatar";
     this.element    = $$.getElement(data.element || "<avatar>");
-    this.styleClass = $$.string(data.styleClass, "");
     this.textNode   = document.createTextNode("");
 
-    Component.Avatar.superclass.constructor.call(this);
+    Component.Avatar.superclass.constructor.call(this, data);
 
     this.properties = {
         firstName    : $$.string(info.firstName, $$.string(info.name,  "")),
@@ -521,10 +511,9 @@ Component.Status = function (modelObject, dataObject) {
     var info        = model.isModel ? model.properties : model;
     this.subtype    = "status";
     this.element    = $$.getElement(data.element || "<status>");
-    this.styleClass = $$.string(data.styleClass, "");
     this.textNode   = document.createTextNode("");
 
-    Component.Status.superclass.constructor.call(this);
+    Component.Status.superclass.constructor.call(this, data);
 
     this.properties = {
         showText : $$.boolean(data.showText) || false,
@@ -579,9 +568,8 @@ Component.Card = function (modelObject, dataObject) {
     this.subtype    = "card";
     this.altClass   = model.subtype || "";
     this.element    = $$.getElement(data.element || "<card>");
-    this.styleClass = $$.string(data.styleClass, "");
 
-    Component.Card.superclass.constructor.call(this);
+    Component.Card.superclass.constructor.call(this, data);
 
     this.properties = {
         size         : $$.string(data.size, "small"),
@@ -615,7 +603,7 @@ Component.Card = function (modelObject, dataObject) {
         content         : $$.Basic({ element: "<content>" }),
         call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
         buttons         : $$.Basic({ element: "<buttons>" }),
-        scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsLight, text: "Schedule a Meeting" }),
+        scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsAddLight, text: "Schedule a Meeting" }),
         rosterToggle    : $$.Icon({ styleClass: "roster-toggle" })
     };
 
@@ -654,10 +642,10 @@ Component.Card.prototype.updateProperty = function (propertyName, propertyValue)
 
 Component.Card.prototype.updateRosterState = function (isInRoster) {
     var inRoster = $$.boolean(isInRoster, this.properties.isInRoster);
-    var image    = $$.images.contactAddLight;
+    var image    = $$.images.contactsAddLight;
     var text     = "Add to Contacts";
     if (inRoster === true) {
-        image = $$.images.contactRemoveLight;
+        image = $$.images.contactsRemoveLight;
         text  = "Remove from Contacts";
     }
     this.properties.isInRoster = inRoster;

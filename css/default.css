@@ -708,6 +708,7 @@ results section.meetings.is-selected card.is-selected {
 stage {
     display: flex;
     flex: 1 0 auto;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -715,6 +716,7 @@ stage {
 
 stage card {
     display: inline-block;
+    margin: .5em;
     width: 30em;
     overflow: hidden;
     background-color: rgba(255,255,255,.95);
@@ -783,6 +785,7 @@ stage card buttons {
 
 stage card buttons icon {
     flex: 1 1 50%;
+    height: 2.75em;
     text-align: center;
     color: rgba(255,255,255,.5);
 }

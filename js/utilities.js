@@ -134,6 +134,21 @@ $$.string = function (value, newValue) {
     return typeof value == "string" ? value : newValue;
 };
 
+$$.view = function (value, newValue) {
+    return ($$.object(value, false) && value.isView) ? value : newValue;
+}
+
+$$.component = function (value, newValue) {
+    return ($$.object(value, false) && value.isComponent) ? value : newValue;
+}
+
+$$.module = function (value, newValue) {
+    return ($$.object(value, false) && value.isModule) ? value : newValue;
+}
+
+$$.model = function (value, newValue) {
+    return ($$.object(value, false) && value.isModel) ? value : newValue;
+}
 
 // ========================================================
 //                   ARCHETYPE UTILITIES

@@ -4,8 +4,8 @@ var Module = {};
 //                       BASE MODULE
 // ========================================================
 
-Module.Base = function () {
-    Module.Base.superclass.constructor.call(this);
+Module.Base = function (data) {
+    Module.Base.superclass.constructor.call(this, data);
     this.archetype = "module";
     this.isModule  = true;
 };
@@ -24,7 +24,7 @@ Module.App = function (moduleData) {
     this.subtype = "app";
     this.element = $$.getElement(data.element || "<body>");
 
-    Module.App.superclass.constructor.call(this);
+    Module.App.superclass.constructor.call(this, data);
 
     this.models = {
         contact      : {},
@@ -173,7 +173,7 @@ Module.Devices = function (moduleData) {
     this.subtype = "devices";
     this.element = $$.getElement(data.element || "<devices>");
 
-    Module.Devices.superclass.constructor.call(this);
+    Module.Devices.superclass.constructor.call(this, data);
 
     this.parts = {
         microphone : $$.Image({ element: "<device-toggle>", styleClass: "microphone", image: $$.images.microphoneOn }),
@@ -237,7 +237,7 @@ Module.Login = function (moduleData) {
     this.subtype = "login";
     this.element = $$.getElement(data.element || "<login>");
 
-    Module.Login.superclass.constructor.call(this);
+    Module.Login.superclass.constructor.call(this, data);
 
     this.parts = {
         loginMenu      : $$.Basic({ element: "<login-menu>" }),
@@ -400,7 +400,7 @@ Module.Navigation = function (moduleData) {
     this.subtype  = "navigation";
     this.element  = $$.getElement(data.element || "<navigation>");
 
-    Module.Navigation.superclass.constructor.call(this);
+    Module.Navigation.superclass.constructor.call(this, data);
 
     this.parts = {
         search   : $$.Image({ image: $$.images.searchLight, styleClass: "search" }),
@@ -472,7 +472,7 @@ Module.Results = function (moduleData) {
     this.subtype  = "results";
     this.element  = $$.getElement(data.element || "<results>");
 
-    Module.Results.superclass.constructor.call(this);
+    Module.Results.superclass.constructor.call(this, data);
 
     this.parts = {
         search          : $$.Basic({ element: "<section>", styleClass: "search" }),
@@ -550,7 +550,7 @@ Module.Results.prototype.addEvents = function () {
     this.addSignal("TOGGLE_RESULT", function (signalObject) {
         var data = $$.object(signalObject, {});
         var isSelected = true;
-        if (data.origin.isView) {
+        if (data.hasOwnProperty.origin && data.origin.isView) {
             app.parts.stage.eachAddedObject("remove", null, true);
             if (data.origin !== props.selectedResult) {
                 if (props.selectedResult) {
@@ -558,6 +558,7 @@ Module.Results.prototype.addEvents = function () {
                 }
                 props.selectedResult = data.origin;
                 app.parts.stage.addCard(data.origin.model);
+                console.log(signalObject);
             } else {
                 props.selectedResult = null;
                 isSelected = false;
@@ -605,6 +606,7 @@ Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
         }
 
         card.addEvent("click", function (event) {
+            signalObject.event = event;
             card.signal(signalObject);
         });
 
@@ -628,9 +630,8 @@ Module.Stage = function (moduleData) {
     this.ID         = "-module-" + Date.now();
     this.subtype    = "stage";
     this.element    = $$.getElement(data.element || "<stage>");
-    this.styleClass = $$.string(data.styleClass, "");
 
-    Module.Stage.superclass.constructor.call(this);
+    Module.Stage.superclass.constructor.call(this, data);
 };
 
 $$.extendClass(Module.Stage, Module.Base);

@@ -1,7 +1,8 @@
 var View = {};
 
-View.Base = function () {
+View.Base = function (data) {
     this.isView         = true;
+    this.styleClass     = $$.string(data.styleClass, "");
     this.parent         = null;
     this.model          = null;
     this.element.object = this;
