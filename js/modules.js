@@ -558,7 +558,6 @@ Module.Results.prototype.addEvents = function () {
                 }
                 props.selectedResult = data.origin;
                 app.parts.stage.addCard(data.origin.model);
-                console.log(signalObject);
             } else {
                 props.selectedResult = null;
                 isSelected = false;

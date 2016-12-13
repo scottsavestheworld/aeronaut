@@ -616,7 +616,18 @@ Component.Card = function (modelObject, dataObject) {
 
 $$.extendClass(Component.Card, Component.Base);
 
-Component.Card.prototype.updateProperty = function (propertyName, propertyValue) {
+Component.Card.prototype.updateProperties = function (propertiesObject) {
+    var properties = $$.object(propertiesObject, this.properties);
+    for (var property in properties) {
+        this.updateProperty(property, properties[property], true);
+    }
+    if (this.parent && this.parent.isComponent && this.parent.subtype === "list") {
+        this.parent.sort();
+    }
+    return this;
+};
+
+Component.Card.prototype.updateProperty = function (propertyName, propertyValue, stopSort) {
     if (this.properties.hasOwnProperty(propertyName)) {
         this.properties[propertyName] = $$[this.attributes[propertyName]](propertyValue, this.properties[propertyName]);
         this.updateParts(propertyName, propertyValue);
@@ -628,13 +639,13 @@ Component.Card.prototype.updateProperty = function (propertyName, propertyValue)
 
             this.parts.status.updateStyleClass("is-" + status);
             this.parts.statusText.updateStyleClass("is-" + status).updateProperty("text", status);
-
-            if (this.parent && this.parent.isComponent && this.parent.subtype === "list") {
-                this.parent.sort();
-            }
         }
         else if (propertyName === "isInRoster") {
             this.updateRosterState(propertyValue);
+        }
+
+        if (!stopSort && this.parent && this.parent.isComponent && this.parent.subtype === "list") {
+            this.parent.sort();
         }
     }
     return this;
