@@ -71,6 +71,19 @@ var dummydata = {
         ID            : "Room1",
         name          : "Awesome Room",
         image         : "http://imageonefranchise.com/wp-content/uploads/2016/01/green-office-furniture-classic.jpg",
+    },
+    {
+        ID            : "Room2",
+        name          : "Even More Awesome Room",
+        showInitials  : false
+    }],
+    meeting:
+    [{
+        ID            : "Meeting1",
+        name          : "Neo Daily Standup",
+        organizer     : "Bala Pitchandi",
+        startTime     : Date.now(),
+        endTime       : Date.now() + 3600000
     }]
 };
 

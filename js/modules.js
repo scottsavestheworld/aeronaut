@@ -234,11 +234,11 @@ Module.Login = function (moduleData) {
         appLogo        : $$.Image({ element: "<app-logo>", image: $$.images.appLogo }),
         loginForm      : $$.Basic({ element: "<form>" }),
         welcomeMessage : $$.Text({ element: "<header>", text: "Oh, hello. Glad you could join us." }),
-        server         : $$.Input({ type: "text", placeholder: "Server", readonly: "true" }),
-        username       : $$.Input({ type: "text", placeholder: "Username" }),
-        password       : $$.Input({ type: "password", placeholder: "Password" }),
-        submit         : $$.Input({ type: "submit", value: "Sign In" }),
-        autoLogin      : $$.Input({ type: "checkbox", label: "Remember my username", labelPosition: "after" }),
+        server         : $$.Entry({ type: "text", styleClass: "server", placeholder: "Server", readonly: "true" }),
+        username       : $$.Entry({ type: "text", styleClass: "username", placeholder: "Username" }),
+        password       : $$.Entry({ type: "password", styleClass: "password", placeholder: "Password" }),
+        submit         : $$.Entry({ type: "submit", styleClass: "submit", value: "Sign In" }),
+        autoLogin      : $$.Entry({ type: "checkbox", styleClass: "checkbox", label: "Remember my username", labelPosition: "after" }),
         cancelButton   : $$.Text({ element: "<cancel-button>", text: "Cancel" })
     };
 
@@ -262,7 +262,7 @@ Module.Login = function (moduleData) {
         passwordMax : "number",
     };
 
-    this.assemble().addEvents().verifyInput().setFocus();
+    this.assemble().addEvents().verifyEntry().setFocus();
 };
 
 $$.extendClass(Module.Login, Module.Base);
@@ -303,8 +303,8 @@ Module.Login.prototype.assemble = function () {
     parts.submit.toggle("disabled", true)
         .updateProp("maxlength", this.props.passwordMax);
 
-    if (localStorage.autoLogin === "true") { 
-        parts.autoLogin.input.setAttribute("checked", true); 
+    if (localStorage.autoLogin === "true") {
+        parts.autoLogin.input.setAttribute("checked", true);
     }
 
     return this;
@@ -314,14 +314,14 @@ Module.Login.prototype.addEvents = function () {
     var thisModule = this;
     var parts = this.parts;
     parts.server    .addEvent("dblclick", function (e) { parts.server.updateProp("readonly", "").input.select(); });
-    parts.loginForm .addEvent("keyup",    function (e) { thisModule.verifyInput(e); });
-    parts.loginForm .addEvent("input",    function (e) { thisModule.verifyInput(e); });
+    parts.loginForm .addEvent("keyup",    function (e) { thisModule.verifyEntry(e); });
+    parts.loginForm .addEvent("input",    function (e) { thisModule.verifyEntry(e); });
     parts.loginForm .addEvent("submit",   function (e) { thisModule.submit(e); });
 
     return this;
 };
 
-Module.Login.prototype.verifyInput = function () {
+Module.Login.prototype.verifyEntry = function () {
     var parts = this.parts;
     var props = this.props;
     var server       = parts.server.input.value;
@@ -358,7 +358,7 @@ Module.Login.prototype.setFocus = function () {
     var formObjects = this.parts.loginForm.addedObjects;
     var i = 0, total = formObjects.length;
     for (i; i < total; i++) {
-        if (formObjects[i].subtype === "input" && !formObjects[i].toggles.active) {
+        if (formObjects[i].subtype === "entry" && !formObjects[i].toggles.active) {
             formObjects[i].input.focus();
             setTimeout(function () { formObjects[i].input.focus(); }, 100);
             break;
@@ -482,12 +482,12 @@ Module.Results = function (moduleData) {
 
         searchResults   : $$.List(),
         contactsResults : $$.List(),
-        roomsResults    : $$.List(),
+        roomsResults    : $$.List({ sortProp: "name", sortByStatus: false }),
         meetingsResults : $$.List(),
         alertsResults   : $$.List(),
 
         headerDate      : $$.Time({ format: "[D]", interval: "every day" }),
-        searchField     : $$.Input({ placeholder: "Search", type: "search" })
+        searchField     : $$.Entry({ placeholder: "Search", type: "search" })
     };
 
     this.props = {

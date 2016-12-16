@@ -229,20 +229,20 @@ Component.Icon.prototype.updateProp = function (propName, propValue) {
 
 
 // ========================================================
-//                     INPUT COMPONENT
+//                     ENTRY COMPONENT
 // ========================================================
 
-Component.Input = function (dataObject) {
+Component.Entry = function (dataObject) {
     var data        = $$.object(dataObject, {});
     var inputType   = $$.string(data.type, "text");
-    this.subtype    = "input"
-    this.element    = $$.getElement(data.element || "<form-input>");
+    this.subtype    = "entry"
+    this.element    = $$.getElement(data.element || "<entry>");
     this.input      = document.createElement("input");
     this.label      = document.createElement("label");
     this.text       = document.createTextNode($$.string(data.label, ""));
     this.input.type = inputType;
 
-    Component.Input.superclass.constructor.call(this, data);
+    Component.Entry.superclass.constructor.call(this, data);
 
     this.props = {
         placeholder   : $$.string(data.placeholder, ""),
@@ -265,9 +265,9 @@ Component.Input = function (dataObject) {
     this.updateProps();
 };
 
-$$.extendClass(Component.Input, Component.Base);
+$$.extendClass(Component.Entry, Component.Base);
 
-Component.Input.prototype.updateProp = function (propName, propValue) {
+Component.Entry.prototype.updateProp = function (propName, propValue) {
     if (this.props.hasOwnProperty(propName)) {
         var type = this.propType[propName];
         propValue = $$[type](propValue, this.props[propName]);
@@ -311,7 +311,7 @@ Component.Input.prototype.updateProp = function (propName, propValue) {
     return this;
 };
 
-Component.Input.prototype.value = function (value) {
+Component.Entry.prototype.value = function (value) {
     if (value != null) {
         this.updateProp("value", value);
     }
@@ -502,58 +502,42 @@ Component.Avatar.prototype.formatAvatar = function () {
 
 
 // ========================================================
-//                     STATUS COMPONENT
+//                    PROGRESS COMPONENT
 // ========================================================
 
-Component.Status = function (modelObject, dataObject) {
+Component.Progress = function (modelObject, dataObject) {
     var data        = $$.object(dataObject, {});
     var model       = $$.object(modelObject, {});
     var info        = model.isModel ? model.props : model;
-    this.subtype    = "status";
-    this.element    = $$.getElement(data.element || "<status>");
+    this.subtype    = "avatar";
+    this.element    = $$.getElement(data.element || "<progress>");
     this.textNode   = document.createTextNode("");
 
-    Component.Status.superclass.constructor.call(this, data);
+    Component.Progress.superclass.constructor.call(this, data);
 
     this.props = {
-        showText : $$.boolean(data.showText) || false,
-        status : ""
+        firstName    : $$.string(info.firstName, $$.string(info.name,  "")),
+        lastName     : $$.string(info.lastName, ""),
+        image        : $$.string(info.image, ""),
+        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
+        showInitials : $$.boolean(info.showInitials, false)
     };
 
     this.addModel(model);
     this.add(this.textNode);
-    this.status(info.status);
+    this.formatAvatar();
 };
 
-$$.extendClass(Component.Status, Component.Base);
+$$.extendClass(Component.Progress, Component.Base);
 
-Component.Status.prototype.updateProp = function (propName, propValue) {
-    if (propName === "status") {
-        this.status(propValue);
-    } else if (propName === "showText") {
-        this.showText(propValue);
+Component.Progress.prototype.updateProp = function (propName, propValue) {
+    if (propName === "name") { propName = "firstName"; }
+    if (this.props.hasOwnProperty(propName)) {
+        this.props[propName] = propValue;
+        this.formatAvatar();
     }
     return this;
 };
-
-Component.Status.prototype.status = function (status) {
-    status = this.props.status = $$.string(status, "unknown");
-    this.altClass = "is-" + status;
-    this.updateStyleClass();
-    this.showText();
-
-    return this.props.status;
-};
-
-Component.Status.prototype.showText = function (boolean) {
-    var showText = $$.boolean(boolean, this.props.showText);
-    this.props.showText = showText;
-    if (showText) {
-        this.textNode.nodeValue = this.props.status;
-    } else {
-        this.textNode.nodeValue = "";
-    }
-}
 
 
 // ========================================================
@@ -578,9 +562,12 @@ Component.Card = function (modelObject, dataObject) {
         lastName     : $$.string(info.lastName, ""),
         image        : $$.string(info.image, ""),
         status       : $$.string(info.status, "unknown"),
-        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
+        defaultImage : $$.string(info.defaultImage, $$.images.defaultAvatar),
         isInRoster   : $$.boolean(info.isInRoster, false),
-        showInitials : $$.boolean(info.showInitials, false)
+        showInitials : $$.boolean(info.showInitials, false),
+        organizer    : $$.string(info.organizer, ""),
+        startTime    : $$.number(info.startTime, 0),
+        endTime      : $$.number(info.endTime, 0)
     }
 
     this.propType = {
@@ -592,7 +579,10 @@ Component.Card = function (modelObject, dataObject) {
         status       : "string",
         defaultImage : "string",
         isInRoster   : "boolean",
-        showInitials : "boolean"
+        showInitials : "boolean",
+        organizer    : "string",
+        startTime    : "number",
+        endTime      : "number"
     }
 
     this.parts = {
@@ -600,15 +590,19 @@ Component.Card = function (modelObject, dataObject) {
         name            : $$.Name(info),
         status          : $$.Image({ element: "<status>", styleClass: "is-" + this.props.status }),
         statusText      : $$.Text({ element: "<status-text>", styleClass: "is-" + this.props.status, text: this.props.status }),
+        startTime       : $$.Time({ timestamp: this.props.startTime, format: "[h]:[mm]" }),
         contents        : $$.Basic({ element: "<contents>" }),
         call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
+
         buttons         : $$.Basic({ element: "<buttons>" }),
         scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsAddLight, text: "Schedule a Meeting" }),
-        rosterToggle    : $$.Icon({ styleClass: "roster-toggle" })
+        rosterToggle    : $$.Icon({ styleClass: "roster-toggle" }),
+
     };
 
     if (model.subtype) {
         this[model.subtype + "Parts"](info, data);
+        this.props.defaultImage = $$.images["default" + $$.capitalize(model.subtype)];
     }
 
     this.addModel(model).updateNameAttribute().updateRosterState();
@@ -701,21 +695,12 @@ Component.Card.prototype.roomParts = function (info) {
 };
 
 Component.Card.prototype.meetingParts = function (info) {
-    this.parts = {
-        contents : $$.Basic("<contents>"),
-        name     : $$.Name(info)
-    };
+    var parts = this.parts;
+    this.add(parts.avatar
+             .add(parts.startTime))
+        .add(parts.contents
+             .add(parts.name)
+             .add(parts.organizer));
 
-    this.props = {
-        name      : info.name      || "",
-        organizer : info.organizer || {},
-        startTime : info.startTime || 0,
-        endTime   : info.endTime   || 0
-    }
-
-    this.updateNameAttribute();
-    this.add(this.parts.avatar);
-    this.parts.avatar.add(this.parts.status);
-    this.add(this.parts.contents);
-    this.parts.contents.add(this.parts.name);
+    return this;
 };

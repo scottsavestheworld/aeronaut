@@ -12,6 +12,11 @@ $$.Contact = function (dataObject, updateModel) {
 $$.Room = function (dataObject, updateModel) {
     return $$.getModel(dataObject, updateModel, "Room");
 };
+$$.Meeting = function (dataObject, updateModel) {
+    var data = $$.object(dataObject, {});
+    data.subtype = "meeting";
+    return $$.getModel(data, updateModel, "Room");
+};
 $$.Message = function (dataObject, updateModel) {
     return $$.getModel(dataObject, updateModel, "Message");
 };
@@ -57,8 +62,8 @@ $$.Text = function (dataObject) {
 $$.Icon = function (dataObject) {
     return new Component.Icon(dataObject);
 };
-$$.Input = function (dataObject) {
-    return new Component.Input(dataObject);
+$$.Entry = function (dataObject) {
+    return new Component.Entry(dataObject);
 };
 $$.Time = function (dataObject) {
     return new Component.Time(dataObject);
@@ -307,20 +312,20 @@ $$.formatTime = function (format, timestamp) {
 
     var n       = new Date(Date.now());
     var t       = new Date(timestamp);
-    var f        = {};
-        f.D        = t.getDate();
+    var f       = {};
+        f.D     = t.getDate();
         f.DD    = pad0(f.D);
-        f.DDDD    = Dictionary.timeStrings.days[t.getDay()];
-        f.DDD    = f.DDDD.substring(0, 3);
-        f.M        = t.getMonth() + 1;
+        f.DDDD  = Dictionary.timeStrings.days[t.getDay()];
+        f.DDD   = f.DDDD.substring(0, 3);
+        f.M     = t.getMonth() + 1;
         f.MM    = pad0(f.M);
-        f.MMMM    = Dictionary.timeStrings.months[t.getMonth()];
+        f.MMMM  = Dictionary.timeStrings.months[t.getMonth()];
         f.MMM   = f.MMMM.substring(0, 3);
-        f.YYYY    = t.getFullYear();
+        f.YYYY  = t.getFullYear();
         f.YY    = f.YYYY.toString().substr(2);
-        f.H        = t.getHours();
+        f.H     = t.getHours();
         f.HH    = pad0(f.H);
-        f.h        = f.H > 12 ? f.H - 12 : f.H == 0 ? 12 : f.H;
+        f.h     = f.H > 12 ? f.H - 12 : f.H == 0 ? 12 : f.H;
         f.hh    = pad0(f.h);
         f.m     = t.getMinutes();
         f.mm    = pad0(f.m);

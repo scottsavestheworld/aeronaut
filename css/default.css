@@ -398,7 +398,7 @@ login form > * {
     margin: 1em;
 }
 
-login form-input {
+login entry {
     display: block;
 }
 
@@ -423,29 +423,37 @@ login input:focus {
     box-shadow: 0 0 0 3px #FF644B;
 }
 
-login form-input.is-active input {
+login entry.is-active input {
     box-shadow: 0 0 0 1px #1A0;
 }
 
-login form-input.is-active input:focus {
+login entry.is-active input:focus {
     box-shadow: 0 0 0 3px #1A0;
 }
 
-login form-input input[type=text]:read-only {
+login entry input:read-only {
     background: rgba(255,255,255,.1);
     color: #BBB;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     cursor: default;
 }
 
-login input[type=text]:-moz-read-only {
+login entry.is-active input:read-only:focus {
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+}
+
+login entry input[type=text]:-moz-read-only {
     background: rgba(255,255,255,.1);
     color: #BBB;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     cursor: default;
 }
 
-login input[type=checkbox] {
+login entry.is-active input:-moz-read-only:focus {
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+}
+
+login entry.checkbox input {
     box-shadow: initial;
     display: inline;
     margin: 0 8px 0 2px;
@@ -454,7 +462,7 @@ login input[type=checkbox] {
     width: auto;
 }
 
-login input[type=submit] {
+login entry.submit input {
     font-weight: 500;
     color: #FFF;
     border: 1px solid rgba(0,0,0,.3);
@@ -462,17 +470,17 @@ login input[type=submit] {
     box-shadow: none;
 }
 
-login input[type=submit]:hover {
+login entry.submit input:hover {
     position: relative;
     background: linear-gradient(rgba(26,170,0,.7), rgba(26,170,0,1));
     cursor: pointer;
 }
 
-login input[type=submit]:active {
+login entry.submit input:active {
     background: linear-gradient(rgba(26,170,0,1), rgba(26,170,0,.7));
 }
 
-login form-input.is-disabled input[type=submit] {
+login entry.submit.is-disabled input {
     background: rgba(0,0,0,.1);
     color: rgba(255,255,255,.5);
     border: 1px solid rgba(0,0,0,.1);
@@ -644,7 +652,7 @@ results card > contents {
     display: inline-block;
     vertical-align: middle;
     margin-left: .25em;
-    width: calc(100% - 4em);
+    width: calc(100% - 3.25em);
     max-height: 2.5em;
 }
 
