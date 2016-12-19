@@ -7,7 +7,9 @@ View.Base = function (data) {
     this.model          = null;
     this.element.object = this;
     this.parts          = {};
-    this.props     = {};
+    this.props          = {};
+    this.propType       = {};
+    this.attribs        = {};
     this.addedObjects   = [];
     this.signals        = {};
 

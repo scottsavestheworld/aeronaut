@@ -124,20 +124,24 @@ $$.array = function (value, newValue) {
 };
 
 $$.boolean = function (value, newValue) {
-    return typeof value == "boolean" ? value : newValue;
+    return typeof value === "boolean" ? value : newValue;
 };
 
 $$.number = function (value, newValue) {
-    return typeof value == "number" && !isNaN(value) ? value : newValue;
+    return typeof value === "number" && !isNaN(value) ? value : newValue;
 };
 
 $$.object = function (value, newValue) {
-    return typeof value == "object" && value != null ? value : newValue;
+    return typeof value === "object" && value != null ? value : newValue;
 };
 
 $$.string = function (value, newValue) {
-    return typeof value == "string" ? value : newValue;
+    return typeof value === "string" ? value : newValue;
 };
+
+$$.function = function (value, newValue) {
+    return typeof value === "function" ? value : newValue;
+}
 
 $$.view = function (value, newValue) {
     return ($$.object(value, false) && value.isView) ? value : newValue;
@@ -153,6 +157,13 @@ $$.module = function (value, newValue) {
 
 $$.model = function (value, newValue) {
     return ($$.object(value, false) && value.isModel) ? value : newValue;
+}
+
+$$.time = function (value, newValue) {
+    return value === "clock" 
+        || value === "countdown"
+        || value === "elapsed"
+        || value === "timer" ? value : newValue;
 }
 
 // ========================================================
@@ -272,7 +283,7 @@ $$.getInterval = function (intervalString) {
     var interval = 0;
 
     if (intervalString === "every day" || intervalString === "every hour" || intervalString === "every minute") {
-        var now = $$.formatTime("[H],[i],[s]").split(",").map(Number);
+        var now = $$.formatTime(null, "[H],[i],[s]").split(",").map(Number);
         switch (intervalString) {
             case "every day":
                 timeout  = 86400 - ((now[0] * 3600) + (now[1] * 60) + now[2]);
@@ -290,16 +301,59 @@ $$.getInterval = function (intervalString) {
         };
     }
 
-    if (interval > 0) {
+    if (interval) {
         return { "timeout" : timeout, "interval" : interval };
     } else {
         return null;
     }
 };
 
-//--------------------------------------------------------- Format Time
+/*--------------------------------------------------------- Get Interval
+ increment of 1000 rounds to nearest past second
+ increment of 60000 rounds to nearest past minute
+ increment of 3600000 rounds to nearest past hour
+*/
 
-$$.formatTime = function (format, timestamp) {
+$$.roundTime = function (increment, timestamp) {
+    var roundedTime = $$.number(timestamp, 0);
+    if (timestamp) {
+       return Math.floor(timestamp / increment) * increment;
+    } else {
+        return null;
+    }
+};
+
+/*--------------------------------------------------------- Format Time
+
+ [D]      Day of month without 0     :  1 - 31
+ [DD]     Day of month with 0        : 01 - 31
+ [DDD]    Day of week abbreviated    : Sun - Sat
+ [DDDD]   Day of week full           : Sunday - Saturday
+
+ [M]      Month number without 0     :  1 - 12
+ [MM]     Month number with 0        : 01 - 12
+ [MMM]    Month name abbreviated     : Jan - Dec
+ [MMMM]   Month name full            : January - December
+
+ [YY]     Year number last 2 digits  : 16
+ [YYYY]   Year number full           : 2016
+
+ [H]      24-hour hour without 0     :  0 - 23
+ [HH]     24-hour hour with 0        : 00 - 23
+ [h]      12-hour hour without 0     :  1 - 12
+ [hh]     12-hour hour with 0        : 01 - 12
+ 
+ [m]      Minute without 0           :  0 - 59
+ [mm]     Minute with 0              : 00 - 59
+
+ [s]      Second without 0           :  0 - 59
+ [ss]     Second with 0              : 00 - 59
+
+ [pm]     AM/PM for 12-hour clock
+ 
+*/
+
+$$.formatTime = function (timestamp, format) {
     format = $$.string(format, "");
     var smartTime = format.indexOf("[ST]") > -1 ? true : false;
     var smartDate = format.indexOf("[SD]") > -1 ? true : false;
@@ -368,7 +422,12 @@ $$.formatTime = function (format, timestamp) {
     return (format);
 };
 
-//--------------------------------------------------------- Format Timer
+/*--------------------------------------------------------- Format Timer
+ [d] Days
+ [h] Hours
+ [m] Minutes
+ [s] Seconds
+*/
 
 $$.formatTimer = function (timestamp, format) {
     format = $$.string(format, "[d]:[h]:[m]:[s]");

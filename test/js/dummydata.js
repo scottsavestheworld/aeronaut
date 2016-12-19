@@ -82,7 +82,7 @@ var dummydata = {
         ID            : "Meeting1",
         name          : "Neo Daily Standup",
         organizer     : "Bala Pitchandi",
-        startTime     : Date.now(),
+        startTime     : Date.now() + 310000,
         endTime       : Date.now() + 3600000
     }]
 };

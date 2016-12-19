@@ -353,3 +353,29 @@
     font-weight: 900;
     font-style: italic;
 }
+
+/* DS Digital */
+
+@font-face {
+    font-family: DS-Digital;
+    src: url(../fonts/DS-Digital/DS-DIGI.TTF);
+}
+
+@font-face {
+    font-family: DS_Digital;
+    src: url(../fonts/DS-Digital/DS-DIGIB.TTF);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: DS_Digital;
+    src: url(../fonts/DS-Digital/DS-DIGII.TTF);
+    font-style: italic;
+}
+
+@font-face {
+    font-family: DS_Digital;
+    src: url(../fonts/DS-Digital/DS-DIGIT.TTF);
+    font-weight: bold;
+    font-style: italic;
+}

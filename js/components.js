@@ -332,9 +332,24 @@ Component.Time = function(dataObject) {
     Component.Time.superclass.constructor.call(this, data);
 
     this.props = {
-        timestamp   : $$.number(data.timestamp, Date.now()),
-        format      : $$.string(data.format, "[full date and time]"),
-        interval    : $$.number(data.interval, 0),
+        type      : $$.time(data.type, "clock"),
+        startTime : $$.number(data.startTime, 0),
+        endTime   : $$.number(data.endTime, 0),
+        timestamp : $$.number(data.timestamp, Date.now()),
+        format    : $$.string(data.format, "[full date and time]"),
+        interval  : $$.number(data.interval, 0)
+    };
+    
+    this.propType = {
+        type      : "time",
+        startTime : "number",
+        endTime   : "number",
+        timestamp : "number",
+        format    : "string",
+        interval  : "number"
+    };
+
+    this.attribs = {
         setTimeout  : null,
         setInterval : null
     };
@@ -345,6 +360,13 @@ Component.Time = function(dataObject) {
 
 $$.extendClass(Component.Time, Component.Base);
 
+Component.Time.prototype.updateProp = function (propName, propValue) {
+    if (this.props.hasOwnProperty(propName)) {
+        this.props[propName] = $$[this.propType[propName]](propValue, this.props[propName]);
+    }
+    return this;
+};
+
 Component.Time.prototype.time = function (timestamp, format, interval) {
     this.props.timestamp = $$.number(timestamp, Date.now());
     this.format(format);
@@ -354,18 +376,52 @@ Component.Time.prototype.time = function (timestamp, format, interval) {
 
 Component.Time.prototype.format = function (format) {
     this.props.format = $$.string(format, this.props.format);
-    this.textNode.nodeValue = $$.formatTime(this.props.format, this.props.timestamp);
+    var newTime = "";
+    if (this.props.type === "clock") {              // Date and time
+        newTime = $$.formatTime(this.props.timestamp, this.props.format);
+    } 
+    else if (this.props.type === "countdown") {     // Countdown to startTime
+        newTime = $$.formatTimer(this.props.startTime - Date.now(), this.props.format);
+    }
+    else if (this.props.type === "elapsed") {       // Time elapsed since startTime
+        newTime = $$.formatTimer(Date.now() - this.props.startTime, this.props.format);
+    }
+    else if (this.props.type === "timer") {         // Time remaining before endTime
+        newTime = $$.formatTimer(this.props.endTime - Date.now(), this.props.format);
+    }
+    this.textNode.nodeValue = newTime;
     return this;
+};
+
+Component.Time.prototype.updateTimeStatus = function (timeStatus) {
+    var type       = "clock";
+    var interval   = 0;
+    var format     = "[h]:[mm]";
+    var styleClass = "";
+
+    switch (timeStatus) {
+        case "soon":
+            type = "countdown"; format = "[m] min"; interval = "every minute"; styleClass = "is-soon";
+            break;
+        case "started":
+            type = "elapsed"; format = "[d]:[h]:[m]:[s]"; interval = 1; styleClass = "is-started";
+            break;
+        case "ended":
+            styleClass = "is-ended";
+            break;
+    }
+    
+    this.updateProp("type", type).format(format).interval(interval).updateStyleClass(styleClass).updateClock().interval();
 };
 
 Component.Time.prototype.interval = function (interval) {
     var thisTime = this;
     interval = $$.number(interval, $$.string(interval, this.props.interval));
-    clearTimeout(this.props.setTimeout);
-    clearInterval(this.props.setInterval);
+    clearTimeout(this.attribs.setTimeout);
+    clearInterval(this.attribs.setInterval);
     if (typeof interval === "number" && interval > 0) {
         this.props.interval = interval;
-        this.props.setInterval = setInterval(function () {
+        this.attribs.setInterval = setInterval(function () {
             thisTime.updateClock();
         }, interval * 1000);
     }
@@ -373,7 +429,7 @@ Component.Time.prototype.interval = function (interval) {
         var intervalObject = $$.getInterval(interval);
         if (intervalObject) {
             this.props.interval = intervalObject.interval;
-            this.props.setTimeout = setTimeout(function () {
+            this.attribs.setTimeout = setTimeout(function () {
                 thisTime.updateClock();
                 thisTime.interval();
             }, intervalObject.timeout * 1000);
@@ -590,14 +646,13 @@ Component.Card = function (modelObject, dataObject) {
         name            : $$.Name(info),
         status          : $$.Image({ element: "<status>", styleClass: "is-" + this.props.status }),
         statusText      : $$.Text({ element: "<status-text>", styleClass: "is-" + this.props.status, text: this.props.status }),
-        startTime       : $$.Time({ timestamp: this.props.startTime, format: "[h]:[mm]" }),
+        meetingTime     : $$.Time({ timestamp: this.props.startTime, startTime: this.props.startTime, endTime: this.props.endTime, format: "[h]:[mm]" }),
         contents        : $$.Basic({ element: "<contents>" }),
         call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
 
         buttons         : $$.Basic({ element: "<buttons>" }),
         scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsAddLight, text: "Schedule a Meeting" }),
-        rosterToggle    : $$.Icon({ styleClass: "roster-toggle" }),
-
+        rosterToggle    : $$.Icon({ styleClass: "roster-toggle" })
     };
 
     if (model.subtype) {
@@ -628,7 +683,8 @@ Component.Card.prototype.updateProp = function (propName, propValue, stopSort) {
 
         if (propName === "name" || propName === "firstName" || propName == "lastName") {
             this.updateNameAttribute();
-        } else if (propName === "status") {
+        } 
+        else if (propName === "status") {
             var status = $$.string(propValue, this.props.status);
 
             this.parts.status.updateStyleClass("is-" + status);
@@ -697,7 +753,7 @@ Component.Card.prototype.roomParts = function (info) {
 Component.Card.prototype.meetingParts = function (info) {
     var parts = this.parts;
     this.add(parts.avatar
-             .add(parts.startTime))
+             .add(parts.meetingTime))
         .add(parts.contents
              .add(parts.name)
              .add(parts.organizer));
