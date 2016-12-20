@@ -339,7 +339,7 @@ Component.Time = function(dataObject) {
         format    : $$.string(data.format, "[full date and time]"),
         interval  : $$.number(data.interval, 0)
     };
-    
+
     this.propType = {
         type      : "time",
         startTime : "number",
@@ -379,7 +379,7 @@ Component.Time.prototype.format = function (format) {
     var newTime = "";
     if (this.props.type === "clock") {              // Date and time
         newTime = $$.formatTime(this.props.timestamp, this.props.format);
-    } 
+    }
     else if (this.props.type === "countdown") {     // Countdown to startTime
         newTime = $$.formatTimer(this.props.startTime - Date.now(), this.props.format);
     }
@@ -400,17 +400,20 @@ Component.Time.prototype.updateTimeStatus = function (timeStatus) {
     var styleClass = "";
 
     switch (timeStatus) {
-        case "soon":
-            type = "countdown"; format = "[m] min"; interval = "every minute"; styleClass = "is-soon";
+        case "starting soon":
+            type = "countdown"; format = "[m] min"; interval = "every minute"; styleClass = "is-starting-soon";
             break;
         case "started":
             type = "elapsed"; format = "[d]:[h]:[m]:[s]"; interval = 1; styleClass = "is-started";
             break;
+        case "ending soon":
+            type = "elapsed"; format = "[d]:[h]:[m]:[s]"; interval = 1; styleClass = "is-ending-soon";
+            break;
         case "ended":
-            styleClass = "is-ended";
+            type = "clock"; format = "[hh]:[mm]"; interval = 0; styleClass = "is-ended";
             break;
     }
-    
+
     this.updateProp("type", type).format(format).interval(interval).updateStyleClass(styleClass).updateClock().interval();
 };
 
@@ -641,6 +644,14 @@ Component.Card = function (modelObject, dataObject) {
         endTime      : "number"
     }
 
+    this.attribs = {
+        startingSoonTimeout : null,
+        startedTimeout      : null,
+        endingSoonTimeout   : null,
+        endedTimeout        : null,
+        hoursTimeout        : null
+    };
+
     this.parts = {
         avatar          : $$.Avatar(info),
         name            : $$.Name(info),
@@ -683,7 +694,7 @@ Component.Card.prototype.updateProp = function (propName, propValue, stopSort) {
 
         if (propName === "name" || propName === "firstName" || propName == "lastName") {
             this.updateNameAttribute();
-        } 
+        }
         else if (propName === "status") {
             var status = $$.string(propValue, this.props.status);
 
@@ -752,11 +763,29 @@ Component.Card.prototype.roomParts = function (info) {
 
 Component.Card.prototype.meetingParts = function (info) {
     var parts = this.parts;
+    var props = this.props;
+    var attribs = this.attribs;
+    attribs.startingSoonTimeout = setTimeout(function () {
+        parts.meetingTime.updateTimeStatus("starting soon");
+    }, (props.startTime - Date.now() - 299000));
+
+    attribs.startedTimeout = setTimeout(function () {
+        parts.meetingTime.updateTimeStatus("started");
+    }, (props.startTime - Date.now()));
+
+    attribs.endingSoonTimeout = setTimeout(function () {
+        parts.meetingTime.updateTimeStatus("ending soon");
+    }, (props.endTime - Date.now()) - 299000);
+
+    attribs.endedTimeout = setTimeout(function () {
+        parts.meetingTime.updateTimeStatus("ended");
+    }, (props.endTime - Date.now()));
+
     this.add(parts.avatar
-             .add(parts.meetingTime))
+            .add(parts.meetingTime))
         .add(parts.contents
-             .add(parts.name)
-             .add(parts.organizer));
+            .add(parts.name)
+            .add(parts.organizer));
 
     return this;
 };

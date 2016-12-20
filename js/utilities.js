@@ -160,7 +160,7 @@ $$.model = function (value, newValue) {
 }
 
 $$.time = function (value, newValue) {
-    return value === "clock" 
+    return value === "clock"
         || value === "countdown"
         || value === "elapsed"
         || value === "timer" ? value : newValue;
@@ -283,7 +283,7 @@ $$.getInterval = function (intervalString) {
     var interval = 0;
 
     if (intervalString === "every day" || intervalString === "every hour" || intervalString === "every minute") {
-        var now = $$.formatTime(null, "[H],[i],[s]").split(",").map(Number);
+        var now = $$.formatTime(null, "[H],[m],[s]").split(",").map(Number);
         switch (intervalString) {
             case "every day":
                 timeout  = 86400 - ((now[0] * 3600) + (now[1] * 60) + now[2]);
@@ -308,13 +308,13 @@ $$.getInterval = function (intervalString) {
     }
 };
 
-/*--------------------------------------------------------- Get Interval
+/*--------------------------------------------------------- Round Time
  increment of 1000 rounds to nearest past second
  increment of 60000 rounds to nearest past minute
  increment of 3600000 rounds to nearest past hour
 */
 
-$$.roundTime = function (increment, timestamp) {
+$$.roundTime = function (timestamp, increment) {
     var roundedTime = $$.number(timestamp, 0);
     if (timestamp) {
        return Math.floor(timestamp / increment) * increment;
@@ -322,6 +322,11 @@ $$.roundTime = function (increment, timestamp) {
         return null;
     }
 };
+
+$$.getMinute = function (timestamp) {
+    return Math.round(timestamp / 60000);
+};
+
 
 /*--------------------------------------------------------- Format Time
 
@@ -342,7 +347,7 @@ $$.roundTime = function (increment, timestamp) {
  [HH]     24-hour hour with 0        : 00 - 23
  [h]      12-hour hour without 0     :  1 - 12
  [hh]     12-hour hour with 0        : 01 - 12
- 
+
  [m]      Minute without 0           :  0 - 59
  [mm]     Minute with 0              : 00 - 59
 
@@ -350,7 +355,7 @@ $$.roundTime = function (increment, timestamp) {
  [ss]     Second with 0              : 00 - 59
 
  [pm]     AM/PM for 12-hour clock
- 
+
 */
 
 $$.formatTime = function (timestamp, format) {
@@ -362,7 +367,7 @@ $$.formatTime = function (timestamp, format) {
     format        = Dictionary.timeFormats[format] || format;
     timestamp     = $$.number(timestamp, Date.now());
 
-    function pad0(number) { return number < 10 ? "0" + number : number; }
+    function pad0(number)  { return number < 10 ? "0" + number : number; }
 
     var n       = new Date(Date.now());
     var t       = new Date(timestamp);

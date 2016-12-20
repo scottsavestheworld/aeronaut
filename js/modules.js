@@ -230,7 +230,6 @@ Module.Login = function (moduleData) {
 
     this.parts = {
         loginMenu      : $$.Basic({ element: "<login-menu>" }),
-        backgroundBlur : $$.Image({ element: "<background-blur>" }),
         appLogo        : $$.Image({ element: "<app-logo>", image: $$.images.appLogo }),
         loginForm      : $$.Basic({ element: "<form>" }),
         welcomeMessage : $$.Text({ element: "<header>", text: "Oh, hello. Glad you could join us." }),
@@ -274,9 +273,6 @@ Module.Login.prototype.updateProp = function (propName, propValue) {
         if (value) {
             this.props[propName] = value;
         }
-        if (propName === "background") {
-            this.parts.backgroundBlur.updateProp("image", propValue);
-        }
     }
     return this;
 };
@@ -291,7 +287,7 @@ Module.Login.prototype.assemble = function () {
                 .add(parts.autoLogin)
                 .add(parts.submit)
             )
-        ).add(parts.backgroundBlur);
+        );
 
     var server   = $$.string(localStorage.server, "");
     var username = $$.string(localStorage.username, "");
@@ -483,7 +479,7 @@ Module.Results = function (moduleData) {
         searchResults   : $$.List(),
         contactsResults : $$.List(),
         roomsResults    : $$.List({ sortProp: "name", sortByStatus: false }),
-        meetingsResults : $$.List(),
+        meetingsResults : $$.List({ sortProp: "startTime", sortByStatus: false }),
         alertsResults   : $$.List(),
 
         headerDate      : $$.Time({ format: "[D]", interval: "every day" }),

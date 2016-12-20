@@ -80,10 +80,24 @@ var dummydata = {
     meeting:
     [{
         ID            : "Meeting1",
-        name          : "Neo Daily Standup",
+        name          : "Starting Meeting",
         organizer     : "Bala Pitchandi",
-        startTime     : Date.now() + 310000,
+        startTime     : Date.now() + 20000,
         endTime       : Date.now() + 3600000
+    },
+    {
+        ID            : "Meeting2",
+        name          : "Ending Meeting",
+        organizer     : "Bala Pitchandi",
+        startTime     : Date.now() - 3580000,
+        endTime       : Date.now() + 20000
+    },
+    {
+        ID            : "Meeting3",
+        name          : "Future Meeting",
+        organizer     : "Bala Pitchandi",
+        startTime     : Date.now() + 3600000,
+        endTime       : Date.now() + 20000000
     }]
 };
 
