@@ -519,11 +519,11 @@ Component.Avatar = function (modelObject, dataObject) {
     Component.Avatar.superclass.constructor.call(this, data);
 
     this.props = {
-        firstName    : $$.string(info.firstName, $$.string(info.name,  "")),
-        lastName     : $$.string(info.lastName, ""),
-        image        : $$.string(info.image, ""),
-        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
-        showInitials : $$.boolean(info.showInitials, false)
+        firstName     : $$.string(info.firstName, $$.string(info.name,  "")),
+        lastName      : $$.string(info.lastName, ""),
+        avatar        : $$.string(info.avatar, ""),
+        defaultAvatar : $$.string(info.defaultAvatar, $$.images.defaultContact),
+        showInitials  : $$.boolean(info.showInitials, false)
     };
 
     this.addModel(model);
@@ -543,8 +543,8 @@ Component.Avatar.prototype.updateProp = function (propName, propValue) {
 };
 
 Component.Avatar.prototype.formatAvatar = function () {
-    if (this.props.image) {
-        this.element.style.backgroundImage = "url('" + this.props.image + "')";
+    if (this.props.avatar) {
+        this.element.style.backgroundImage = "url('" + this.props.avatar + "')";
         this.textNode.nodeValue = "";
     }
     else if (this.props.showInitials && (this.props.firstName || this.props.lastName)) {
@@ -553,7 +553,7 @@ Component.Avatar.prototype.formatAvatar = function () {
         this.element.style.backgroundImage = "";
     }
     else {
-        this.element.style.backgroundImage = "url('" + this.props.defaultImage + "')";
+        this.element.style.backgroundImage = "url('" + this.props.defaultAvatar + "')";
         this.textNode.nodeValue = "";
     }
     return this;
@@ -575,11 +575,11 @@ Component.Progress = function (modelObject, dataObject) {
     Component.Progress.superclass.constructor.call(this, data);
 
     this.props = {
-        firstName    : $$.string(info.firstName, $$.string(info.name,  "")),
-        lastName     : $$.string(info.lastName, ""),
-        image        : $$.string(info.image, ""),
-        defaultImage : $$.string(info.defaultImage, $$.images.defaultContact),
-        showInitials : $$.boolean(info.showInitials, false)
+        firstName     : $$.string(info.firstName, $$.string(info.name,  "")),
+        lastName      : $$.string(info.lastName, ""),
+        image         : $$.string(info.image, ""),
+        defaultAvatar : $$.string(info.defaultAvatar, $$.images.defaultContact),
+        showInitials  : $$.boolean(info.showInitials, false)
     };
 
     this.addModel(model);
@@ -615,33 +615,33 @@ Component.Card = function (modelObject, dataObject) {
     Component.Card.superclass.constructor.call(this, data);
 
     this.props = {
-        size         : $$.string(data.size, "small"),
-        name         : $$.string(info.name, ""),
-        firstName    : $$.string(info.firstName, ""),
-        lastName     : $$.string(info.lastName, ""),
-        image        : $$.string(info.image, ""),
-        status       : $$.string(info.status, "unknown"),
-        defaultImage : $$.string(info.defaultImage, $$.images.defaultAvatar),
-        isInRoster   : $$.boolean(info.isInRoster, false),
-        showInitials : $$.boolean(info.showInitials, false),
-        organizer    : $$.string(info.organizer, ""),
-        startTime    : $$.number(info.startTime, 0),
-        endTime      : $$.number(info.endTime, 0)
+        size          : $$.string(data.size, "small"),
+        name          : $$.string(info.name, ""),
+        firstName     : $$.string(info.firstName, ""),
+        lastName      : $$.string(info.lastName, ""),
+        avatar        : $$.string(info.avatar, ""),
+        status        : $$.string(info.status, "unknown"),
+        defaultAvatar : $$.string(info.defaultAvatar, $$.images.defaultAvatar),
+        isInRoster    : $$.boolean(info.isInRoster, false),
+        showInitials  : $$.boolean(info.showInitials, false),
+        organizer     : $$.string(info.organizer, ""),
+        startTime     : $$.number(info.startTime, 0),
+        endTime       : $$.number(info.endTime, 0)
     }
 
     this.propType = {
-        size         : "string",
-        name         : "string",
-        firstName    : "string",
-        lastName     : "string",
-        image        : "string",
-        status       : "string",
-        defaultImage : "string",
-        isInRoster   : "boolean",
-        showInitials : "boolean",
-        organizer    : "string",
-        startTime    : "number",
-        endTime      : "number"
+        size          : "string",
+        name          : "string",
+        firstName     : "string",
+        lastName      : "string",
+        avatar        : "string",
+        status        : "string",
+        defaultAvatar : "string",
+        isInRoster    : "boolean",
+        showInitials  : "boolean",
+        organizer     : "string",
+        startTime     : "number",
+        endTime       : "number"
     }
 
     this.attribs = {
@@ -668,7 +668,7 @@ Component.Card = function (modelObject, dataObject) {
 
     if (model.subtype) {
         this[model.subtype + "Parts"](info, data);
-        this.props.defaultImage = $$.images["default" + $$.capitalize(model.subtype)];
+        this.props.defaultAvatar = $$.images["default" + $$.capitalize(model.subtype)];
     }
 
     this.addModel(model).updateNameAttribute().updateRosterState();

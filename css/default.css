@@ -125,6 +125,8 @@ avatar {
     color: #FFF;
     background-color: #A5ABB0;
     background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     border-radius: .25em;
 }
 

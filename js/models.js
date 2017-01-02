@@ -174,16 +174,16 @@ Model.Contact = function (dataObject) {
     this.subtype = "contact";
 
     this.props = {
-        firstName    : data.firstName    || "",
-        lastName     : data.lastName     || "",
-        image        : data.image        || "",
-        defaultImage : data.defaultImage || $$.images.defaultContact,
-        showInitials : data.showInitials || true,
-        status       : data.status       || "",
-        isInRoster   : data.isInRoster   || false,
-        jobTitle     : data.jobTitle     || "",
-        emails       : data.emails       || [],
-        phones       : data.phones       || []
+        firstName     : data.firstName    || "",
+        lastName      : data.lastName     || "",
+        avatar        : data.avatar       || "",
+        defaultAvatar : data.defaultAvatar || $$.images.defaultContact,
+        showInitials  : data.showInitials || true,
+        status        : data.status       || "",
+        isInRoster    : data.isInRoster   || false,
+        jobTitle      : data.jobTitle     || "",
+        emails        : data.emails       || [],
+        phones        : data.phones       || []
     };
 
     this.relationships = {
@@ -219,17 +219,17 @@ Model.Room = function (dataObject) {
                    data.subtype :   "room";
 
     this.props = {
-        name         : data.name         || "",
-        image        : data.image        || "",
-        defaultImage : data.defaultImage || $$.images["default" + $$.capitalize(this.subtype)],
-        showInitials : data.showInitials || false,
-        location     : data.location     || "",
-        startTime    : data.startTime    || 0,
-        endTime      : data.endTime      || 0,
-        isLocked     : data.isLocked     || false,
-        isRestricted : data.isPrivate    || false,
-        isFull       : data.isFull       || false,
-        isFavorite   : data.isFavorite   || false
+        name          : data.name         || "",
+        avatar        : data.avatar       || "",
+        defaultAvatar : data.defaultAvatar || $$.images["default" + $$.capitalize(this.subtype)],
+        showInitials  : data.showInitials || false,
+        location      : data.location     || "",
+        startTime     : data.startTime    || 0,
+        endTime       : data.endTime      || 0,
+        isLocked      : data.isLocked     || false,
+        isRestricted  : data.isPrivate    || false,
+        isFull        : data.isFull       || false,
+        isFavorite    : data.isFavorite   || false
     };
 
     this.relationships = {
