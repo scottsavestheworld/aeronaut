@@ -42,15 +42,17 @@ Module.App = function (moduleData) {
         // Components
         top      : $$.Basic({ element: "<top>" }),
         main     : $$.Basic({ element: "<main>" }),
-        bottom   : $$.Basic({ element: "<bottom>" }),
         fade     : $$.Basic({ element: "<app-fade>" }),
         settings : $$.Image({ element: "<settings-dropdown>", image: $$.images.settingsLight }), // make this a module
         // Modules
-        devices    : $$.Devices(),
-        login      : $$.Login(),
-        navigation : $$.Navigation(),
-        results    : $$.Results(),
-        specifics      : $$.Specifics(),
+        account           : $$.Account(),
+        devices           : $$.Devices(),
+        login             : $$.Login(),
+        navigation        : $$.Navigation(),
+        results           : $$.Results(),
+        specifics         : $$.Specifics(),
+        conferenceMenu    : $$.ConferenceMenu(),
+        conferenceDetails : $$.ConferenceDetails()
     };
 
     this.props = {
@@ -93,9 +95,8 @@ Module.App.prototype.updateProp = function (propName, propValue) {
 Module.App.prototype.assemble = function () {
     var parts = this.parts;
 
-    this.add(parts.top.add(parts.settings))
-        .add(parts.main)
-        .add(parts.bottom);
+    this.add(parts.top.add(parts.account, 0).add(parts.settings))
+        .add(parts.main);
 
     parts.top.toggle("active", true, "top");
 
@@ -130,7 +131,7 @@ Module.App.prototype.start = function () {
     return this;
 };
 
-Module.App.prototype.loginSuccessful = function () {
+Module.App.prototype.loginSuccessful = function (modelObject) {
     var parts = this.parts;
 
     parts.login.remove();
@@ -142,6 +143,8 @@ Module.App.prototype.loginSuccessful = function () {
         .add(parts.specifics)
         .toggle("active", true);
 
+    parts.account.applyModel(modelObject).toggle("active", true, "opacity");
+
     parts.navigation.toggle("active", true, "left");
     this.eachPart("selectNavigationItem", "contacts");
     parts.results.updateRoster(dummydata);
@@ -151,6 +154,19 @@ Module.App.prototype.loginSuccessful = function () {
     return this;
 };
 
+
+Module.App.prototype.joinConference = function (modelObject) {
+    var parts = this.parts;
+
+    this.add(parts.conferenceDetails);
+    parts.main.add(parts.conferenceMenu);
+    parts.conferenceMenu.toggle("active", true, "right");
+    parts.conferenceDetails.applyModel(modelObject).toggle("active", true, "bottom");
+
+//  API.onJoinConference();
+
+    return this;
+};
 
 // ========================================================
 //                     DEVICES MODULE
@@ -233,9 +249,9 @@ Module.Login = function (moduleData) {
         appLogo        : $$.Image({ element: "<app-logo>", image: $$.images.appLogo }),
         loginForm      : $$.Basic({ element: "<form>" }),
         welcomeMessage : $$.Text({ element: "<header>", text: "Oh, hello. Glad you could join us." }),
-        server         : $$.Entry({ type: "text", styleClass: "server", placeholder: "Server", readonly: "true" }),
-        username       : $$.Entry({ type: "text", styleClass: "username", placeholder: "Username" }),
-        password       : $$.Entry({ type: "password", styleClass: "password", placeholder: "Password" }),
+        server         : $$.Entry({ type: "text", styleClass: "server", placeholder: "Server", readonly: "true", value: "aero.scottsavestheworld.com" }),
+        username       : $$.Entry({ type: "text", styleClass: "username", placeholder: "Username", value: "testuser" }),
+        password       : $$.Entry({ type: "password", styleClass: "password", placeholder: "Password", value: "password" }),
         submit         : $$.Entry({ type: "submit", styleClass: "submit", value: "Sign In" }),
         autoLogin      : $$.Entry({ type: "checkbox", styleClass: "checkbox", label: "Remember my username", labelPosition: "after" }),
         cancelButton   : $$.Text({ element: "<cancel-button>", text: "Cancel" })
@@ -289,8 +305,8 @@ Module.Login.prototype.assemble = function () {
             )
         );
 
-    var server   = $$.string(localStorage.server, "");
-    var username = $$.string(localStorage.username, "");
+    var server   = $$.string(localStorage.server, parts.server.props.value);
+    var username = $$.string(localStorage.username, parts.username.props.value);
 
     parts.server.updateProp("value", server).updateProp("readonly", server ? "true" : "")
         .updateProp("maxlength", this.props.serverMax);
@@ -312,7 +328,7 @@ Module.Login.prototype.addEvents = function () {
     parts.server    .addEvent("dblclick", function (e) { parts.server.updateProp("readonly", "").input.select(); });
     parts.loginForm .addEvent("keyup",    function (e) { thisModule.verifyEntry(e); });
     parts.loginForm .addEvent("input",    function (e) { thisModule.verifyEntry(e); });
-    parts.loginForm .addEvent("submit",   function (e) { thisModule.submit(e); });
+    parts.loginForm .addEvent("submit",   function (e) { thisModule.submit(e); e.preventDefault(); });
 
     return this;
 };
@@ -343,7 +359,8 @@ Module.Login.prototype.submit = function (e) {
         localStorage.username  = saveCredentials ? parts.username.input.value : "";
         localStorage.autoLogin = saveCredentials;
         parts.submit.toggle("disabled", true);
-        this.loginSuccessful();
+        var localUser = $$.Contact(dummydata.contact[0]);
+        this.loginSuccessful(localUser);
     }
     e.preventDefault();
 
@@ -363,10 +380,10 @@ Module.Login.prototype.setFocus = function () {
     return this;
 };
 
-Module.Login.prototype.loginSuccessful = function () {
+Module.Login.prototype.loginSuccessful = function (modelObject) {
     var thisModule = this;
     function removeModule(e) {
-        if (e.propertyName === "opacity") { app.loginSuccessful(); }
+        if (e.propertyName === "opacity") { app.loginSuccessful(modelObject); }
     }
     this.singleEvent("transitionend", removeModule).toggle("active", false);
 
@@ -374,6 +391,34 @@ Module.Login.prototype.loginSuccessful = function () {
 };
 
 Module.Login.prototype.loginFailed = function (reasonCode) {
+    return this;
+};
+
+
+// ========================================================
+//                    ACCOUNT MODULE
+// ========================================================
+
+Module.Account = function (moduleData) {
+    var data      = $$.object(moduleData, {});
+    this.ID       = data.ID || "account-module";
+    this.subtype  = "account";
+    this.element  = $$.getElement(data.element || "<account>");
+
+    Module.Navigation.superclass.constructor.call(this, data);
+
+    this.parts = {
+        card : null,
+    };
+};
+
+$$.extendClass(Module.Account, Module.Base);
+
+Module.Account.prototype.applyModel = function (modelObject) {
+    var parts = this.parts;
+    parts.card = $$.Card(modelObject);
+    this.add(parts.card);
+
     return this;
 };
 
@@ -431,7 +476,7 @@ Module.Navigation.prototype.addEvents = function () {
     return this;
 };
 
-Module.Navigation.prototype.selectNavigationItem = function (sectionName) {
+Module.Navigation.prototype.selectNavigationItem = function (sectionName, clearSpecifics) {
     var section    = $$.string(sectionName, this.props.selectedNavigation);
     var isSelected = false;
     var newSection = "";
@@ -443,6 +488,8 @@ Module.Navigation.prototype.selectNavigationItem = function (sectionName) {
             if (this.props.selectedNavigation) {
                 this.parts[this.props.selectedNavigation].toggle("selected", false);
             }
+        } else if (clearSpecifics) {
+            app.parts.results.selectResultItem(app.parts.results.props.selectedResult, false);
         }
         this.parts[section].toggle("selected", isSelected);
         this.props.selectedNavigation = newSection;
@@ -594,7 +641,6 @@ Module.Results.prototype.addRosterCard = function (modelObject, sortNeeded) {
             list.sort();
         }
     }
-
     return this;
 };
 
@@ -627,5 +673,117 @@ Module.Specifics.prototype.addCard = function (modelObject) {
     newCard.parts.rosterToggle.addEvent("click", function (event) {
         modelObject.updateProp("isInRoster", !newCard.props.isInRoster);
     });
+    newCard.parts.joinConference.addEvent("click", function (event) {
+        app.joinConference(modelObject);
+    })
     this.add(newCard);
-}
+
+    return this;
+};
+
+
+// ========================================================
+//                    CONFERENCE MODULE
+// ========================================================
+
+Module.Conference = function (moduleData) {
+    var data        = $$.object(moduleData, {});
+    this.ID         = "conference-module-" + Date.now();
+    this.subtype    = "conference";
+    this.element    = $$.getElement(data.element || "<conference>");
+
+    Module.Conference.superclass.constructor.call(this, data);
+};
+
+$$.extendClass(Module.Conference, Module.Base);
+
+Module.Conference.prototype.assemble = function () {
+    return this;
+};
+
+Module.Conference.prototype.addEvents = function () {
+    return this;
+};
+
+
+// ========================================================
+//                CONFERENCE-DETAILS MODULE
+// ========================================================
+
+Module.ConferenceDetails = function (moduleData) {
+    var data        = $$.object(moduleData, {});
+    this.ID         = "conference-details-module-" + Date.now();
+    this.subtype    = "conferenceDetails";
+    this.element    = $$.getElement(data.element || "<conference-details>");
+
+    Module.ConferenceDetails.superclass.constructor.call(this, data);
+
+    this.parts = {
+        exitConference       : $$.Image({ element: "<exit-conference>" }),
+        conferenceName       : $$.Basic({ element: "<conference-name>" }),
+        conferenceIndicators : $$.Basic({ element: "<conference-indicators>" })
+    };
+
+    this.assemble();
+};
+
+$$.extendClass(Module.ConferenceDetails, Module.Base);
+
+Module.ConferenceDetails.prototype.assemble = function () {
+    var parts = this.parts;
+    this.add(parts.exitConference)
+        .add(parts.conferenceName)
+        .add(parts.conferenceIndicators);
+
+    return this;
+};
+
+Module.ConferenceDetails.prototype.addEvents = function () {
+    return this;
+};
+
+Module.ConferenceDetails.prototype.applyModel = function (modelObject) {
+    var parts = this.parts;
+    parts.exitConference.image = $$.images["exit" + $$.capitalize(modelObject.subtype) + "Conference"];
+    parts.conferenceName.eachAddedObject("remove", null, true).add($$.Name(modelObject));
+
+    return this;
+};
+
+
+// ========================================================
+//                 CONFERENCE-MENU MODULE
+// ========================================================
+
+Module.ConferenceMenu = function (moduleData) {
+    var data        = $$.object(moduleData, {});
+    this.ID         = "conference-menu-module-" + Date.now();
+    this.subtype    = "conferenceMenu";
+    this.element    = $$.getElement(data.element || "<conference-menu>");
+
+    Module.ConferenceMenu.superclass.constructor.call(this, data);
+
+    this.parts = {
+    };
+
+    this.assemble();
+};
+
+$$.extendClass(Module.ConferenceMenu, Module.Base);
+
+Module.ConferenceMenu.prototype.assemble = function () {
+    var parts = this.parts;
+
+    return this;
+};
+
+Module.ConferenceMenu.prototype.addEvents = function () {
+    return this;
+};
+
+Module.ConferenceMenu.prototype.applyModel = function (modelObject) {
+    var parts = this.parts;
+
+    return this;
+};
+

@@ -278,6 +278,24 @@ View.Base.prototype.getChildIndex = function (child) {
     }
 };
 
+View.Base.prototype.addProp = function (propType, propName, propValue) {
+    if (!this.props.hasOwnProperty(propName)) {
+        if ($$.typeCheck(propType)) {
+            this.props[propName] = $$[propType](propValue);
+            this.propType[propName] = propType;
+        }
+    }
+    return this;
+};
+
+View.Base.prototype.removeProp = function (propName) {
+    if (this.props.hasOwnProperty(propName)) {
+        delete this.props[propName];
+        delete this.propType[propName];
+    }
+    return this;
+};
+
 View.Base.prototype.updateProp = function (propName, propValue) {
     var outcome = $$.capitalize(this.subtype) + " " + this.archetype + "s do not allow prop updates via this method."
     Log.write("updateProp", this, outcome);

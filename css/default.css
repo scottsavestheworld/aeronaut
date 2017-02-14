@@ -236,26 +236,96 @@ main.is-active {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-bottom {
-    display: none;
+account {
+    position: absolute;
+    left: 0em;
+    top: 0em;
+    margin: .75em .5em;
+    opacity: 0;
+    transition: opacity .5s;
+}
+
+account.is-active {
+    opacity: 1;
+}
+
+account avatar {
     position: relative;
-    z-index: 2;
-    flex 0 0 4em;
-    width: 100%;
-    height: 3em;
-    background: linear-gradient(#2D333D, #101215);
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: .5em;
+    border-radius: 50%;
+}
+
+account status {
+    position: absolute;
+    bottom: .875em;
+    right: -.375em;
+    width: .75em;
+    height: .75em;
+    border-radius: 50%;
+    border: 1px solid #2D333D;
+}
+
+account contents {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: .25em;
+    color: #999;
+}
+
+account.is-active contents {
+    opacity: 1;
 }
 
 settings-dropdown {
     position: absolute;
     right: 0px;
-    margin: .75em;
+    margin: .75em .5em;
     width: 2.5em;
     height: 2.5em;
     background-size: 1.5em;
     background-position: center;
     background-repeat: no-repeat;
+    cursor: pointer;
 
+}
+
+/* ====== CONFERENCE DETAILS MODULE */
+
+conference-details {
+    position: relative;
+    display: block;
+    bottom: -4em;
+    margin-top: -4em;
+    height: 4em;
+    width: 100%;
+    background-color: #2D333D;
+    transition: bottom .5s, margin-top .5s;
+}
+
+conference-details.is-active {
+    bottom: 0em;
+    margin-top: 0em;
+}
+
+conference-menu {
+    position: relative;
+    z-index: 5;
+    display: inline-block;
+    right: -3em;
+    margin-left: -3em;
+    width: 3em;
+    height: 100%;
+    overflow: visible;
+    background-color: #2D333D;
+    box-shadow: 1px 0 3px rgba(0,0,0,.5);
+    transition: right .5s, margin-left .5s;
+}
+
+conference-menu.is-active {
+    right: 0em;
+    margin-left: 0em;
 }
 
 /* ====== DEVICE MODULE */
@@ -626,7 +696,6 @@ results card > avatar {
     margin-right: .5em;
 }
 
-
 results card status {
     width: .75em;
     height: .75em;
@@ -725,7 +794,7 @@ specifics card {
     margin: .5em;
     width: 30em;
     overflow: hidden;
-    background-color: rgba(255,255,255,.95);
+    background-color: rgba(255,255,255,.9);
     border-radius: .25em;
     box-shadow: 1px 1px 6px rgba(0,0,0,.3);
     transition: opacity .5s;
@@ -745,7 +814,7 @@ specifics card contents {
     padding-right: 1em;
 }
 
-specifics card call {
+specifics card join-conference {
     display: inline-block;
     vertical-align: middle;
     width: 3em;
@@ -763,6 +832,7 @@ specifics card call {
 specifics card name {
     display:  block;
     font-size: 1.5em;
+    word-break: break-word;
 }
 
 specifics card status {
@@ -787,14 +857,15 @@ specifics card buttons {
     display: flex;
     width: 100%;
     padding: 1em;
-    background-color: #2D333D;
+    background-color: #FFF;
+    border-top: 1px solid rgba(0,0,0,.1);
 }
 
 specifics card buttons icon {
     flex: 1 1 50%;
     height: 2.75em;
     text-align: center;
-    color: rgba(255,255,255,.5);
+    color: rgba(0,0,0,.5);
 }
 
 specifics card buttons icon image {
@@ -810,6 +881,6 @@ specifics card buttons icon text {
 }
 
 specifics card buttons icon:hover {
-    color: #FFF;
+    color: #000;
     cursor: pointer;
 }

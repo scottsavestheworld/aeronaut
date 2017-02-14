@@ -324,10 +324,10 @@ Component.Entry.prototype.value = function (value) {
 // ========================================================
 
 Component.Time = function(dataObject) {
-    var data        = $$.object(dataObject, {});
-    this.subtype    = "time";
-    this.element    = $$.getElement(data.element || "<time>");
-    this.textNode   = document.createTextNode("");
+    var data      = $$.object(dataObject, {});
+    this.subtype  = "time";
+    this.element  = $$.getElement(data.element || "<time>");
+    this.textNode = document.createTextNode("");
 
     Component.Time.superclass.constructor.call(this, data);
 
@@ -337,7 +337,8 @@ Component.Time = function(dataObject) {
         endTime   : $$.number(data.endTime, 0),
         timestamp : $$.number(data.timestamp, Date.now()),
         format    : $$.string(data.format, "[full date and time]"),
-        interval  : $$.number(data.interval, 0)
+        interval  : $$.number(data.interval, 0),
+        callback  : $$.function(data.callback, null)
     };
 
     this.propType = {
@@ -346,7 +347,8 @@ Component.Time = function(dataObject) {
         endTime   : "number",
         timestamp : "number",
         format    : "string",
-        interval  : "number"
+        interval  : "number",
+        callback  : "function"
     };
 
     this.attribs = {
@@ -447,9 +449,67 @@ Component.Time.prototype.interval = function (interval) {
 Component.Time.prototype.updateClock = function () {
     this.props.timestamp = Date.now();
     this.format();
+    if (this.props.callback) {
+        this.props.callback(this);
+    }
     return this;
 };
 
+
+// ========================================================
+//                    TIMELINE COMPONENT
+// ========================================================
+
+Component.Timeline = function (dataObject) {
+    var data     = $$.object(dataObject, {});
+    this.subtype = "timeline";
+    this.element = $$.getElement(data.element || "<timeline>");
+    this.elapsed = $$.getElement(data.elapsed || "<elapsed>");
+
+    Component.Timeline.superclass.constructor.call(this, data);
+
+    this.props = {
+        startTime : $$.number(data.start, 0),
+        endTime   : $$.number(data.end, 0),
+        timestamp : $$.number(data.current, Date.now()),
+    };
+
+    this.propType = {
+        startTime : "number",
+        endTime   : "number",
+        timestamp : "number"
+    };
+
+    this.element.appendChild(this.elapsed);
+};
+
+$$.extendClass(Component.Timeline, Component.Base);
+
+Component.Timeline.prototype.updateProp = function (propName, propValue) {
+    if (this.props.hasOwnProperty(propName)) {
+        var type = this.propType[propName];
+        propValue = $$[type](propValue, this.props[propName]);
+        this.props[propName] = propValue;
+        this.updateTimeline();
+    }
+    return this;
+};
+
+Component.Timeline.prototype.updateTimeline = function () {
+    var props   = this.props;
+    var percent = -1;
+    if (props.timestamp >= props.startTime) {
+        if (props.timestamp > props.endTime) {
+            percent = 100;
+        } else {
+            percent = Math.round((props.timestamp - props.startTime) / (props.endTime - props.startTime) * 100);
+        }
+    }
+    this.element.setAttribute("value", percent);
+    this.elapsed.style.width = (percent > -1 ? percent : 0) + "%";
+
+    return this;
+};
 
 // ========================================================
 //                      NAME COMPONENT
@@ -469,6 +529,12 @@ Component.Name = function (modelObject, dataObject) {
         firstName : $$.string(info.firstName, $$.string(info.name,  "")),
         lastName  : $$.string(info.lastName, ""),
         format    : $$.string(info.format, "[firstName] [lastName]")
+    };
+
+    this.propType = {
+        firstName : "string",
+        lastName :  "string",
+        format   :  "string"
     };
 
     this.addModel(model);
@@ -524,6 +590,14 @@ Component.Avatar = function (modelObject, dataObject) {
         avatar        : $$.string(info.avatar, ""),
         defaultAvatar : $$.string(info.defaultAvatar, $$.images.defaultContact),
         showInitials  : $$.boolean(info.showInitials, false)
+    };
+
+    this.propType = {
+        firstName     : "string",
+        lastName      : "string",
+        avatar        : "string",
+        defaultAvatar : "string",
+        showInitials  : "boolean"
     };
 
     this.addModel(model);
@@ -582,6 +656,14 @@ Component.Progress = function (modelObject, dataObject) {
         showInitials  : $$.boolean(info.showInitials, false)
     };
 
+    this.propType = {
+        firstName     : "string",
+        lastName      : "string",
+        image         : "string",
+        defaultAvatar : "string",
+        showInitials  : "boolean"
+    };
+
     this.addModel(model);
     this.add(this.textNode);
     this.formatAvatar();
@@ -604,13 +686,13 @@ Component.Progress.prototype.updateProp = function (propName, propValue) {
 // ========================================================
 
 Component.Card = function (modelObject, dataObject) {
-    var data        = $$.object(dataObject, {});
-    var model       = $$.object(modelObject, {});
-    var info        = model.isModel ? model.props : model;
-    var thisCard    = this;
-    this.subtype    = "card";
-    this.altClass   = model.subtype || "";
-    this.element    = $$.getElement(data.element || "<card>");
+    var data      = $$.object(dataObject, {});
+    var model     = $$.object(modelObject, {});
+    var info      = model.isModel ? model.props : model;
+    var thisCard  = this;
+    this.subtype  = "card";
+    this.altClass = model.subtype || "";
+    this.element  = $$.getElement(data.element || "<card>");
 
     Component.Card.superclass.constructor.call(this, data);
 
@@ -623,10 +705,7 @@ Component.Card = function (modelObject, dataObject) {
         status        : $$.string(info.status, "unknown"),
         defaultAvatar : $$.string(info.defaultAvatar, $$.images.defaultAvatar),
         isInRoster    : $$.boolean(info.isInRoster, false),
-        showInitials  : $$.boolean(info.showInitials, false),
-        organizer     : $$.string(info.organizer, ""),
-        startTime     : $$.number(info.startTime, 0),
-        endTime       : $$.number(info.endTime, 0)
+        showInitials  : $$.boolean(info.showInitials, false)
     }
 
     this.propType = {
@@ -639,30 +718,17 @@ Component.Card = function (modelObject, dataObject) {
         defaultAvatar : "string",
         isInRoster    : "boolean",
         showInitials  : "boolean",
-        organizer     : "string",
-        startTime     : "number",
-        endTime       : "number"
     }
-
-    this.attribs = {
-        startingSoonTimeout : null,
-        startedTimeout      : null,
-        endingSoonTimeout   : null,
-        endedTimeout        : null,
-        hoursTimeout        : null
-    };
 
     this.parts = {
         avatar          : $$.Avatar(info),
         name            : $$.Name(info),
         status          : $$.Image({ element: "<status>", styleClass: "is-" + this.props.status }),
         statusText      : $$.Text({ element: "<status-text>", styleClass: "is-" + this.props.status, text: this.props.status }),
-        meetingTime     : $$.Time({ timestamp: this.props.startTime, startTime: this.props.startTime, endTime: this.props.endTime, format: "[h]:[mm]" }),
         contents        : $$.Basic({ element: "<contents>" }),
-        call            : $$.Image({ element: "<call>", image: $$.images.callLight }),
-
+        joinConference  : $$.Image({ element: "<join-conference>", image: $$.images.callLight }),
         buttons         : $$.Basic({ element: "<buttons>" }),
-        scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsAddLight, text: "Schedule a Meeting" }),
+        scheduleMeeting : $$.Icon({ styleClass: "schedule-a-meeting", image: $$.images.meetingsAddDark, text: "Schedule a Meeting" }),
         rosterToggle    : $$.Icon({ styleClass: "roster-toggle" })
     };
 
@@ -714,10 +780,10 @@ Component.Card.prototype.updateProp = function (propName, propValue, stopSort) {
 
 Component.Card.prototype.updateRosterState = function (isInRoster) {
     var inRoster = $$.boolean(isInRoster, this.props.isInRoster);
-    var image    = $$.images.contactsAddLight;
+    var image    = $$.images.contactsAddDark;
     var text     = "Add to Contacts";
     if (inRoster === true) {
-        image = $$.images.contactsRemoveLight;
+        image = $$.images.contactsRemoveDark;
         text  = "Remove from Contacts";
     }
     this.props.isInRoster = inRoster;
@@ -736,6 +802,7 @@ Component.Card.prototype.updateNameAttribute = function () {
 
 Component.Card.prototype.contactParts = function () {
     var parts = this.parts;
+
     if (this.props.size === "small") {
         this.add(parts.avatar.add(parts.status))
             .add(parts.contents.add(parts.name));
@@ -745,7 +812,7 @@ Component.Card.prototype.contactParts = function () {
                 .add(parts.name)
                 .add(parts.status)
                 .add(parts.statusText))
-            .add(parts.call)
+            .add(parts.joinConference)
             .add(parts.buttons
                  .add(parts.scheduleMeeting)
                  .add(parts.rosterToggle));
@@ -762,9 +829,20 @@ Component.Card.prototype.roomParts = function (info) {
 };
 
 Component.Card.prototype.meetingParts = function (info) {
-    var parts = this.parts;
-    var props = this.props;
-    var attribs = this.attribs;
+    var parts   = this.parts;
+    var props   = this.props;
+    var attribs = this.attribs = {
+        startingSoonTimeout : null,
+        startedTimeout      : null,
+        endingSoonTimeout   : null,
+        endedTimeout        : null,
+        hoursTimeout        : null
+    };
+    this.addProp("string", "organizer", info.organizer)
+        .addProp("number", "startTime", info.startTime)
+        .addProp("number", "endTime", info.endTime);
+    parts.meetingTime = $$.Time({ timestamp: props.startTime, startTime: props.startTime, endTime: props.endTime, format: "[h]:[mm]" });
+
     attribs.startingSoonTimeout = setTimeout(function () {
         parts.meetingTime.updateTimeStatus("starting soon");
     }, (props.startTime - Date.now() - 299000));

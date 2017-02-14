@@ -23,8 +23,17 @@ $$.Message = function (dataObject, updateModel) {
 
 //--------------------------------------------------------- Modules
 
+$$.Account = function (modelObject, moduleData) {
+    return new Module.Account(modelObject, moduleData);
+};
 $$.App = function (moduleData) {
     return new Module.App(moduleData);
+};
+$$.ConferenceDetails = function (moduleData) {
+    return new Module.ConferenceDetails(moduleData);
+};
+$$.ConferenceMenu = function (moduleData) {
+    return new Module.ConferenceMenu(moduleData);
 };
 $$.Devices = function (moduleData) {
     return new Module.Devices(moduleData);
@@ -67,6 +76,9 @@ $$.Entry = function (dataObject) {
 };
 $$.Time = function (dataObject) {
     return new Component.Time(dataObject);
+};
+$$.Timeline = function (dataObject) {
+    return new Component.Timeline(dataObject);
 };
 $$.Name = function (modelObject, dataObject) {
     return new Component.Name(modelObject, dataObject);
@@ -120,26 +132,32 @@ $$.getInitials = function (stringArray) {
 //--------------------------------------------------------- Variable Type Check
 
 $$.array = function (value, newValue) {
+    if (newValue === undefined) { newValue = []; }
     return Array.isArray(value) ? value : newValue;
 };
 
 $$.boolean = function (value, newValue) {
+    if (newValue === undefined) { newValue = false; }
     return typeof value === "boolean" ? value : newValue;
 };
 
 $$.number = function (value, newValue) {
+    if (newValue === undefined) { newValue = 0; }
     return typeof value === "number" && !isNaN(value) ? value : newValue;
 };
 
 $$.object = function (value, newValue) {
+    if (newValue === undefined) { newValue = {}; }
     return typeof value === "object" && value != null ? value : newValue;
 };
 
 $$.string = function (value, newValue) {
+    if (newValue === undefined) { newValue = ""; }
     return typeof value === "string" ? value : newValue;
 };
 
 $$.function = function (value, newValue) {
+    if (newValue === undefined) { newValue = function () {}; }
     return typeof value === "function" ? value : newValue;
 }
 
@@ -164,6 +182,26 @@ $$.time = function (value, newValue) {
         || value === "countdown"
         || value === "elapsed"
         || value === "timer" ? value : newValue;
+}
+
+$$.typeCheck = function (typeName) {
+    switch (typeName) {
+        case "array":
+        case "boolean":
+        case "number":
+        case "object":
+        case "string":
+        case "function":
+        case "view":
+        case "component":
+        case "module":
+        case "model":
+        case "time":
+            return true;
+            break;
+        default:
+            return false;
+    }
 }
 
 // ========================================================
