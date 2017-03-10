@@ -859,8 +859,7 @@ Component.Card.prototype.meetingParts = function (info) {
         parts.meetingTime.updateTimeStatus("ended");
     }, (props.endTime - Date.now()));
 
-    this.add(parts.avatar
-            .add(parts.meetingTime))
+    this.add(parts.meetingTime)
         .add(parts.contents
             .add(parts.name)
             .add(parts.organizer));
