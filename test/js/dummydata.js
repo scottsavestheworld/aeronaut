@@ -4,67 +4,72 @@ var dummydata = {
         ID            : "Contact1",
         firstName     : "Scott",
         lastName      : "Van Der Sluys",
-        avatar        : "test/img/avatar.jpg",
+        avatar        : "./img/scott.svg",
         status        : "available",
         isInRoster    : true,
-        jobTitle      : "Codes Stuff",
-        emails        : { work : "svandersluys@vidyo.com"},
-        phones        : { home : "201-207-3695"}
+        jobTitle      : "Make things happen",
+        emails        : { work : "scottvandersluys@gmail.com"},
+        phones        : { home : "201-207-3695"},
     },
     {
         ID            : "Contact2",
-        firstName     : "Bala",
-        lastName      : "Pitchandi",
+        firstName     : "Peter",
+        lastName      : "Griffin",
         avatar        : "",
         status        : "offline",
         isInRoster    : true,
-        jobTitle      : "The Boss",
-        emails        : { work : "bala@vidyo.com"},
-        phones        : { home : ""}
+        jobTitle      : "Being Awesome",
+        emails        : { work : "pgriff@googlemail.com"},
+        phones        : { home : ""},
+        avatar        : "https://pbs.twimg.com/profile_images/743415048190705664/CSwzAFeE.jpg"
     },
     {
         ID            : "Contact3",
-        firstName     : "Marek",
-        lastName      : "Fiuk",
+        firstName     : "Faceless",
+        lastName      : "Person",
         avatar        : "",
         status        : "available",
         isInRoster    : true,
-        jobTitle      : "Codes Stuff",
-        emails        : { work : "marek@vidyo.com"},
-        phones        : { home : ""}
+        jobTitle      : "",
+        emails        : { work : ""},
+        phones        : { home : ""},
+        avatar        : ""
     },
     {
         ID            : "Contact4",
-        firstName     : "Jay",
-        lastName      : "Sylvester",
+        firstName     : "Tony",
+        lastName      : "Stark",
         avatar        : "",
         status        : "available",
         isInRoster    : true,
-        jobTitle      : "Codes Stuff",
-        emails        : { work : "marek@vidyo.com"},
-        phones        : { home : ""}
+        jobTitle      : "Iron Man",
+        emails        : { work : ""},
+        phones        : { home : ""},
+        avatar        : "http://vignette2.wikia.nocookie.net/marvelcentral/images/9/97/Tony-Stark.jpg/revision/latest?cb=20130429010603"
     },
     {
         ID            : "Contact5",
-        firstName     : "Pratyush",
-        lastName      : "Tewari",
+        firstName     : "John",
+        lastName      : "Malkovich",
         avatar        : "",
         status        : "busy",
         isInRoster    : true,
-        jobTitle      : "Codes Stuff",
-        emails        : { work : "marek@vidyo.com"},
-        phones        : { home : ""}
+        jobTitle      : "Malkovich, Malkovich",
+        emails        : { work : ""},
+        phones        : { home : ""},
+        avatar        : "http://ecowallpapers.net/wp-content/uploads/4891_john_malkovich.jpg"
     },
     {
         ID            : "Contact6",
-        firstName     : "Pradnya",
-        lastName      : "Wakchaure",
+        firstName     : "Austin",
+        lastName      : "Powers",
         avatar        : "",
         status        : "offline",
         isInRoster    : true,
-        jobTitle      : "Codes Stuff",
-        emails        : { work : "marek@vidyo.com"},
-        phones        : { home : ""}
+        jobTitle      : "Internation Man of Mystery",
+        emails        : { work : ""},
+        phones        : { home : ""},
+        avatar        : "http://cdn.playbuzz.com/cdn/6f967c71-542b-4183-8bbb-254ad4da076e/d3bcddef-73ea-43ce-ab0a-b1998b788357.jpg"
     }],
     room:
     [{
@@ -81,21 +86,21 @@ var dummydata = {
     [{
         ID            : "Meeting1",
         name          : "Starting Meeting",
-        organizer     : "Bala Pitchandi",
+        organizer     : "Scott Van Der Sluys",
         startTime     : Date.now() + 20000,
         endTime       : Date.now() + 3600000
     },
     {
         ID            : "Meeting2",
         name          : "Ending Meeting",
-        organizer     : "Bala Pitchandi",
+        organizer     : "Scott Van Der Sluys",
         startTime     : Date.now() - 3580000,
         endTime       : Date.now() + 20000
     },
     {
         ID            : "Meeting3",
         name          : "Future Meeting",
-        organizer     : "Bala Pitchandi",
+        organizer     : "Scott Van Der Sluys",
         startTime     : Date.now() + 3600000,
         endTime       : Date.now() + 20000000
     }]
